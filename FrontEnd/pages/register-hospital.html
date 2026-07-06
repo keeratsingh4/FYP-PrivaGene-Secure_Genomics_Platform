@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Registration - PrivaGene</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/components.css">
+</head>
+
+<body>
+    <div class="register-container fade-in"
+        style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%); padding: var(--space-xl);">
+        <div style="width: 100%; max-width: 600px;">
+            <a href="role-selection.html" class="back-link">← Choose Different Role</a>
+            <br><br/>
+
+            
+            <div class="card-glass" style="padding: var(--space-2xl);">
+                <div style="text-align: center; margin-bottom: var(--space-2xl);">
+                    <div style="font-size: var(--text-4xl); margin-bottom: var(--space-md);">🏥</div>
+                    <h1 style="font-size: var(--text-3xl); font-weight: 700; margin-bottom: var(--space-sm);">Hospital
+                        Specialist Registration</h1>
+                    <p class="text-secondary">Join our network of genetic counseling professionals</p>
+                </div>
+
+                <form id="register-form">
+                    <div class="grid grid-cols-2 gap-lg">
+                        <div class="form-group">
+                            <label for="firstName" class="form-label form-label-required">First Name</label>
+                            <input type="text" id="firstName" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName" class="form-label form-label-required">Last Name</label>
+                            <input type="text" id="lastName" class="form-input" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label form-label-required">Professional Email</label>
+                        <input type="email" id="email" class="form-input" placeholder="doctor@hospital.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="specialty" class="form-label form-label-required">Specialty</label>
+                        <input type="text" id="specialty" class="form-input" placeholder="e.g., Genetic Counseling"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="licenseNumber" class="form-label form-label-required">License Number</label>
+                        <input type="text" id="licenseNumber" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hospital" class="form-label">Hospital/Organization</label>
+                        <input type="text" id="hospital" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label form-label-required">Password</label>
+                        <input type="password" id="password" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label form-label-required">Confirm Password</label>
+                        <input type="password" id="confirmPassword" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-checkbox">
+                            <input type="checkbox" id="terms" required>
+                            <span class="text-sm">
+                                I agree to the <a href="terms.html" style="color: var(--primary-color);">Terms of
+                                    Service</a>
+                                and <a href="privacy.html" style="color: var(--primary-color);">Privacy Policy</a>
+                            </span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block btn-lg">Create Account</button>
+                </form>
+
+                <div style="margin-top: var(--space-xl); text-align: center;">
+                    <p class="text-secondary">Already have an account? <a href="login.html"
+                            style="color: var(--primary-color); font-weight: 500;">Sign in</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/navigation.js"></script>
+
+    <script>
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = {
+                firstName: document.getElementById('firstName').value.trim(),
+                lastName: document.getElementById('lastName').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                specialty: document.getElementById('specialty').value.trim(),
+                licenseNumber: document.getElementById('licenseNumber').value.trim(),
+                hospital: document.getElementById('hospital').value.trim(),
+                password: document.getElementById('password').value,
+                role: 'hospital'
+            };
+
+            if (formData.password !== document.getElementById('confirmPassword').value) {
+                UI.showAlert('Passwords do not match', 'error');
+                return;
+            }
+
+            if (!document.getElementById('terms').checked) {
+                UI.showAlert('You must accept the terms', 'error');
+                return;
+            }
+
+            UI.showLoading('Creating your account...');
+
+            try {
+                // Create account with pending approval status
+                const registerData = {
+                    ...formData,
+                    status: 'pending_approval' // Doctors need approval
+                };
+
+                const user = await Auth.register(registerData, false); // false = no auto-login
+
+                UI.hideLoading();
+                UI.showAlert('Registration submitted successfully! Your account is pending approval by the system administrator. You will be notified once approved.', 'success', 5000);
+
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 3000);
+
+            } catch (error) {
+                UI.hideLoading();
+                UI.showAlert(error.message, 'error');
+            }
+        });
+
+        // Add password strength indicator
+        UI.addPasswordStrengthIndicator(document.getElementById('password'));
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,18 @@
+READ ME
+
+install dependencies:
+in terminal navigate to BackEnd/DBMS
+run 'npm install sqlite3'
+
+start DBMS:
+in terminal navigate to BackEnd/Server
+run 'npm install'
+run 'npm start'
+
+open SQLite 
+click on open database 
+navigate to /DBMS
+select 'app' and open
+
+open file explorer and navigate to FrontEnd/pages
+open 'index'

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy & PDPA Compliance - PrivaGene</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        .policy-section { background: var(--bg-secondary); border-radius: var(--radius-xl); padding: var(--space-xl); margin-bottom: var(--space-xl); box-shadow: var(--shadow-sm); }
+        .policy-section h2 { font-size: var(--text-2xl); font-weight: 600; margin-bottom: var(--space-lg); color: var(--text-primary); display: flex; align-items: center; gap: var(--space-sm); }
+        .policy-section h3 { font-size: var(--text-lg); font-weight: 600; margin-top: var(--space-lg); margin-bottom: var(--space-sm); color: var(--text-primary); }
+        .policy-section p, .policy-section li { color: var(--text-secondary); line-height: 1.7; margin-bottom: var(--space-sm); }
+        .policy-section ul, .policy-section ol { margin-left: var(--space-xl); margin-bottom: var(--space-md); }
+        .pdpa-badge { display: inline-flex; align-items: center; gap: var(--space-xs); background: linear-gradient(135deg, var(--success-color), #059669); color: white; padding: var(--space-xs) var(--space-md); border-radius: var(--radius-full); font-size: var(--text-sm); font-weight: 600; }
+        .compliance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-lg); margin-top: var(--space-xl); }
+        .compliance-item { background: var(--bg-tertiary); border-radius: var(--radius-lg); padding: var(--space-lg); border-left: 4px solid var(--success-color); }
+        .compliance-item h4 { font-weight: 600; margin-bottom: var(--space-sm); color: var(--text-primary); }
+        .compliance-item p { font-size: var(--text-sm); margin-bottom: 0; }
+        .highlight-box { background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1)); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: var(--radius-lg); padding: var(--space-lg); margin: var(--space-lg) 0; }
+        .highlight-box-title { font-weight: 600; color: var(--primary-color); margin-bottom: var(--space-sm); }
+        .researcher-notice { background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1)); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: var(--radius-lg); padding: var(--space-lg); margin: var(--space-lg) 0; }
+        .researcher-notice-title { font-weight: 600; color: var(--warning-color); margin-bottom: var(--space-sm); display: flex; align-items: center; gap: var(--space-sm); }
+        .toc { background: var(--bg-tertiary); border-radius: var(--radius-lg); padding: var(--space-xl); margin-bottom: var(--space-2xl); }
+        .toc h3 { font-size: var(--text-lg); font-weight: 600; margin-bottom: var(--space-md); }
+        .toc ul { list-style: none; margin: 0; padding: 0; }
+        .toc li { margin-bottom: var(--space-sm); }
+        .toc a { color: var(--primary-color); text-decoration: none; }
+        .toc a:hover { text-decoration: underline; }
+        .data-table { width: 100%; border-collapse: collapse; margin: var(--space-lg) 0; }
+        .data-table th, .data-table td { padding: var(--space-md); text-align: left; border-bottom: 1px solid var(--border-light); }
+        .data-table th { background: var(--bg-tertiary); font-weight: 600; color: var(--text-primary); }
+        .data-table td { color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="index.html" class="navbar-brand"><span class="navbar-brand-icon">🧬</span>PrivaGene</a>
+                <ul class="navbar-menu">
+                    <li><a href="faq.html" class="navbar-link">FAQ</a></li>
+                    <li><a href="privacy.html" class="navbar-link">Privacy</a></li>
+                    <li><a href="terms.html" class="navbar-link">Terms</a></li>
+                    <li><a href="contact.html" class="navbar-link">Contact</a></li>
+                    <li><a href="login.html" class="navbar-link">Login</a></li>
+                    <li><a href="role-selection.html" class="btn btn-primary btn-sm">Get Started</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container" style="padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
+        <div style="max-width: 900px; margin: 0 auto;">
+            <div style="margin-bottom: var(--space-2xl);">
+                <div style="display: flex; align-items: center; gap: var(--space-md); margin-bottom: var(--space-md); flex-wrap: wrap;">
+                    <h1 style="font-size: var(--text-4xl); font-weight: 700;">Privacy Policy</h1>
+                    <span class="pdpa-badge">✓ PDPA Compliant</span>
+                </div>
+                <p class="text-secondary">Last updated: December 2025</p>
+                <p style="margin-top: var(--space-md); color: var(--text-secondary); line-height: 1.7;">
+                    PrivaGene is committed to protecting your personal data in compliance with the 
+                    <strong>Personal Data Protection Act 2012 (PDPA)</strong> of Singapore. This policy explains 
+                    how we collect, use, disclose, and protect your personal and genetic information.
+                </p>
+            </div>
+
+            <div class="toc">
+                <h3>📋 Table of Contents</h3>
+                <ul>
+                    <li><a href="#pdpa-compliance">1. PDPA Compliance Statement</a></li>
+                    <li><a href="#data-collection">2. Data We Collect</a></li>
+                    <li><a href="#purpose">3. Purpose of Data Collection</a></li>
+                    <li><a href="#consent">4. Consent</a></li>
+                    <li><a href="#psi-technology">5. Privacy-Preserving Technology (PSI)</a></li>
+                    <li><a href="#researcher-access">6. Researcher Data Access</a></li>
+                    <li><a href="#data-protection">7. How We Protect Your Data</a></li>
+                    <li><a href="#data-sharing">8. Data Sharing & Disclosure</a></li>
+                    <li><a href="#your-rights">9. Your Rights Under PDPA</a></li>
+                    <li><a href="#contact">10. Contact & Data Protection Officer</a></li>
+                </ul>
+            </div>
+
+            <div id="pdpa-compliance" class="policy-section">
+                <h2>🏛️ 1. PDPA Compliance Statement</h2>
+                <p>PrivaGene operates in full compliance with Singapore's Personal Data Protection Act 2012 (PDPA). We adhere to all key obligations:</p>
+                <div class="compliance-grid">
+                    <div class="compliance-item"><h4>✓ Consent Obligation</h4><p>We obtain your consent before collecting, using, or disclosing your personal data.</p></div>
+                    <div class="compliance-item"><h4>✓ Purpose Limitation</h4><p>We only use personal data for purposes you have been informed of and consented to.</p></div>
+                    <div class="compliance-item"><h4>✓ Notification Obligation</h4><p>We inform you of the purposes for which we collect and use your data.</p></div>
+                    <div class="compliance-item"><h4>✓ Access & Correction</h4><p>You can request access to and correction of your personal data at any time.</p></div>
+                    <div class="compliance-item"><h4>✓ Accuracy Obligation</h4><p>We ensure your personal data is accurate and complete.</p></div>
+                    <div class="compliance-item"><h4>✓ Protection Obligation</h4><p>We protect your data with appropriate security measures.</p></div>
+                    <div class="compliance-item"><h4>✓ Retention Limitation</h4><p>We retain data only as long as necessary for stated purposes.</p></div>
+                    <div class="compliance-item"><h4>✓ Transfer Limitation</h4><p>We ensure adequate protection when transferring data outside Singapore.</p></div>
+                    <div class="compliance-item"><h4>✓ Openness Obligation</h4><p>We make our data protection policies available upon request.</p></div>
+                </div>
+            </div>
+
+            <div id="data-collection" class="policy-section">
+                <h2>📊 2. Data We Collect</h2>
+                <h3>Personal Information</h3>
+                <ul>
+                    <li>Name, email address, and contact information</li>
+                    <li>Account credentials (stored in encrypted form)</li>
+                    <li>Date of birth and gender (for health profiling)</li>
+                    <li>Professional credentials (for healthcare providers and researchers)</li>
+                </ul>
+                <h3>Genetic Data</h3>
+                <ul>
+                    <li>Genetic information uploaded by you (gene sets)</li>
+                    <li>Risk assessment results (percentages only, not raw data)</li>
+                    <li>Disease category selections</li>
+                </ul>
+                <h3>Usage Information</h3>
+                <ul>
+                    <li>Platform usage and activity logs</li>
+                    <li>Appointment booking history</li>
+                    <li>IP addresses and device information (for security)</li>
+                </ul>
+                <div class="highlight-box">
+                    <div class="highlight-box-title">🔒 Important: What We DON'T Collect</div>
+                    <p>We do not store your raw genetic sequence data in plaintext. Through our Private Set Intersection (PSI) technology, your genetic information is encrypted and processed without ever being exposed in readable form.</p>
+                </div>
+            </div>
+
+            <div id="purpose" class="policy-section">
+                <h2>🎯 3. Purpose of Data Collection</h2>
+                <p>Your personal data will be used strictly for the following purposes:</p>
+                <table class="data-table">
+                    <thead><tr><th>Data Type</th><th>Purpose</th></tr></thead>
+                    <tbody>
+                        <tr><td>Personal Information</td><td>Account creation, authentication, and communication</td></tr>
+                        <tr><td>Genetic Data</td><td>Computing disease risk assessments using PSI technology</td></tr>
+                        <tr><td>Risk Results</td><td>Providing personalized health insights and recommendations</td></tr>
+                        <tr><td>Appointment Data</td><td>Scheduling consultations with healthcare specialists</td></tr>
+                        <tr><td>Anonymized Analytics</td><td>Research purposes (with explicit consent only)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="consent" class="policy-section">
+                <h2>✅ 4. Consent</h2>
+                <p>Before collecting, using, or disclosing your personal data, PrivaGene will:</p>
+                <ol>
+                    <li><strong>Notify you</strong> of the purposes for which your data will be used</li>
+                    <li><strong>Obtain your consent</strong> through clear opt-in mechanisms during registration</li>
+                    <li><strong>Allow you to withdraw consent</strong> at any time through your account settings</li>
+                </ol>
+                <h3>Types of Consent We Obtain</h3>
+                <ul>
+                    <li><strong>Account Registration:</strong> Consent to basic data processing for platform functionality</li>
+                    <li><strong>Genetic Data Upload:</strong> Explicit consent before each upload</li>
+                    <li><strong>Research Participation:</strong> Separate opt-in consent for anonymized data use in research</li>
+                </ul>
+                <div class="highlight-box">
+                    <div class="highlight-box-title">📝 Withdrawal of Consent</div>
+                    <p>You may withdraw your consent at any time by accessing your Profile settings or contacting our Data Protection Officer. Withdrawal may affect your ability to use certain features.</p>
+                </div>
+            </div>
+
+            <div id="psi-technology" class="policy-section">
+                <h2>🔐 5. Privacy-Preserving Technology (PSI)</h2>
+                <p>PrivaGene employs <strong>Private Set Intersection (PSI)</strong> technology, a cryptographic protocol that enables genetic risk assessment while maintaining bilateral privacy protection.</p>
+                <h3>How PSI Protects Your Privacy</h3>
+                <ol>
+                    <li><strong>Your Data Stays Private:</strong> Your genetic markers are encrypted before computation. Neither PrivaGene nor healthcare providers can see your raw genetic data.</li>
+                    <li><strong>Hospital Data Stays Private:</strong> Disease-gene databases from hospitals are also protected.</li>
+                    <li><strong>Only Results Are Revealed:</strong> The only output is a risk percentage based on the count of matching genes, not the identity of specific genes.</li>
+                </ol>
+                <div class="highlight-box">
+                    <div class="highlight-box-title">🧮 Risk Calculation Formula</div>
+                    <p>Risk% = c × |X ∩ Y| / n</p>
+                    <p style="font-size: var(--text-sm); margin-top: var(--space-sm);">Where X = your encrypted gene set, Y = hospital's disease gene set, c = disease-specific constant, and n = total disease genes. Only the intersection COUNT is revealed, never the actual matching genes. This uses the Diffie-Hellman based PSI protocol.</p>
+                </div>
+            </div>
+
+            <div id="researcher-access" class="policy-section">
+                <h2>🔬 6. Researcher Data Access</h2>
+                <div class="researcher-notice">
+                    <div class="researcher-notice-title">⚠️ Important Notice About Research Data</div>
+                    <p>Health researchers on our platform have access to <strong>anonymized and aggregated</strong> data only. They <strong>NEVER</strong> have access to individual patient genetic data, personal information, or identifiable health records.</p>
+                </div>
+                <h3>What Researchers CAN Access</h3>
+                <ul>
+                    <li>Aggregated PSI risk statistics (e.g., "X% of users in age group 40-50 show elevated cardiovascular risk")</li>
+                    <li>De-identified demographic trends (age groups, regions - never individual identities)</li>
+                    <li>Disease category distribution patterns</li>
+                    <li>Statistical visualizations and dashboards</li>
+                </ul>
+                <h3>What Researchers CANNOT Access</h3>
+                <ul>
+                    <li>❌ Individual patient names, emails, or contact information</li>
+                    <li>❌ Raw genetic data or gene sets</li>
+                    <li>❌ Individual risk assessment results linked to identifiable patients</li>
+                    <li>❌ Appointment records or medical history</li>
+                    <li>❌ Any data that could identify a specific individual</li>
+                </ul>
+                <h3>Safeguards for Research Data</h3>
+                <ol>
+                    <li><strong>Anonymization:</strong> All data is stripped of personally identifiable information</li>
+                    <li><strong>Aggregation Thresholds:</strong> Data only provided when sample sizes prevent individual identification</li>
+                    <li><strong>Access Controls:</strong> Researchers must be verified and approved</li>
+                    <li><strong>Audit Trails:</strong> All researcher data queries are logged</li>
+                    <li><strong>User Consent:</strong> Research access requires explicit user opt-in</li>
+                </ol>
+                <div class="highlight-box">
+                    <div class="highlight-box-title">🛡️ Your Control Over Research Participation</div>
+                    <p>Participation in research is <strong>completely optional</strong>. You can opt-in or opt-out at any time through your Profile settings. Opting out will not affect your ability to use PrivaGene's core features.</p>
+                </div>
+            </div>
+
+            <div id="data-protection" class="policy-section">
+                <h2>🛡️ 7. How We Protect Your Data</h2>
+                <h3>Technical Safeguards</h3>
+                <ul>
+                    <li><strong>End-to-End Encryption:</strong> AES-256 encryption during transmission and storage</li>
+                    <li><strong>Private Set Intersection:</strong> Genetic data processed cryptographically</li>
+                    <li><strong>Secure Infrastructure:</strong> Hosted on certified cloud infrastructure</li>
+                    <li><strong>Regular Security Audits:</strong> Penetration testing and vulnerability assessments</li>
+                </ul>
+                <h3>Administrative Safeguards</h3>
+                <ul>
+                    <li><strong>Role-Based Access Control:</strong> Staff access only data necessary for their role</li>
+                    <li><strong>Multi-Factor Authentication:</strong> Required for administrative accounts</li>
+                    <li><strong>Audit Logging:</strong> Comprehensive logs of all data access</li>
+                </ul>
+            </div>
+
+            <div id="data-sharing" class="policy-section">
+                <h2>🤝 8. Data Sharing & Disclosure</h2>
+                <p>Your data is <strong>NEVER sold</strong> to third parties. We may share data only in these circumstances:</p>
+                <table class="data-table">
+                    <thead><tr><th>Recipient</th><th>What is Shared</th><th>Condition</th></tr></thead>
+                    <tbody>
+                        <tr><td>Healthcare Providers</td><td>Risk results (not raw genetic data)</td><td>Only when you authorize sharing</td></tr>
+                        <tr><td>Researchers</td><td>Anonymized, aggregated statistics</td><td>Only with explicit opt-in consent</td></tr>
+                        <tr><td>Legal Authorities</td><td>As required by law</td><td>Only when legally compelled</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="your-rights" class="policy-section">
+                <h2>⚖️ 9. Your Rights Under PDPA</h2>
+                <p>Under the PDPA, you have the following rights:</p>
+                <div class="compliance-grid">
+                    <div class="compliance-item"><h4>Right to Access</h4><p>Request a copy of all personal data we hold about you</p></div>
+                    <div class="compliance-item"><h4>Right to Correction</h4><p>Request corrections to inaccurate or incomplete data</p></div>
+                    <div class="compliance-item"><h4>Right to Withdraw Consent</h4><p>Withdraw consent for data processing at any time</p></div>
+                    <div class="compliance-item"><h4>Right to Deletion</h4><p>Request deletion of your account and associated data</p></div>
+                    <div class="compliance-item"><h4>Right to Data Portability</h4><p>Download your data in a machine-readable format</p></div>
+                    <div class="compliance-item"><h4>Right to Complain</h4><p>Lodge a complaint with the PDPC if dissatisfied</p></div>
+                </div>
+                <h3>How to Exercise Your Rights</h3>
+                <ol>
+                    <li><strong>Through the Platform:</strong> Access Profile → Settings → Data & Privacy</li>
+                    <li><strong>Via Email:</strong> Contact our Data Protection Officer at dpo@privagene.com</li>
+                    <li><strong>Response Time:</strong> We will respond within 30 days</li>
+                </ol>
+            </div>
+
+            <div id="contact" class="policy-section">
+                <h2>📞 10. Contact & Data Protection Officer</h2>
+                <p>For questions or requests regarding your personal data:</p>
+                <div style="background: var(--bg-tertiary); border-radius: var(--radius-lg); padding: var(--space-xl); margin-top: var(--space-lg);">
+                    <h3 style="margin-top: 0;">Data Protection Officer</h3>
+                    <p><strong>Email:</strong> dpo@privagene.com</p>
+                    <p><strong>Address:</strong> PrivaGene Pte Ltd, Singapore</p>
+                    <p><strong>Response Time:</strong> Within 3 business days</p>
+                </div>
+                <div style="margin-top: var(--space-xl);">
+                    <h3>Regulatory Authority</h3>
+                    <p>If not satisfied with our response, you may contact the <strong>Personal Data Protection Commission (PDPC)</strong> at <a href="https://www.pdpc.gov.sg" style="color: var(--primary-color);">www.pdpc.gov.sg</a></p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: var(--space-2xl); padding-top: var(--space-xl); border-top: 1px solid var(--border-light);">
+                <p class="text-secondary" style="margin-bottom: var(--space-lg);">By using PrivaGene, you acknowledge that you have read and understood this Privacy Policy.</p>
+                <div style="display: flex; gap: var(--space-md); justify-content: center; flex-wrap: wrap;">
+                    <a href="terms.html" class="btn btn-outline">View Terms of Service</a>
+                    <a href="contact.html" class="btn btn-secondary">Contact Us</a>
+                    <a href="login.html" class="btn btn-primary">Login to PrivaGene</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background: var(--bg-tertiary); padding: var(--space-2xl) 0; margin-top: var(--space-3xl); text-align: center;">
+        <div class="container">
+            <p class="text-secondary">© 2025 PrivaGene. Secure Genetic Risk Assessment Platform.</p>
+            <p class="text-secondary" style="font-size: var(--text-sm); margin-top: var(--space-sm);">PDPA Compliant | Privacy-First Design | Singapore</p>
+        </div>
+    </footer>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script>Navigation.setActiveNav();</script>
+</body>
+</html>

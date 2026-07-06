@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risk Assessment Results - PrivaGene</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+
+    <style>
+        .risk-gauge {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto var(--space-xl);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .risk-gauge-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(var(--success-color) 0deg 108deg,
+                    var(--warning-color) 108deg 252deg,
+                    var(--error-color) 252deg 360deg);
+            padding: 10px;
+        }
+
+        .risk-gauge-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .risk-percentage {
+            font-size: var(--text-4xl);
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="../../index.html"
+                style="display: flex; align-items: center; gap: var(--space-sm); text-decoration: none;">
+                <span style="font-size: var(--text-3xl);">🧬</span>
+                <span style="font-size: var(--text-xl); font-weight: 700; color: var(--primary-color);">PrivaGene</span>
+            </a>
+        </div>
+
+        <div
+            style="margin-bottom: var(--space-xl); padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);" data-user-name>User</div>
+            <div style="font-size: var(--text-sm); color: var(--text-tertiary);" data-user-email>user@example.com</div>
+        </div>
+
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item"><a href="dashboard.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📊</span>Dashboard</a></li>
+                <li class="sidebar-item"><a href="upload-gene.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📤</span>Upload Gene Data</a></li>
+                <li class="sidebar-item"><a href="disease-selection.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">🧪</span>Risk Assessment</a></li>
+                <li class="sidebar-item"><a href="risk-results.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📈</span>My Results</a></li>
+                <li class="sidebar-item"><a href="family-access.html" class="sidebar-link">
+                        <span class="sidebar-link-icon">👨‍👩‍👧</span>Family Access</a></li>
+                <li class="sidebar-item"><a href="profile.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">👤</span>Profile</a></li>
+            </ul>
+        </nav>
+
+        <div style="margin-top: auto;"><button id="logout-btn" class="sidebar-link"
+                style="width: 100%; border: none; background: transparent; cursor: pointer;"><span
+                    class="sidebar-link-icon">🚪</span>Logout</button></div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-with-sidebar">
+        <div class="container">
+            <a href="dashboard.html" class="back-link">← Back to Dashboard</a>
+
+            <div style="margin-bottom: var(--space-2xl); margin-top: var(--space-lg);">
+                <h1 style="font-size: var(--text-4xl); font-weight: 700; margin-bottom: var(--space-sm);">Your Risk
+                    Assessment Results</h1>
+                <p class="text-secondary" id="showingCount">Computed on <span id="computedDate"></span></p>
+            </div>
+
+            <!-- Action Buttons - Moved to Top -->
+            <div style="margin-bottom: var(--space-2xl);">
+                <div class="flex gap-md" style="align-items: flex-start;">
+                    <button id="downloadReportBtn" class="btn btn-outline">📄 Download Report</button>
+                    <a href="disease-selection.html" class="btn btn-primary">🧪 Run New Assessment</a>
+                </div>
+                <div style="margin-top: var(--space-sm); padding: var(--space-sm) var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md); display: inline-flex; align-items: center; gap: var(--space-sm);">
+                    <span style="font-size: var(--text-lg);">ℹ️</span>
+                    <span style="font-size: var(--text-sm); color: var(--text-secondary);">
+                        The downloaded report will show the most recent assessment result for each disease.
+                    </span>
+                </div>
+            </div>
+
+            <!-- Overall Risk -->
+            <div class="card text-center" style="margin-bottom: var(--space-2xl);">
+                <h2 class="card-title">Overall Intersect Score</h2>
+                <br>
+                <div class="risk-gauge">
+                    <div class="risk-gauge-circle">
+                        <div class="risk-gauge-inner">
+                            <div class="risk-percentage" id="overallRisk">-</div>
+                        </div>
+                    </div>
+                </div>
+                <p id="riskDescription" class="text-secondary"></p>
+            </div>
+
+            <!-- Individual Results -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Disease-Specific Risk</h3>
+                </div>
+                <div id="individualResults">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/api-backend.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/navigation.js"></script>
+
+    <script>
+        Auth.requireRole('patient');
+        const user = Auth.getCurrentUser();
+        Navigation.displayUserInfo(user);
+        Navigation.setActiveNav();
+
+        document.getElementById('logout-btn').addEventListener('click', () => Auth.logout());
+
+        // Cache for disease categories (loaded from database)
+        let diseaseCategories = [];
+        let currentAssessments = []; // Store assessments for download
+
+        async function loadDiseaseCategories() {
+            try {
+                // Fetch from backend database
+                diseaseCategories = await API.getDiseaseCategories();
+                console.log('Disease categories loaded from database:', diseaseCategories);
+            } catch (error) {
+                console.error('Failed to load disease categories:', error);
+                diseaseCategories = [];
+            }
+        }
+
+        function getDiseaseName(diseaseId) {
+            const disease = diseaseCategories.find(d => d.id === diseaseId);
+            return disease ? disease.name : 'Unknown Disease';
+        }
+
+        function getHospitalName(diseaseId) {
+            const disease = diseaseCategories.find(d => d.id === diseaseId);
+            return disease ? disease.hospitalName : 'Unknown Hospital';
+        }
+
+        function getDiseaseCode(diseaseId) {
+            const disease = diseaseCategories.find(d => d.id === diseaseId);
+            return disease ? disease.diseaseCode : null;
+        }
+
+        async function loadResults() {
+            try {
+                // First load disease categories from database to map IDs to names
+                await loadDiseaseCategories();
+                
+                // Retrieve ALL risk assessments for this user from database
+                console.log('=== Fetching risk assessments from database ===');
+                const assessments = await API.getRiskAssessments(user.id);
+                
+                console.log('=== ALL RISK ASSESSMENTS ===');
+                console.log('Total assessments found:', assessments.length);
+                console.log('Full assessments array:', assessments);
+                
+                if (assessments.length === 0) {
+                    document.querySelector('.container').innerHTML = `
+                        <a href="dashboard.html" class="back-link">← Back to Dashboard</a>
+                        <div style="margin-top: var(--space-2xl); text-align: center;">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📊</div>
+                                <div class="empty-state-title">No Risk Assessments Yet</div>
+                                <div class="empty-state-description">
+                                    You haven't run any risk assessments yet. Upload your genetic data and select diseases to get started.
+                                </div>
+                                <div style="margin-top: var(--space-xl);">
+                                    <a href="disease-selection.html" class="btn btn-primary">Run Risk Assessment</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Store assessments for download function
+                currentAssessments = assessments;
+
+                // Display all assessments
+                displayAllAssessments(assessments);
+
+            } catch (error) {
+                console.error('=== ERROR LOADING RESULTS ===');
+                console.error('Error:', error);
+                console.error('Error message:', error.message);
+                console.error('Stack trace:', error.stack);
+                UI.showAlert('Failed to load results: ' + error.message, 'error');
+            }
+        }
+
+        function displayAllAssessments(assessments) {
+            // Sort by date (most recent first)
+            const sortedAssessments = [...assessments].sort((a, b) => {
+                const dateA = new Date(a.created_at || a.createdAt);
+                const dateB = new Date(b.created_at || b.createdAt);
+                return dateB - dateA;
+            });
+
+            // Build HTML for all assessment cards (no deduplication for display)
+            const assessmentCards = sortedAssessments.map((assessment, index) => {
+                const overallRisk = parseFloat(
+                    assessment.overallRisk || 
+                    assessment.overall_risk || 
+                    assessment.riskPercentage || 
+                    assessment.risk_percentage || 
+                    0
+                ).toFixed(2);
+                
+                const diseaseId = assessment.diseaseId || assessment.disease_id;
+                
+                // Look up disease name from database-loaded categories
+                const diseaseName = getDiseaseName(diseaseId);
+                const hospitalName = getHospitalName(diseaseId);
+                const diseaseCode = getDiseaseCode(diseaseId);
+                
+                // Determine risk level and color
+                let riskLevel, riskColor;
+                if (overallRisk < 30) {
+                    riskLevel = 'Low';
+                    riskColor = 'var(--success-color)';
+                } else if (overallRisk < 70) {
+                    riskLevel = 'Medium';
+                    riskColor = 'var(--warning-color)';
+                } else {
+                    riskLevel = 'High';
+                    riskColor = 'var(--error-color)';
+                }
+
+                // Parse matched genes if it's a JSON string
+                let matchedGenes = assessment.matchedGenes || assessment.matched_genes;
+                if (typeof matchedGenes === 'string') {
+                    try {
+                        matchedGenes = JSON.parse(matchedGenes);
+                    } catch (e) {
+                        matchedGenes = [];
+                    }
+                }
+
+                const matchCount = assessment.matchCount || assessment.match_count || 0;
+                const geneList = matchedGenes && matchedGenes.length > 0 
+                    ? ` Matching genes: ${matchedGenes.join(', ')}.` 
+                    : '';
+
+                const createdAt = assessment.createdAt || assessment.created_at;
+
+                return `
+                    <div class="card text-center" style="margin-bottom: var(--space-2xl);">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-lg);">
+                            <div style="text-align: left;">
+                                <h2 class="card-title" style="text-align: left;">${diseaseName}</h2>
+                                <div class="text-secondary text-sm" style="margin-top: var(--space-xs); text-align: left;">
+                                    <span style="background: var(--bg-tertiary); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;">
+                                        🏥 Provider: ${hospitalName}
+                                    </span>
+                                    ${diseaseCode ? `
+                                    <span style="background: var(--bg-tertiary); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; margin-left: 4px;">
+                                        Code: ${diseaseCode}
+                                    </span>
+                                    ` : ''}
+                                </div>
+                            </div>
+                            <span class="text-secondary text-sm">
+                                ${UI.formatDateTime(createdAt)}
+                            </span>
+                        </div>
+                        <h3 style="font-size: var(--text-lg); font-weight: 600; margin-bottom: var(--space-lg);">
+                            Disease Risk Percentage
+                        </h3>
+                        <div class="risk-gauge">
+                            <div class="risk-gauge-circle">
+                                <div class="risk-gauge-inner">
+                                    <div class="risk-percentage" style="color: ${riskColor};">
+                                        ${overallRisk}%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p class="text-secondary">
+                            Your genetic risk for ${diseaseName} is <strong style="color: ${riskColor};">${riskLevel.toLowerCase()}</strong>. 
+                            ${matchCount} gene(s) match, resulting in a ${overallRisk}% intersection score.${geneList}
+                        </p>
+                    </div>
+                `;
+            }).join('');
+
+            // Update the page content
+            const container = document.querySelector('.container');
+            container.innerHTML = `
+                <a href="dashboard.html" class="back-link">← Back to Dashboard</a>
+
+                <div style="margin-bottom: var(--space-xl); margin-top: var(--space-lg);">
+                    <h1 style="font-size: var(--text-4xl); font-weight: 700; margin-bottom: var(--space-sm);">
+                        Your Risk Assessment Results
+                    </h1>
+                    <p class="text-secondary" id="showingCount">
+                        Showing ${sortedAssessments.length} assessment${sortedAssessments.length !== 1 ? 's' : ''}
+                    </p>
+                </div>
+
+                <!-- Action Buttons - Moved to Top -->
+                <div style="margin-bottom: var(--space-2xl);">
+                    <div class="flex gap-md" style="align-items: flex-start;">
+                        <button id="downloadReportBtn" class="btn btn-outline">📄 Download Report</button>
+                        <a href="disease-selection.html" class="btn btn-primary">🧪 Run New Assessment</a>
+                    </div>
+                    <div style="margin-top: var(--space-sm); padding: var(--space-sm) var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md); display: inline-flex; align-items: center; gap: var(--space-sm);">
+                        <span style="font-size: var(--text-lg);">ℹ️</span>
+                        <span style="font-size: var(--text-sm); color: var(--text-secondary);">
+                            The downloaded report will show the most recent assessment result for each disease.
+                        </span>
+                    </div>
+                </div>
+
+                ${assessmentCards}
+            `;
+
+            // Reattach download button event listener after innerHTML update
+            document.getElementById('downloadReportBtn').addEventListener('click', downloadReport);
+        }
+
+        // Download Report Function
+        function downloadReport() {
+            if (!currentAssessments || currentAssessments.length === 0) {
+                UI.showAlert('No assessments available to download', 'error');
+                return;
+            }
+
+            // Sort assessments by date
+            const sortedAssessments = [...currentAssessments].sort((a, b) => {
+                const dateA = new Date(a.created_at || a.createdAt);
+                const dateB = new Date(b.created_at || b.createdAt);
+                return dateB - dateA;
+            });
+
+            // Deduplicate: Keep only the most recent assessment for each disease-hospital combination
+            const uniqueAssessments = [];
+            const seen = new Set();
+            
+            for (const assessment of sortedAssessments) {
+                const diseaseId = assessment.diseaseId || assessment.disease_id;
+                const disease = diseaseCategories.find(d => d.id === diseaseId);
+                const hospitalName = disease ? disease.hospitalName : 'Unknown';
+                
+                // Create a unique key combining disease ID and hospital name
+                const uniqueKey = `${diseaseId}-${hospitalName}`;
+                
+                if (!seen.has(uniqueKey)) {
+                    seen.add(uniqueKey);
+                    uniqueAssessments.push(assessment);
+                }
+            }
+
+            // Generate report HTML
+            const reportHTML = generateReportHTML(uniqueAssessments);
+
+            // Create blob and download
+            const blob = new Blob([reportHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `PrivaGene_Risk_Assessment_Report_${new Date().toISOString().split('T')[0]}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            UI.showAlert('Report downloaded successfully', 'success');
+        }
+
+        function generateReportHTML(assessments) {
+            const userName = user.name || user.username || 'Patient';
+            const reportDate = new Date().toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+
+            // Generate assessment sections
+            const assessmentSections = assessments.map((assessment) => {
+                const overallRisk = parseFloat(
+                    assessment.overallRisk || 
+                    assessment.overall_risk || 
+                    assessment.riskPercentage || 
+                    assessment.risk_percentage || 
+                    0
+                ).toFixed(2);
+                
+                const diseaseId = assessment.diseaseId || assessment.disease_id;
+                const diseaseName = getDiseaseName(diseaseId);
+                const hospitalName = getHospitalName(diseaseId);
+                const diseaseCode = getDiseaseCode(diseaseId);
+                
+                let riskLevel, riskColor;
+                if (overallRisk < 30) {
+                    riskLevel = 'Low Risk';
+                    riskColor = '#10b981';
+                } else if (overallRisk < 70) {
+                    riskLevel = 'Medium Risk';
+                    riskColor = '#f59e0b';
+                } else {
+                    riskLevel = 'High Risk';
+                    riskColor = '#ef4444';
+                }
+
+                let matchedGenes = assessment.matchedGenes || assessment.matched_genes;
+                if (typeof matchedGenes === 'string') {
+                    try {
+                        matchedGenes = JSON.parse(matchedGenes);
+                    } catch (e) {
+                        matchedGenes = [];
+                    }
+                }
+
+                const matchCount = assessment.matchCount || assessment.match_count || 0;
+                const createdAt = assessment.createdAt || assessment.created_at;
+                const assessmentDate = new Date(createdAt).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                return `
+                    <div class="assessment-section">
+                        <div class="assessment-header">
+                            <h2>${diseaseName}</h2>
+                            <div class="meta-info">
+                                <span class="provider">Healthcare Provider: ${hospitalName}</span>
+                                ${diseaseCode ? `<span class="disease-code">Disease Code: ${diseaseCode}</span>` : ''}
+                                <span class="date">Assessed: ${assessmentDate}</span>
+                            </div>
+                        </div>
+
+                        <div class="risk-summary">
+                            <div class="risk-score" style="border-left: 4px solid ${riskColor};">
+                                <div class="risk-percentage-large" style="color: ${riskColor};">${overallRisk}%</div>
+                                <div class="risk-label" style="color: ${riskColor};">${riskLevel}</div>
+                            </div>
+                            <div class="risk-details">
+                                <p><strong>Intersection Score:</strong> ${overallRisk}% of your genetic markers match disease-associated genes</p>
+                                <p><strong>Matched Genes:</strong> ${matchCount} gene(s) identified</p>
+                                ${matchedGenes.length > 0 ? `
+                                <div class="gene-list">
+                                    <strong>Specific Genes:</strong> ${matchedGenes.join(', ')}
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+
+                        <div class="risk-interpretation">
+                            <h3>What This Means</h3>
+                            ${overallRisk < 30 ? `
+                                <p>Your genetic profile shows a <strong>low risk</strong> for ${diseaseName}. This means fewer genetic markers associated with this condition were found in your data. However, genetic risk is only one factor; lifestyle, environment, and family history also play important roles.</p>
+                            ` : overallRisk < 70 ? `
+                                <p>Your genetic profile shows a <strong>medium risk</strong> for ${diseaseName}. This indicates a moderate number of genetic markers associated with this condition. Consider discussing preventive measures and monitoring options with a healthcare provider.</p>
+                            ` : `
+                                <p>Your genetic profile shows a <strong>high risk</strong> for ${diseaseName}. A significant number of genetic markers associated with this condition were identified. We strongly recommend consulting with a healthcare specialist to discuss screening, prevention, and management strategies.</p>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrivaGene - Genetic Risk Assessment Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 40px 20px;
+        }
+        
+        .report-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 60px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .report-header {
+            text-align: center;
+            border-bottom: 3px solid #3b82f6;
+            padding-bottom: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        .report-title {
+            font-size: 32px;
+            color: #1e40af;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .report-subtitle {
+            font-size: 18px;
+            color: #64748b;
+        }
+        
+        .patient-info {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .patient-info h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #1e40af;
+        }
+        
+        .patient-info p {
+            margin: 8px 0;
+            font-size: 15px;
+        }
+        
+        .disclaimer {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            margin-bottom: 40px;
+            border-radius: 4px;
+        }
+        
+        .disclaimer h3 {
+            color: #92400e;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .disclaimer p {
+            color: #78350f;
+            font-size: 14px;
+        }
+        
+        .assessment-section {
+            margin-bottom: 50px;
+            page-break-inside: avoid;
+        }
+        
+        .assessment-header {
+            margin-bottom: 25px;
+        }
+        
+        .assessment-header h2 {
+            font-size: 26px;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+        
+        .meta-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            font-size: 14px;
+            color: #64748b;
+        }
+        
+        .meta-info span {
+            background: #f1f5f9;
+            padding: 5px 12px;
+            border-radius: 4px;
+        }
+        
+        .risk-summary {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        
+        .risk-score {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .risk-percentage-large {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .risk-label {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .risk-details p {
+            margin: 12px 0;
+            font-size: 15px;
+        }
+        
+        .gene-list {
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .risk-interpretation {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .risk-interpretation h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #1e40af;
+        }
+        
+        .risk-interpretation p {
+            font-size: 15px;
+            line-height: 1.7;
+        }
+        
+        .footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 2px solid #e2e8f0;
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .footer p {
+            margin: 8px 0;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .report-container {
+                box-shadow: none;
+                padding: 40px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .report-container {
+                padding: 30px 20px;
+            }
+            
+            .risk-summary {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="report-container">
+        <div class="report-header">
+            <div class="logo">🧬</div>
+            <h1 class="report-title">PrivaGene</h1>
+            <p class="report-subtitle">Genetic Risk Assessment Report</p>
+        </div>
+
+        <div class="patient-info">
+            <h2>Patient Information</h2>
+            <p><strong>Name:</strong> ${userName}</p>
+            <p><strong>Report Generated:</strong> ${reportDate}</p>
+            <p><strong>Total Assessments:</strong> ${assessments.length}</p>
+        </div>
+
+        <div class="disclaimer">
+            <h3>⚠️ Important Notice</h3>
+            <p>This report contains genetic risk assessment results based on Private Set Intersection (PSI) cryptographic analysis. These results are for informational purposes only and should not be used as a substitute for professional medical advice, diagnosis, or treatment. Always consult with qualified healthcare providers regarding your health concerns.</p>
+        </div>
+
+        <h2 style="font-size: 24px; margin-bottom: 30px; color: #1e293b;">Risk Assessment Results</h2>
+
+        ${assessmentSections}
+
+        <div class="footer">
+            <p><strong>PrivaGene - Privacy-Preserving Genetic Risk Assessment</strong></p>
+            <p>This report was generated using cryptographic protocols to ensure your genetic data remains private.</p>
+            <p>© ${new Date().getFullYear()} PrivaGene. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>`;
+        }
+
+        // Load results on page load
+        loadResults();
+    </script>
+</body>
+
+</html>

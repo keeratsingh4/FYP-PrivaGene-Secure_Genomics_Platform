@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Researcher Registration - PrivaGene</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/components.css">
+</head>
+
+<body>
+    <div class="register-container fade-in"
+        style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%); padding: var(--space-xl);">
+        <div style="width: 100%; max-width: 600px;">
+            <a href="role-selection.html" class="back-link">← Choose Different Role</a>
+            <br><br/>
+
+
+            <div class="card-glass" style="padding: var(--space-2xl);">
+                <div style="text-align: center; margin-bottom: var(--space-2xl);">
+                    <div style="font-size: var(--text-4xl); margin-bottom: var(--space-md);">📈</div>
+                    <h1 style="font-size: var(--text-3xl); font-weight: 700; margin-bottom: var(--space-sm);">Researcher
+                        Registration</h1>
+                    <p class="text-secondary">Access anonymized genetic data for your research</p>
+                </div>
+                <form id="register-form">
+                    <div class="grid grid-cols-2 gap-lg">
+                        <div class="form-group">
+                            <label for="firstName" class="form-label form-label-required">First Name</label>
+                            <input type="text" id="firstName" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName" class="form-label form-label-required">Last Name</label>
+                            <input type="text" id="lastName" class="form-input" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label form-label-required">Academic Email</label>
+                        <input type="email" id="email" class="form-input" placeholder="researcher@university.edu"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="institution" class="form-label form-label-required">Institution</label>
+                        <input type="text" id="institution" class="form-input"
+                            placeholder="University or Research Institute" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="field" class="form-label form-label-required">Research Field</label>
+                        <input type="text" id="field" class="form-input" placeholder="e.g., Genomics, Bioinformatics"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="orcid" class="form-label">ORCID iD</label>
+                        <input type="text" id="orcid" class="form-input" placeholder="0000-0000-0000-0000">
+                        <span class="form-hint">Optional researcher identifier</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label form-label-required">Password</label>
+                        <input type="password" id="password" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label form-label-required">Confirm Password</label>
+                        <input type="password" id="confirmPassword" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-checkbox">
+                            <input type="checkbox" id="terms" required>
+                            <span class="text-sm">
+                                I agree to the <a href="terms.html" style="color: var(--primary-color);">Terms of
+                                    Service</a>
+                                and <a href="privacy.html" style="color: var(--primary-color);">Privacy Policy</a>
+                            </span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block btn-lg">Create Account</button>
+                </form>
+
+                <div style="margin-top: var(--space-xl); text-align: center;">
+                    <p class="text-secondary">Already have an account? <a href="login.html"
+                            style="color: var(--primary-color); font-weight: 500;">Sign in</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/navigation.js"></script>
+
+    <script>
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = {
+                firstName: document.getElementById('firstName').value.trim(),
+                lastName: document.getElementById('lastName').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                institution: document.getElementById('institution').value.trim(),
+                field: document.getElementById('field').value.trim(),
+                orcid: document.getElementById('orcid').value.trim(),
+                password: document.getElementById('password').value,
+                role: 'researcher'
+            };
+
+            if (formData.password !== document.getElementById('confirmPassword').value) {
+                UI.showAlert('Passwords do not match', 'error');
+                return;
+            }
+
+            if (!document.getElementById('terms').checked) {
+                UI.showAlert('You must accept the terms', 'error');
+                return;
+            }
+
+            UI.showLoading('Creating your account...');
+
+            try {
+                const user = await Auth.register(formData);
+                UI.hideLoading();
+                UI.showAlert('Account created successfully! Redirecting to your dashboard...', 'success');
+                setTimeout(() => Auth.redirectToDashboard(user), 1500);
+            } catch (error) {
+                UI.hideLoading();
+                UI.showAlert(error.message, 'error');
+            }
+        });
+
+        // Add password strength indicator
+        UI.addPasswordStrengthIndicator(document.getElementById('password'));
+    </script>
+</body>
+
+</html>

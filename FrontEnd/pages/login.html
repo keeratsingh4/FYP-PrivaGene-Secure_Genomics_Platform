@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - PrivaGene</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/components.css">
+
+    <style>
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            padding: var(--space-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, var(--primary-color) 0%, transparent 70%);
+            opacity: 0.1;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+        }
+
+        .login-logo {
+            font-size: var(--text-5xl);
+            margin-bottom: var(--space-md);
+        }
+
+        .login-title {
+            font-size: var(--text-3xl);
+            font-weight: 700;
+            margin-bottom: var(--space-sm);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            margin-bottom: var(--space-lg);
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+
+        .back-link:hover {
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-box fade-in">
+            <a href="index.html" class="back-link">← Back to Home</a>
+
+            <div class="card-glass" style="padding: var(--space-2xl);">
+                <div class="login-header">
+                    <div class="login-logo">🧬</div>
+                    <h1 class="login-title">Welcome Back</h1>
+                    <p class="text-secondary">Sign in to access your PrivaGene account</p>
+                </div>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="email" class="form-label form-label-required">Email Address</label>
+                        <input type="email" id="email" class="form-input" placeholder="you@example.com" required
+                            autocomplete="off">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label form-label-required">Password</label>
+                        <input type="password" id="password" class="form-input" placeholder="Enter your password"
+                            required autocomplete="off">
+                    </div>
+
+                    <div class="form-group form-checkbox">
+                        <input type="checkbox" onclick="showPassword">
+                        <span class="text-sm">
+                            Show Password
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between items-center" style="margin-bottom: var(--space-lg);">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block btn-lg">
+                        Sign In
+                    </button>
+                </form>
+
+                <div style="margin-top: var(--space-xl); text-align: center;">
+                    <p class="text-secondary">
+                        Don't have an account?
+                        <a href="role-selection.html" style="color: var(--primary-color); font-weight: 500;">
+                            Sign up
+                        </a>
+                    </p>
+                </div>
+            </div>     
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/navigation.js"></script>
+
+    <script>
+        const form = document.getElementById('login-form');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+
+        function showPassword() {
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+            } else {
+                passwordInput.type = "password";
+            }
+        }
+        // Redirect if already logged in
+        if (Auth.isAuthenticated()) {
+            Auth.redirectToDashboard(Auth.getCurrentUser());
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            // Clear previous errors
+            UI.clearFormError(emailInput);
+            UI.clearFormError(passwordInput);
+
+            // Validate
+            if (!email || !password) {
+                if (!email) UI.setFormError(emailInput, 'Email is required');
+                if (!password) UI.setFormError(passwordInput, 'Password is required');
+                return;
+            }
+
+            // Show loading
+            UI.showLoading('Signing in...');
+
+            try {
+                // BACKEND_INTEGRATION: Auth.login() will call your backend API
+                const user = await Auth.login(email, password);
+
+                UI.hideLoading();
+                UI.showAlert('Login successful! Redirecting...', 'success', 2000);
+
+                // Redirect to appropriate dashboard
+                setTimeout(() => {
+                    Auth.redirectToDashboard(user);
+                }, 1000);
+
+            } catch (error) {
+                UI.hideLoading();
+                UI.showAlert(error.message || 'Login failed. Please try again.', 'error');
+                UI.setFormError(passwordInput, 'Invalid credentials');
+            }
+        });
+
+        // Clear error on input
+        emailInput.addEventListener('input', () => UI.clearFormError(emailInput));
+        passwordInput.addEventListener('input', () => UI.clearFormError(passwordInput));
+    </script>
+</body>
+
+</html>

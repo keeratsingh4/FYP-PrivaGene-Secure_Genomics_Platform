@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anomaly Detection - PrivaGene</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="javascript:Navigation.goHome()"
+                style="display: flex; align-items: center; gap: var(--space-sm); text-decoration: none;">
+                <span style="font-size: var(--text-3xl);">🧬</span>
+                <span style="font-size: var(--text-xl); font-weight: 700; color: var(--primary-color);">PrivaGene</span>
+            </a>
+        </div>
+
+        <div
+            style="margin-bottom: var(--space-xl); padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);" data-user-name>Security Admin</div>
+            <div style="font-size: var(--text-sm); color: var(--text-tertiary);" data-user-role>Security Administrator</div>
+        </div>
+
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="security-dashboard.html" class="sidebar-link">
+                        <span class="sidebar-link-icon">📊</span>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="security-logs.html" class="sidebar-link">
+                        <span class="sidebar-link-icon">📋</span>
+                        Audit Logs
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="anomaly-detection.html" class="sidebar-link">
+                        <span class="sidebar-link-icon">🔍</span>
+                        Anomaly Detection
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div style="margin-top: auto;">
+            <button id="logout-btn" class="sidebar-link"
+                style="width: 100%; border: none; background: transparent; cursor: pointer;">
+                <span class="sidebar-link-icon">🚪</span>
+                Logout
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-with-sidebar">
+        <div class="container-fluid">
+            <div style="margin-bottom: var(--space-2xl);">
+                <h1 style="font-size: var(--text-4xl); font-weight: 700; margin-bottom: var(--space-sm);">
+                    Anomaly Detection
+                </h1>
+                <p class="text-secondary">Detect suspicious behavior and security threats using rule-based analysis</p>
+            </div>
+
+            <!-- Detection Rules Info -->
+            <div class="card" style="margin-bottom: var(--space-xl); border-left: 4px solid var(--primary-color);">
+                <div class="card-header">
+                    <h3 class="card-title">🛡️ Active Detection Rules</h3>
+                </div>
+                <div class="card-body">
+                    <div class="grid grid-cols-3 gap-md">
+                        <div style="padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+                            <div style="font-weight: 600; margin-bottom: var(--space-xs);">🔴 Brute Force Detection</div>
+                            <div class="text-secondary text-sm">More than 5 failed logins within 10 minutes</div>
+                        </div>
+                        <div style="padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+                            <div style="font-weight: 600; margin-bottom: var(--space-xs);">🟠 New IP Address</div>
+                            <div class="text-secondary text-sm">Login from previously unseen IP address</div>
+                        </div>
+                        <div style="padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+                            <div style="font-weight: 600; margin-bottom: var(--space-xs);">🟡 Off-Hours Access</div>
+                            <div class="text-secondary text-sm">Access outside working hours (8am-8pm)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Anomaly Summary -->
+            <div class="card" style="margin-bottom: var(--space-xl); border-left: 4px solid var(--warning-color);">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3 class="card-title">⚠️ Anomaly Summary</h3>
+                    <span class="badge badge-warning" id="anomalyBadge">Scanning...</span>
+                </div>
+                <div id="anomalySummary" style="padding: var(--space-md);">
+                    <p class="text-secondary">Analyzing logs for anomalies...</p>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="card" style="margin-bottom: var(--space-xl);">
+                <div class="card-header">
+                    <h3 class="card-title">Filters</h3>
+                </div>
+                <div class="card-body">
+                    <div class="grid grid-cols-4 gap-md">
+                        <div class="form-group">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" id="filterStartDate" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">End Date</label>
+                            <input type="date" id="filterEndDate" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Anomaly Type</label>
+                            <select id="filterAnomalyType" class="form-input">
+                                <option value="">All Types</option>
+                                <option value="brute_force">Brute Force</option>
+                                <option value="new_ip">New IP Address</option>
+                                <option value="outside_hours">Outside Hours</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Severity</label>
+                            <select id="filterSeverity" class="form-input">
+                                <option value="">All Severities</option>
+                                <option value="critical">Critical</option>
+                                <option value="warning">Warning</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="margin-top: var(--space-md);">
+                        <button id="applyFilters" class="btn btn-primary">Filter</button>
+                        <button id="clearFilters" class="btn btn-outline" style="margin-left: var(--space-sm);">Clear</button>
+                        <button id="refreshData" class="btn btn-outline" style="margin-left: var(--space-sm);">🔄 Refresh</button>
+                        <button id="exportAnomalies" class="btn btn-outline" style="margin-left: var(--space-sm);">Export CSV</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Anomalies Table -->
+            <div class="card">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3 class="card-title">Detected Anomalies (<span id="anomalyCount">0</span>)</h3>
+                    <div>
+                        <span class="badge badge-danger" style="margin-right: var(--space-sm);">🔴 Critical</span>
+                        <span class="badge badge-warning">🟡 Warning</span>
+                    </div>
+                </div>
+                <div id="anomaliesContainer">
+                    <div class="empty-state" style="padding: var(--space-2xl);">
+                        <div class="empty-state-icon">🔍</div>
+                        <div class="empty-state-description">Scanning for anomalies...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/api-backend.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script src="../../js/security-auth.js"></script>
+
+    <script>
+        // ONLY security_admin can access this page - redirect to security login if not
+        const currentUser = Auth.getCurrentUser();
+        if (!currentUser || currentUser.role !== 'security_admin') {
+            window.location.href = 'security-login.html';
+        }
+
+        Navigation.displayUserInfo(currentUser);
+        Navigation.setActiveNav();
+
+        // Use security-specific logout
+        document.getElementById('logout-btn').addEventListener('click', () => SecurityAuth.logout());
+
+        let allLogs = [];
+        let allAnomalies = [];
+
+        async function loadData(filters = {}) {
+            UI.showLoading('Scanning for anomalies...');
+            try {
+                // Fetch logs from API
+                allLogs = await API.getAuditLogs({
+                    ...filters,
+                    limit: 500
+                });
+
+                // Detect anomalies
+                allAnomalies = detectAnomalies(allLogs);
+
+                // Apply anomaly filters
+                let filteredAnomalies = allAnomalies;
+                
+                const typeFilter = document.getElementById('filterAnomalyType').value;
+                const severityFilter = document.getElementById('filterSeverity').value;
+                
+                if (typeFilter) {
+                    filteredAnomalies = filteredAnomalies.filter(a => a.type === typeFilter);
+                }
+                if (severityFilter) {
+                    filteredAnomalies = filteredAnomalies.filter(a => a.severity === severityFilter);
+                }
+
+                // Display results
+                displayAnomalySummary();
+                displayAnomalies(filteredAnomalies);
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                UI.showAlert('Failed to load data', 'error');
+            } finally {
+                UI.hideLoading();
+            }
+        }
+
+        function detectAnomalies(logs) {
+            const anomalies = [];
+            const anomalyLogIds = new Set();
+            const userLoginAttempts = {};
+            const userKnownIPs = {};
+
+            // First pass: collect data
+            logs.forEach(log => {
+                const email = log.userEmail || 'unknown';
+
+                if (log.action === 'login') {
+                    if (!userLoginAttempts[email]) {
+                        userLoginAttempts[email] = [];
+                    }
+                    userLoginAttempts[email].push(log);
+                }
+
+                if (log.action === 'login' && log.status === 'success' && log.ipAddress) {
+                    if (!userKnownIPs[email]) {
+                        userKnownIPs[email] = new Set();
+                    }
+                    userKnownIPs[email].add(log.ipAddress);
+                }
+            });
+
+            // Second pass: detect anomalies
+            logs.forEach(log => {
+                const email = log.userEmail || 'unknown';
+                const logTime = new Date(log.timestamp);
+                const hour = logTime.getHours();
+
+                // Rule 1: Outside working hours (8am-8pm)
+                if (hour < 8 || hour > 20) {
+                    if (!anomalyLogIds.has(log.id + '_hours')) {
+                        anomalyLogIds.add(log.id + '_hours');
+                        anomalies.push({
+                            id: log.id + '_hours',
+                            logId: log.id,
+                            type: 'outside_hours',
+                            severity: 'warning',
+                            message: `Access outside working hours (${hour}:00)`,
+                            user: email,
+                            timestamp: log.timestamp,
+                            ipAddress: log.ipAddress,
+                            action: log.action,
+                            log
+                        });
+                    }
+                }
+
+                // Rule 2: New IP address
+                if (log.action === 'login' && log.status === 'success' && log.ipAddress) {
+                    const knownIPs = userKnownIPs[email];
+                    if (knownIPs && knownIPs.size > 1) {
+                        const ipCounts = {};
+                        userLoginAttempts[email]?.forEach(l => {
+                            if (l.ipAddress && l.status === 'success') {
+                                ipCounts[l.ipAddress] = (ipCounts[l.ipAddress] || 0) + 1;
+                            }
+                        });
+                        
+                        const totalLogins = Object.values(ipCounts).reduce((a, b) => a + b, 0);
+                        const thisIPCount = ipCounts[log.ipAddress] || 0;
+                        
+                        if (thisIPCount === 1 && totalLogins > 3) {
+                            if (!anomalyLogIds.has(log.id + '_ip')) {
+                                anomalyLogIds.add(log.id + '_ip');
+                                anomalies.push({
+                                    id: log.id + '_ip',
+                                    logId: log.id,
+                                    type: 'new_ip',
+                                    severity: 'warning',
+                                    message: `Login from new IP address: ${log.ipAddress}`,
+                                    user: email,
+                                    timestamp: log.timestamp,
+                                    ipAddress: log.ipAddress,
+                                    action: log.action,
+                                    log
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Rule 3: Brute force (5+ failed logins in 10 minutes)
+            Object.entries(userLoginAttempts).forEach(([email, attempts]) => {
+                const failedAttempts = attempts.filter(a => a.status === 'failure');
+                
+                if (failedAttempts.length >= 5) {
+                    const sorted = failedAttempts.sort((a, b) => 
+                        new Date(a.timestamp) - new Date(b.timestamp)
+                    );
+
+                    for (let i = 0; i <= sorted.length - 5; i++) {
+                        const firstTime = new Date(sorted[i].timestamp);
+                        const fifthTime = new Date(sorted[i + 4].timestamp);
+                        const diffMinutes = (fifthTime - firstTime) / (1000 * 60);
+
+                        if (diffMinutes <= 10) {
+                            if (!anomalyLogIds.has(email + '_bruteforce')) {
+                                anomalyLogIds.add(email + '_bruteforce');
+                                anomalies.push({
+                                    id: email + '_bruteforce',
+                                    logId: sorted[i + 4].id,
+                                    type: 'brute_force',
+                                    severity: 'critical',
+                                    message: `Possible brute force attack: ${failedAttempts.length} failed logins in ${diffMinutes.toFixed(1)} minutes`,
+                                    user: email,
+                                    timestamp: sorted[i + 4].timestamp,
+                                    ipAddress: sorted[i + 4].ipAddress,
+                                    action: 'login',
+                                    log: sorted[i + 4]
+                                });
+                            }
+                            break;
+                        }
+                    }
+                }
+            });
+
+            return anomalies.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        }
+
+        function displayAnomalySummary() {
+            const container = document.getElementById('anomalySummary');
+            const badge = document.getElementById('anomalyBadge');
+
+            const criticalCount = allAnomalies.filter(a => a.severity === 'critical').length;
+            const warningCount = allAnomalies.filter(a => a.severity === 'warning').length;
+
+            badge.textContent = `${allAnomalies.length} anomalies`;
+            badge.className = allAnomalies.length > 0 
+                ? (criticalCount > 0 ? 'badge badge-danger' : 'badge badge-warning')
+                : 'badge badge-success';
+
+            if (allAnomalies.length === 0) {
+                container.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: var(--space-md);">
+                        <span style="font-size: var(--text-2xl);">✅</span>
+                        <div>
+                            <div style="font-weight: 600; color: var(--success-color);">No anomalies detected</div>
+                            <div class="text-secondary text-sm">All system activity appears normal</div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            const byType = {};
+            allAnomalies.forEach(a => {
+                if (!byType[a.type]) byType[a.type] = [];
+                byType[a.type].push(a);
+            });
+
+            const typeLabels = {
+                'brute_force': { label: 'Brute Force Attacks', icon: '🔴' },
+                'new_ip': { label: 'New IP Addresses', icon: '🟠' },
+                'outside_hours': { label: 'Outside Working Hours', icon: '🟡' }
+            };
+
+            container.innerHTML = `
+                <div class="grid grid-cols-3 gap-md">
+                    ${Object.entries(byType).map(([type, items]) => `
+                        <div style="padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+                            <div style="font-weight: 600; margin-bottom: var(--space-xs);">
+                                ${typeLabels[type]?.icon || '⚠️'} ${typeLabels[type]?.label || type}
+                            </div>
+                            <div style="font-size: var(--text-2xl); font-weight: 700; color: ${
+                                type === 'brute_force' ? 'var(--error-color)' : 'var(--warning-color)'
+                            };">
+                                ${items.length}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                ${criticalCount > 0 ? `
+                    <div style="margin-top: var(--space-md); padding: var(--space-sm); background: rgba(239, 68, 68, 0.1); border-radius: var(--radius-sm); color: var(--error-color);">
+                        ⚠️ <strong>${criticalCount} critical anomalies</strong> require immediate attention
+                    </div>
+                ` : ''}
+            `;
+        }
+
+        function displayAnomalies(anomalies) {
+            const container = document.getElementById('anomaliesContainer');
+            document.getElementById('anomalyCount').textContent = anomalies.length;
+
+            if (anomalies.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="padding: var(--space-2xl);">
+                        <div class="empty-state-icon">✅</div>
+                        <div class="empty-state-description">No anomalies found</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const getSeverityBadge = (severity) => {
+                if (severity === 'critical') return 'badge-danger';
+                return 'badge-warning';
+            };
+
+            const getTypeLabel = (type) => {
+                const labels = {
+                    'brute_force': 'BRUTE FORCE',
+                    'new_ip': 'NEW IP',
+                    'outside_hours': 'OFF-HOURS'
+                };
+                return labels[type] || type.toUpperCase();
+            };
+
+            const table = `
+                <div style="overflow-x: auto;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">Severity</th>
+                                <th>Timestamp</th>
+                                <th>User</th>
+                                <th>Type</th>
+                                <th>IP Address</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${anomalies.map(anomaly => `
+                                <tr style="background-color: ${anomaly.severity === 'critical' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(245, 158, 11, 0.1)'};">
+                                    <td style="text-align: center;">
+                                        ${anomaly.severity === 'critical' ? '🔴' : '🟡'}
+                                    </td>
+                                    <td class="text-sm">${UI.formatDateTime(anomaly.timestamp)}</td>
+                                    <td>${anomaly.user || 'N/A'}</td>
+                                    <td><span class="badge ${getSeverityBadge(anomaly.severity)}">${getTypeLabel(anomaly.type)}</span></td>
+                                    <td class="text-secondary text-sm">${anomaly.ipAddress || 'N/A'}</td>
+                                    <td>${anomaly.message}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            container.innerHTML = table;
+        }
+
+        // Event listeners
+        document.getElementById('applyFilters').addEventListener('click', () => {
+            const filters = {
+                startDate: document.getElementById('filterStartDate').value,
+                endDate: document.getElementById('filterEndDate').value
+            };
+
+            Object.keys(filters).forEach(key => {
+                if (!filters[key]) delete filters[key];
+            });
+
+            loadData(filters);
+        });
+
+        document.getElementById('clearFilters').addEventListener('click', () => {
+            document.getElementById('filterStartDate').value = '';
+            document.getElementById('filterEndDate').value = '';
+            document.getElementById('filterAnomalyType').value = '';
+            document.getElementById('filterSeverity').value = '';
+            loadData();
+        });
+
+        document.getElementById('refreshData').addEventListener('click', () => {
+            loadData();
+        });
+
+        document.getElementById('exportAnomalies').addEventListener('click', () => {
+            if (allAnomalies.length === 0) {
+                UI.showAlert('No anomalies to export', 'warning');
+                return;
+            }
+
+            const headers = ['Timestamp', 'User', 'Type', 'Severity', 'IP Address', 'Description', 'Action'];
+            const rows = allAnomalies.map(a => [
+                a.timestamp || '',
+                a.user || 'N/A',
+                a.type || '',
+                a.severity || '',
+                a.ipAddress || 'N/A',
+                a.message || '',
+                a.action || ''
+            ]);
+
+            const escapeCSV = (value) => {
+                const str = String(value).replace(/"/g, '""');
+                return `"${str}"`;
+            };
+
+            const csvContent = [
+                headers.map(escapeCSV).join(','),
+                ...rows.map(row => row.map(escapeCSV).join(','))
+            ].join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `anomalies_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            UI.showAlert('Anomalies exported successfully', 'success');
+        });
+
+        // Load data on page load
+        loadData();
+    </script>
+</body>
+
+</html>
+

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - PrivaGene</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="javascript:void(0)"
+                style="display: flex; align-items: center; gap: var(--space-sm); text-decoration: none; cursor: default;">
+                <span style="font-size: var(--text-3xl);">🧬</span>
+                <span style="font-size: var(--text-xl); font-weight: 700; color: var(--primary-color);">PrivaGene</span>
+            </a>
+        </div>
+
+        <div
+            style="margin-bottom: var(--space-xl); padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);" data-user-name>Admin</div>
+            <div style="font-size: var(--text-sm); color: var(--text-tertiary);" data-user-email>admin@hospital.com
+            </div>
+        </div>
+
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item"><a href="dashboard.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📊</span>Dashboard</a></li>
+                <li class="sidebar-item"><a href="disease-management.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">🧬</span>Disease Database</a></li>
+                <li class="sidebar-item"><a href="register-hospital-specialist.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">🧑‍⚕️</span>Create Specialist Account</a></li>
+                <li class="sidebar-item"><a href="profile.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">👤</span>Profile</a></li>
+            </ul>
+        </nav>
+
+        <div style="margin-top: auto;"><button id="logout-btn" class="sidebar-link"
+                style="width: 100%; border: none; background: transparent; cursor: pointer;"><span
+                    class="sidebar-link-icon">🚪</span>Logout</button></div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-with-sidebar">
+        <div class="container-fluid">
+            <div style="margin-bottom: var(--space-2xl);">
+                <h1 style="font-size: var(--text-4xl); font-weight: 700; margin-bottom: var(--space-sm);">Profile
+                    Settings</h1>
+                <p class="text-secondary">Manage your admin account information</p>
+            </div>
+
+            <!-- Admin Information -->
+            <div class="card" style="margin-bottom: var(--space-xl);">
+                <div class="card-header">
+                    <h3 class="card-title">Admin Information</h3>
+                </div>
+                <div class="card-body">
+                    <form id="profileForm">
+                        <div class="grid grid-cols-2 gap-lg">
+                            <div class="form-group">
+                                <label for="firstName" class="form-label">First Name</label>
+                                <input type="text" id="firstName" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <input type="text" id="lastName" class="form-input" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" id="email" class="form-input" readonly>
+                            <small class="text-secondary" style="display: block; margin-top: var(--space-xs);">Email cannot be changed</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="organization" class="form-label">Organization</label>
+                            <input type="text" id="organization" class="form-input">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Change Password -->
+            <div class="card" style="margin-bottom: var(--space-xl);">
+                <div class="card-header">
+                    <h3 class="card-title">Security</h3>
+                </div>
+                <div style="padding: var(--space-md);">
+                    <button onclick="showChangePasswordModal()" class="btn btn-outline">Change Password</button>
+                </div>
+            </div>
+
+            <!-- Deactivate Account -->
+            <div class="card" style="border: 1px solid var(--warning-color); margin-bottom: var(--space-xl);">
+                <div class="card-header">
+                    <h3 class="card-title" style="color: var(--warning-color);">Deactivate Account</h3>
+                </div>
+
+                <div style="padding: var(--space-lg);">
+                    <p class="text-secondary" style="margin-bottom: var(--space-md);">
+                        Temporarily deactivate your account. Your data will be preserved and you can reactivate later by contacting the system administrator.
+                    </p>
+                    <button onclick="deactivateAccount()" class="btn" style="background: var(--warning-color); color: white;">Deactivate Account</button>
+                </div>
+            </div>
+
+            <!-- Delete Account -->
+            <div class="card" style="border: 1px solid var(--error-color);">
+                <div class="card-header">
+                    <h3 class="card-title" style="color: var(--error-color);">Delete Account</h3>
+                </div>
+
+                <div style="padding: var(--space-lg);">
+                    <p class="text-secondary" style="margin-bottom: var(--space-md);">
+                        Once you delete your account, all your data will be permanently removed. This cannot be undone.
+                    </p>
+                    <button onclick="confirmDeleteAccount()" class="btn btn-danger">Delete Account</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/api-backend.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/navigation.js"></script>
+
+    <script>
+        // Allow both 'admin' and 'hospital_admin' roles
+        const user = Auth.getCurrentUser();
+        if (!user || (user.role !== 'admin' && user.role !== 'hospital_admin')) {
+            Auth.requireAuth();
+            if (user) Auth.redirectToDashboard(user);
+        }
+
+        // Debug: Log user data to console
+        console.log('Current user data:', user);
+
+        Navigation.displayUserInfo(user);
+        Navigation.setActiveNav();
+
+        document.getElementById('logout-btn').addEventListener('click', () => Auth.logout());
+
+        // Load user data (handle both camelCase and snake_case)
+        const firstName = user.first_name || user.firstName || '';
+        const lastName = user.last_name || user.lastName || '';
+        const email = user.email || '';
+        const organization = user.organization_name || user.organizationName || user.organization || '';
+
+        console.log('Loading form data:', { firstName, lastName, email, organization });
+
+        // Populate form fields
+        document.getElementById('firstName').value = firstName;
+        document.getElementById('lastName').value = lastName;
+        document.getElementById('email').value = email;
+        document.getElementById('organization').value = organization;
+
+        console.log('After setting values:', {
+            firstName: document.getElementById('firstName').value,
+            lastName: document.getElementById('lastName').value,
+            email: document.getElementById('email').value,
+            organization: document.getElementById('organization').value
+        });
+
+        // Profile form submission
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const updates = {
+                firstName: document.getElementById('firstName').value.trim(),
+                lastName: document.getElementById('lastName').value.trim(),
+                organizationName: document.getElementById('organization').value.trim()
+            };
+
+            UI.showLoading('Saving...');
+            try {
+                // Update user profile via backend API
+                const updatedUser = await BackendAPI.updateUserProfile(user.id, updates);
+                
+                // Update session storage with new data
+                Auth.setCurrentUser(updatedUser);
+                Navigation.displayUserInfo(updatedUser);
+                
+                UI.hideLoading();
+                UI.showAlert('Profile updated successfully', 'success');
+            } catch (error) {
+                console.error('Profile update error:', error);
+                UI.hideLoading();
+                UI.showAlert(error.message || 'Failed to update profile', 'error');
+            }
+        });
+
+        // Password form submission
+        function showChangePasswordModal() {
+            const user = Auth.getCurrentUser();
+            UI.showModal({
+                title: 'Change Password',
+                body: `
+                <form id="password-form">
+                    <div class="form-group">
+                    <label for="currentPassword" class="form-label form-label-required">Current Password</label>
+                    <input type="password" id="currentPassword" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                    <label for="newPassword" class="form-label form-label-required">New Password</label>
+                    <input type="password" id="newPassword" class="form-input" required minlength="8">
+                    <small class="text-secondary" style="display: block; margin-top: var(--space-xs);">Must be at least 8 characters</small>
+                    </div>
+                    
+                    <div class="form-group">
+                    <label for="confirmPassword" class="form-label form-label-required">Confirm New Password</label>
+                    <input type="password" id="confirmPassword" class="form-input" required>
+                    </div>
+                </form>
+                `,
+                buttons: [
+                    { text: 'Cancel', className: 'btn btn-outline' },
+                    {
+                        text: 'Change Password',
+                        className: 'btn btn-primary',
+                        onClick: async () => {
+                            const form = document.getElementById('password-form');
+                            if (!form.checkValidity()) {
+                                form.reportValidity();
+                                return false;
+                            }
+
+                            const current = document.getElementById('currentPassword').value;
+                            const newPass = document.getElementById('newPassword').value;
+                            const confirm = document.getElementById('confirmPassword').value;
+
+                            if (newPass !== confirm) {
+                                UI.showAlert('Passwords do not match', 'error');
+                                return false;
+                            }
+
+                            if (newPass.length < 8) {
+                                UI.showAlert('Password must be at least 8 characters long', 'error');
+                                return false;
+                            }
+
+                            UI.showLoading('Changing password...');
+
+                            try {
+                                await BackendAPI.updatePassword(user.id, current, newPass);
+                                UI.hideLoading();
+                                UI.showAlert('Password changed successfully!', 'success');
+                                return true;
+                            } catch (error) {
+                                UI.hideLoading();
+                                UI.showAlert(error.message || 'Failed to change password', 'error');
+                                return false;
+                            }
+                        }
+                    }
+                ]
+            });
+        }
+
+        // Deactivate account function
+        async function deactivateAccount() {
+            const confirmed = await UI.confirm(
+                'Are you sure you want to deactivate your account? You will be logged out and will need to contact the system administrator to reactivate your account.'
+            );
+
+            if (!confirmed) return;
+
+            UI.showLoading('Deactivating account...');
+
+            try {
+                // Update user status to 'inactive' via backend API
+                await BackendAPI.updateUserStatus(user.id, 'inactive');
+                
+                UI.hideLoading();
+                UI.showAlert('Account deactivated. Redirecting...', 'info');
+
+                setTimeout(() => {
+                    Auth.logout();
+                }, 2000);
+
+            } catch (error) {
+                console.error('Deactivate account error:', error);
+                UI.hideLoading();
+                UI.showAlert(error.message || 'Failed to deactivate account', 'error');
+            }
+        }
+
+        // Delete account function
+        async function confirmDeleteAccount() {
+            const confirmed = await UI.confirm(
+                'Are you sure you want to delete your account? This action cannot be undone.'
+            );
+            if (!confirmed) return;
+
+            const doubleConfirm = await UI.confirm(
+                'This will permanently remove all your data. Continue?'
+            );
+            if (!doubleConfirm) return;
+
+            UI.showLoading('Deleting account...');
+            try {
+                const user = Auth.getCurrentUser();
+                
+                // Soft delete - Admin can restore later
+                await API.deleteUser(user.id);
+
+                UI.hideLoading();
+                UI.showAlert('Account deleted. Redirecting...', 'info');
+
+                setTimeout(() => {
+                    Auth.logout();
+                }, 2000);
+            } catch (error) {
+                UI.hideLoading();
+                UI.showAlert(error.message || 'Failed to delete account', 'error');
+            }
+        }
+        // Make functions globally available
+        window.deactivateAccount = deactivateAccount;
+        window.deleteAccount = deleteAccount;
+    </script>
+</body>
+
+</html>

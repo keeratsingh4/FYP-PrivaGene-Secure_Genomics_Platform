@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caregiver Dashboard - PrivaGene</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+
+    <style>
+        .patient-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-base);
+            cursor: pointer;
+        }
+
+        .patient-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+        }
+
+        .patient-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+
+        .patient-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--text-2xl);
+            color: white;
+            font-weight: 600;
+        }
+
+        .patient-info h3 {
+            font-size: var(--text-xl);
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+        }
+
+        .patient-meta {
+            font-size: var(--text-sm);
+            color: var(--text-tertiary);
+        }
+
+        .patient-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-md);
+            padding-top: var(--space-lg);
+            border-top: 1px solid var(--border-light);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: var(--text-2xl);
+            font-weight: 700;
+            margin-bottom: var(--space-xs);
+        }
+
+        .stat-label {
+            font-size: var(--text-xs);
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .risk-low { color: var(--success-color); }
+        .risk-medium { color: var(--warning-color); }
+        .risk-high { color: var(--error-color); }
+
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-xl);
+            padding: var(--space-2xl);
+            color: white;
+            margin-bottom: var(--space-2xl);
+        }
+
+        .welcome-banner h1 { color: white; margin-bottom: var(--space-sm); }
+        .welcome-banner p { color: rgba(255, 255, 255, 0.9); margin: 0; }
+
+        .privacy-reminder {
+            background: hsla(199, 89%, 48%, 0.1);
+            border-left: 4px solid var(--info-color);
+            border-radius: var(--radius-md);
+            padding: var(--space-md) var(--space-lg);
+            margin-bottom: var(--space-2xl);
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-md);
+        }
+
+        .no-patients-state {
+            text-align: center;
+            padding: var(--space-3xl);
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl);
+        }
+
+        .no-patients-icon { font-size: 4rem; margin-bottom: var(--space-lg); }
+
+        .relationship-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: var(--space-xs) var(--space-sm);
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-full);
+            font-size: var(--text-xs);
+            color: var(--text-secondary);
+        }
+
+        .invitation-card {
+            background: hsla(38, 92%, 50%, 0.1);
+            border: 1px solid var(--warning-color);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .invitation-info { display: flex; align-items: center; gap: var(--space-md); }
+        .invitation-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--warning-color), var(--primary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--text-lg);
+            color: white;
+            font-weight: 600;
+        }
+        .invitation-actions { display: flex; gap: var(--space-sm); }
+
+        .loading-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            text-align: center;
+            color: var(--text-tertiary);
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="../../index.html" style="display: flex; align-items: center; gap: var(--space-sm); text-decoration: none;">
+                <span style="font-size: var(--text-3xl);">🧬</span>
+                <span style="font-size: var(--text-xl); font-weight: 700; color: var(--primary-color);">PrivaGene</span>
+            </a>
+        </div>
+
+        <div style="margin-bottom: var(--space-xl); padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);" data-user-name>User</div>
+            <div style="font-size: var(--text-sm); color: var(--text-tertiary);" data-user-email>user@example.com</div>
+            <div style="margin-top: var(--space-sm);"><span class="badge badge-info">Caregiver</span></div>
+        </div>
+
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item"><a href="dashboard.html" class="sidebar-link"><span class="sidebar-link-icon">📊</span> Dashboard</a></li>
+                <li class="sidebar-item"><a href="my-patients.html" class="sidebar-link"><span class="sidebar-link-icon">👥</span> My Patients</a></li>
+                <li class="sidebar-item"><a href="profile.html" class="sidebar-link"><span class="sidebar-link-icon">👤</span> Profile</a></li>
+            </ul>
+        </nav>
+
+        <div style="margin-top: auto;">
+            <button id="logout-btn" class="sidebar-link" style="width: 100%; border: none; background: transparent; cursor: pointer;">
+                <span class="sidebar-link-icon">🚪</span> Logout
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-with-sidebar">
+        <div class="container-fluid">
+            <div class="welcome-banner">
+                <h1 style="font-size: var(--text-4xl); font-weight: 700;">Welcome, <span data-user-name>Caregiver</span>!</h1>
+                <p>Thank you for supporting your loved ones' health journey.</p>
+            </div>
+
+            <div class="privacy-reminder">
+                <div style="font-size: var(--text-xl);">🔒</div>
+                <div>
+                    <strong>Privacy Protected</strong>
+                    <p class="text-secondary" style="margin: var(--space-xs) 0 0 0; font-size: var(--text-sm);">
+                        You can view risk assessment results for patients who have granted you access. 
+                        Raw genetic data is never visible to caregivers.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Pending Invitations Section -->
+            <div id="pendingSection" style="display: none; margin-bottom: var(--space-2xl);">
+                <h2 style="font-size: var(--text-2xl); font-weight: 600; margin-bottom: var(--space-md);">
+                    📨 Pending Invitations <span class="badge badge-warning" id="pendingCount">0</span>
+                </h2>
+                <div id="pendingInvitations"></div>
+            </div>
+
+            <!-- Patients Section -->
+            <div style="margin-bottom: var(--space-lg);">
+                <h2 style="font-size: var(--text-2xl); font-weight: 600; margin-bottom: var(--space-xs);">
+                    Patients You're Caring For
+                </h2>
+                <p class="text-secondary">Click on a patient to view their health information</p>
+            </div>
+
+            <div id="patientsContainer" class="grid grid-cols-2 gap-lg"></div>
+        </div>
+    </main>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/api-backend.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/navigation.js"></script>
+
+    <script>
+        Auth.requireRole('caregiver');
+
+        const user = Auth.getCurrentUser();
+
+        // Fetch full user details from backend to get first_name and last_name
+        async function loadUserName() {
+            try {
+                const fullUser = await API.getUserById(user.id);
+                const firstName = fullUser.first_name || fullUser.firstName;
+                const lastName = fullUser.last_name || fullUser.lastName;
+                
+                const userName = firstName && lastName 
+                    ? `${firstName} ${lastName}`
+                    : firstName || lastName || user.email.split('@')[0];
+                
+                // Update all elements with data-user-name attribute
+                document.querySelectorAll('[data-user-name]').forEach(el => {
+                    el.textContent = userName;
+                });
+            } catch (error) {
+                console.error('Error loading user name:', error);
+                // Fallback to email prefix if fetch fails
+                document.querySelectorAll('[data-user-name]').forEach(el => {
+                    el.textContent = user.email.split('@')[0];
+                });
+            }
+        }
+
+        // Update email display in sidebar
+        const emailEl = document.querySelector('[data-user-email]');
+        if (emailEl) {
+            emailEl.textContent = user.email;
+        }
+
+        Navigation.setActiveNav();
+
+        document.getElementById('logout-btn').addEventListener('click', () => Auth.logout());
+
+        // Load user name from backend
+        loadUserName();
+
+        const relationshipLabels = {
+            'spouse': '👫 Spouse', 
+            'child': '👶 Parent of', 
+            'parent': '👨 Child',
+            'sibling': '👥 Sibling', 
+            'grandchild': '👴 Grandchild', 
+            'other': '👤 Family',
+            'caregiver': '🏥 Patient'
+        };
+
+        async function loadData() {
+            try {
+                const data = await API.getPatientsForCaregiver(user.id);
+                
+                const pending = data.patients.filter(p => p.status === 'pending');
+                const active = data.patients.filter(p => p.status === 'active');
+
+                displayPendingInvitations(pending);
+                await displayPatients(active);
+            } catch (error) {
+                console.error('Error loading data:', error);
+                displayPendingInvitations([]);
+                displayPatients([]);
+            }
+        }
+
+        function displayPendingInvitations(invitations) {
+            const section = document.getElementById('pendingSection');
+            const container = document.getElementById('pendingInvitations');
+            const countBadge = document.getElementById('pendingCount');
+
+            countBadge.textContent = invitations.length;
+
+            if (invitations.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+
+            section.style.display = 'block';
+
+            container.innerHTML = invitations.map(inv => {
+                const firstName = inv.patient_first_name || '';
+                const lastName = inv.patient_last_name || '';
+                const patientName = `${firstName} ${lastName}`.trim() || inv.patient_email;
+                const initials = firstName && lastName 
+                    ? `${firstName[0]}${lastName[0]}`.toUpperCase()
+                    : inv.patient_email.substring(0, 2).toUpperCase();
+                const relationship = relationshipLabels[inv.relationship] || inv.relationship;
+                const inviteDate = new Date(inv.created_at).toLocaleDateString();
+
+                return `
+                    <div class="invitation-card">
+                        <div class="invitation-info">
+                            <div class="invitation-avatar">${initials}</div>
+                            <div>
+                                <h4 style="font-weight: 600; margin-bottom: var(--space-xs);">${patientName}</h4>
+                                <p class="text-sm text-tertiary">
+                                    ${relationship} • Invited on ${inviteDate}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="invitation-actions">
+                            <button class="btn btn-primary btn-sm" onclick="acceptInvitation('${inv.id}')">Accept</button>
+                            <button class="btn btn-ghost btn-sm" onclick="declineInvitation('${inv.id}')">Decline</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function displayPatients(patients) {
+            const container = document.getElementById('patientsContainer');
+
+            if (patients.length === 0) {
+                container.innerHTML = `
+                    <div class="no-patients-state" style="grid-column: span 2;">
+                        <div class="no-patients-icon">👥</div>
+                        <h3 style="font-size: var(--text-xl); margin-bottom: var(--space-md);">No Patients Yet</h3>
+                        <p class="text-secondary" style="max-width: 400px; margin: 0 auto var(--space-lg);">
+                            You don't have access to any patients yet. Ask your family members to add you as a caregiver 
+                            from their PrivaGene account.
+                        </p>
+                        <div style="background: var(--bg-tertiary); border-radius: var(--radius-lg); padding: var(--space-lg); max-width: 400px; margin: 0 auto;">
+                            <p class="text-sm text-tertiary" style="margin: 0;">
+                                <strong>How to get access:</strong><br>
+                                Your loved one needs to log into their PrivaGene account, go to 
+                                <strong>Family Access</strong>, and add your email address.
+                            </p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Show loading state first
+            container.innerHTML = patients.map(() => `
+                <div class="loading-card">
+                    <div style="font-size: var(--text-2xl); margin-bottom: var(--space-sm);">⏳</div>
+                    <p>Loading patient data...</p>
+                </div>
+            `).join('');
+
+            // Fetch assessment data for each patient using the same API as patient-view.html
+            const patientsWithData = await Promise.all(
+                patients.map(async (patient) => {
+                    try {
+                        const data = await API.getPatientFullView(patient.patient_id, user.id);
+                        return {
+                            ...patient,
+                            assessments: data.assessments || []
+                        };
+                    } catch (error) {
+                        console.error(`Error loading assessments for patient ${patient.patient_id}:`, error);
+                        return {
+                            ...patient,
+                            assessments: []
+                        };
+                    }
+                })
+            );
+
+            // Display patients with their data
+            container.innerHTML = patientsWithData.map(patient => {
+                const firstName = patient.patient_first_name || '';
+                const lastName = patient.patient_last_name || '';
+                const patientName = `${firstName} ${lastName}`.trim() || patient.patient_email;
+                const initials = firstName && lastName 
+                    ? `${firstName[0]}${lastName[0]}`.toUpperCase()
+                    : patient.patient_email.substring(0, 2).toUpperCase();
+                const relationship = relationshipLabels[patient.relationship] || patient.relationship;
+
+                // Get latest assessment data
+                const assessments = patient.assessments;
+                const assessmentCount = assessments.length;
+                
+                let latestRisk = 0;
+                let riskClass = 'risk-low';
+                let lastUpdated = 'No data';
+
+                if (assessments.length > 0) {
+                    // Sort by date to get latest
+                    const sorted = assessments.sort((a, b) => {
+                        const dateA = new Date(a.created_at || a.createdAt || 0);
+                        const dateB = new Date(b.created_at || b.createdAt || 0);
+                        return dateB - dateA;
+                    });
+
+                    const latest = sorted[0];
+                    latestRisk = Math.round(latest.risk_percentage || latest.riskPercentage || latest.overall_risk || latest.overallRisk || 0);
+                    
+                    if (latestRisk < 30) {
+                        riskClass = 'risk-low';
+                    } else if (latestRisk < 70) {
+                        riskClass = 'risk-medium';
+                    } else {
+                        riskClass = 'risk-high';
+                    }
+
+                    const latestDate = new Date(latest.created_at || latest.createdAt);
+                    lastUpdated = latestDate.toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric', 
+                        year: 'numeric' 
+                    });
+                }
+
+                return `
+                    <div class="patient-card" onclick="viewPatient('${patient.patient_id}')">
+                        <div class="patient-header">
+                            <div class="patient-avatar">${initials}</div>
+                            <div class="patient-info">
+                                <h3>${patientName}</h3>
+                                <div class="patient-meta">
+                                    <span class="relationship-badge">${relationship}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="patient-stats">
+                            <div class="stat-item">
+                                <div class="stat-value ${riskClass}">${latestRisk}% ${latestRisk > 0 ? (latestRisk < 30 ? 'Low' : latestRisk < 70 ? 'Med' : 'High') : '-'}</div>
+                                <div class="stat-label">Latest Risk</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">${assessmentCount}</div>
+                                <div class="stat-label">Assessments</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" style="font-size: var(--text-sm); font-weight: 600;">${lastUpdated}</div>
+                                <div class="stat-label">Last Updated</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function acceptInvitation(accessId) {
+            try {
+                await API.acceptCaregiverInvitation(accessId, user.id);
+                UI.showAlert('Invitation accepted! You can now view this patient\'s risk assessments.', 'success');
+                await loadData();
+            } catch (error) {
+                console.error('Error accepting invitation:', error);
+                UI.showAlert('Failed to accept invitation: ' + error.message, 'error');
+            }
+        }
+
+        async function declineInvitation(accessId) {
+            if (!confirm('Are you sure you want to decline this invitation?')) return;
+
+            try {
+                await API.declineCaregiverInvitation(accessId, user.id);
+                UI.showAlert('Invitation declined.', 'success');
+                await loadData();
+            } catch (error) {
+                console.error('Error declining invitation:', error);
+                UI.showAlert('Failed to decline invitation: ' + error.message, 'error');
+            }
+        }
+
+        function viewPatient(patientId) {
+            window.location.href = `patient-view.html?patientId=${patientId}`;
+        }
+
+        loadData();
+    </script>
+</body>
+</html>

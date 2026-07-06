@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ & Support - PrivaGene</title>
+    <meta name="description" content="Frequently asked questions about PrivaGene's privacy-preserving genetic risk assessment platform.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        .faq-category { margin-bottom: var(--space-2xl); }
+        .faq-category-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+            padding-bottom: var(--space-md);
+            border-bottom: 2px solid var(--border-light);
+        }
+        .faq-category-icon { font-size: var(--text-3xl); }
+        .faq-category-title { font-size: var(--text-2xl); font-weight: 700; color: var(--text-primary); }
+        .faq-item {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-md);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: all var(--transition-base);
+        }
+        .faq-item:hover { box-shadow: var(--shadow-md); }
+        .faq-question {
+            padding: var(--space-lg) var(--space-xl);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: var(--text-primary);
+            transition: all var(--transition-base);
+        }
+        .faq-question:hover { color: var(--primary-color); }
+        .faq-toggle {
+            font-size: var(--text-xl);
+            color: var(--primary-color);
+            transition: transform var(--transition-base);
+        }
+        .faq-item.active .faq-toggle { transform: rotate(45deg); }
+        .faq-answer {
+            padding: 0 var(--space-xl);
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease-out;
+        }
+        .faq-item.active .faq-answer {
+            padding: 0 var(--space-xl) var(--space-xl);
+            max-height: 500px;
+        }
+        .faq-answer p, .faq-answer li { color: var(--text-secondary); line-height: 1.7; }
+        .faq-answer ul { margin-left: var(--space-lg); margin-top: var(--space-sm); }
+        .search-container {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-2xl);
+            box-shadow: var(--shadow-md);
+        }
+        .search-input {
+            width: 100%;
+            padding: var(--space-md) var(--space-xl);
+            font-size: var(--text-lg);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all var(--transition-base);
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        .quick-links {
+            display: flex;
+            gap: var(--space-md);
+            flex-wrap: wrap;
+            margin-top: var(--space-lg);
+        }
+        .quick-link {
+            padding: var(--space-xs) var(--space-md);
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-full);
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+        .quick-link:hover { background: var(--primary-color); color: white; }
+        .help-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-xl);
+            padding: var(--space-2xl);
+            color: white;
+            text-align: center;
+            margin-top: var(--space-3xl);
+        }
+        .help-card h3 { font-size: var(--text-2xl); margin-bottom: var(--space-md); }
+        .help-card p { opacity: 0.9; margin-bottom: var(--space-xl); }
+        .no-results {
+            text-align: center;
+            padding: var(--space-3xl);
+            color: var(--text-secondary);
+            display: none;
+        }
+        .no-results-icon { font-size: 4rem; margin-bottom: var(--space-lg); }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="index.html" class="navbar-brand"><span class="navbar-brand-icon">🧬</span>PrivaGene</a>
+                <ul class="navbar-menu">
+                    <li><a href="faq.html" class="navbar-link">FAQ</a></li>
+                    <li><a href="privacy.html" class="navbar-link">Privacy</a></li>
+                    <li><a href="terms.html" class="navbar-link">Terms</a></li>
+                    <li><a href="contact.html" class="navbar-link">Contact</a></li>
+                    <li><a href="login.html" class="navbar-link">Login</a></li>
+                    <li><a href="role-selection.html" class="btn btn-primary btn-sm">Get Started</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container" style="padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
+        <div style="max-width: 900px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: var(--space-2xl);">
+                <h1 style="font-size: var(--text-4xl); font-weight: 700; margin-bottom: var(--space-md);">Frequently Asked Questions</h1>
+                <p class="text-secondary">Find answers to common questions about PrivaGene</p>
+            </div>
+
+            <div class="search-container">
+                <input type="search" id="searchBox" class="search-input" placeholder="🔍 Search for answers...">
+                <div class="quick-links">
+                    <span class="quick-link" data-filter="privacy">Privacy</span>
+                    <span class="quick-link" data-filter="psi">PSI Technology</span>
+                    <span class="quick-link" data-filter="upload">Uploading Data</span>
+                    <span class="quick-link" data-filter="results">Results</span>
+                    <span class="quick-link" data-filter="account">Account</span>
+                </div>
+            </div>
+
+            <div id="faqContainer">
+                <!-- Privacy & Security -->
+                <div class="faq-category" data-category="privacy">
+                    <div class="faq-category-header">
+                        <span class="faq-category-icon">🔐</span>
+                        <h2 class="faq-category-title">Privacy & Security</h2>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question"><span>How is my genetic data protected?</span><span class="faq-toggle">+</span></div>
+                        <div class="faq-answer"><p>Your genetic data is protected through multiple layers of security:</p><ul><li><strong>Encryption:</strong> All data is encrypted using AES-256 encryption before upload and during storage</li><li><strong>PSI Technology:</strong> We use Private Set Intersection to compute risk assessments without exposing your raw genetic data</li><li><strong>Access Controls:</strong> Role-based access ensures only authorized personnel can access specific data</li><li><strong>Audit Logging:</strong> All data access is logged for security monitoring</li></ul></div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question"><span>Who can access my data?</span><span class="faq-toggle">+</span></div>
+                        <div class="faq-answer"><p>Only you have access to your full genetic data and results. Other parties have limited access:</p><ul><li><strong>Healthcare Providers:</strong> Can only see risk results you explicitly share during consultations</li><li><strong>Researchers:</strong> Only access anonymized, aggregated statistics (never individual data) and only with your opt-in consent</li><li><strong>System Administrators:</strong> Have access to audit logs but not your genetic data</li></ul></div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question"><span>Can I delete my data?</span><span class="faq-toggle">+</span></div>
+                        <div class="faq-answer"><p>Yes, you have full control over your data. You can:</p><ul><li>Delete individual genetic uploads from your profile</li><li>Delete your entire account and all associated data</li><li>Request a complete data export before deletion</li></ul><p>Deletion is permanent and typically completed within 30 days, including all backups.</p></div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question"><span>Is PrivaGene PDPA compliant?</span><span class="faq-toggle">+</span></div>
+                        <div class="faq-answer"><p>Yes, PrivaGene is fully compliant with Singapore's Personal Data Protection Act (PDPA). We adhere to all nine key obligations including consent, purpose limitation, access & correction rights, data protection, and retention limits. See our <a href="privacy.html" style="color: var(--primary-color);">Privacy Policy</a> for full details.</p></div>
+                    </div>
+                </div>
+
+                <!-- PSI Technology -->
+                <div class="faq-category" data-category="psi">
+                    <div class="faq-category-header">
+                        <span class="faq-category-icon">🧬</span>
+                        <h2 class="faq-category-title">How PSI Technology Works</h2>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question"><span>What is Private Set Intersection (PSI)?</span><span class="faq-toggle">+</span></div>
+                        <div class="faq-answer"><p>Private Set Intersection (PSI) is a cryptographic protocol that allows two parties to find common elements in their datasets without revealing any other information. PrivaGene uses <strong>Diffie-Hellman based PSI</strong> for secure computation.</p><p>In PrivaGene, we use PSI to match your genetic markers against disease-associated genes in hospital databases without exposing:</p><ul><li>Your raw genetic data to hospitals</li><li>Hospital disease gene databases to you</li><li>The specific genes that matched (only the count)</li></ul></div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question"><span>How is my risk percentage calculated?</span><span class="faq-toggle">+</span></div>
+                        <div class="faq-answer"><p>Your risk percentage is calculated using the formula:</p><p style="background: var(--bg-tertiary); padding: var(--space-sm) var(--space-md); border-radius: var(--radius-md); font-family: monospace; display: inline-block; margin: var(--space-sm) 0;">Risk% = c × |X ∩ Y| / n</p><p>Where X = your genes, Y = hospital's disease genes, c = disease-specific constant, and n = total disease genes. The Diffie-Hellman based PSI protocol computes only the COUNT of matching genes between your encrypted data and the hospital's encrypted disease database. Neither party sees the other's raw data.</p></div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question"><span>How accurate are the risk assessments?</span><span class="faq-toggle">+</span></div>
+                        <div class="faq-answer"><p>Our risk assessments are based on peer-reviewed genetic research and regularly updated gene databases. However, it's important to understand:</p><ul><li>Genetic risk is just ONE factor in disease development</li><li>Environmental factors, lifestyle, and family history also play significant roles</li><li>A high genetic risk doesn't guarantee disease development</li><li>A low genetic risk doesn't guarantee immunity</li></ul><p>Always consult with a genetic counselor or healthcare professional to interpret your results.</p></div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question"><span>How long does risk assessment take?</span><span class="faq-toggle">+</span></div>
+                        <div class="faq-answer"><p>PSI computation typically takes 2-5 minutes depending on:</p><ul><li>The number of disease categories selected</li><li>The size of your genetic data file</li><li>Current system load</li></ul><p>You'll see a progress indicator during computation and receive notification when results are ready.</p></div>
+                    </div>
+                </div>
+
+                <!-- Uploading Data -->
+                <div class="faq-category" data-category="upload">
+                    <div class="faq-category-header">
+                        <span class="faq-category-icon">📤</span>
+                        <h2 class="faq-category-title">Uploading Genetic Data</h2>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question"><span>What file formats are supported?</span><span class="faq-toggle">+</span></div>
+                        <div class="faq-answer"><p>We accept genetic data in the following formats:</p><ul><li><strong>VCF</strong> - Variant Call Format (standard genomic format)</li><li><strong>23andMe</strong> - Raw data export from 23andMe</li><li><strong>AncestryDNA</strong> - Raw data export from Ancestry</li><li><strong>CSV/TXT</strong> - Standard formats with genetic markers</li><li><strong>FASTA</strong> - Sequence data format</li></ul><p>Maximum file size is 50MB per upload.</p></div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question"><span>Where can I get my genetic data?</span><span class="faq-toggle">+</span></div>
+                        <div class="faq-answer"><p>You can obtain genetic data from:</p><ul><li><strong>Consumer DNA tests:</strong> 23andMe, AncestryDNA, MyHeritage (download raw data from their websites)</li><li><strong>Clinical genetic tests:</strong> Request from your healthcare provider or genetic testing lab</li><li><strong>Whole genome sequencing services:</strong> Nebula Genomics, Dante Labs, etc.</li></ul></div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question"><span>Can I upload multiple files?</span><span class="faq-toggle">+</span></div>
+                        <div class="faq-answer"><p>Only one file can be uploaded at a time, but you can replace this file at any time by uploading a new one. Each upload is:</p><ul><li>Processed and stored separately</li><li>Not stored in our databases</li><li>Available for individual or combined risk assessment</li></ul></div>
+                    </div>
+                </div>
+
+                <!-- Understanding Results -->
+                <div class="faq-category" data-category="results">
+                    <div class="faq-category-header">
+                        <span class="faq-category-icon">📊</span>
+                        <h2 class="faq-category-title">Understanding Your Results</h2>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question"><span>What do the risk levels mean?</span><span class="faq-toggle">+</span></div>
+                        <div class="faq-answer"><p>Risk levels are categorized as:</p><ul><li><strong style="color: var(--success-color);">Low (0-30%):</strong> Your genetic markers show relatively low predisposition</li><li><strong style="color: var(--warning-color);">Moderate (30-70%):</strong> Some genetic markers associated with elevated risk detected</li><li><strong style="color: var(--error-color);">High (70%+):</strong> Significant genetic markers detected; consultation recommended</li></ul><p>Remember: These are statistical probabilities based on genetic factors only.</p></div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question"><span>What should I do after receiving my results?</span><span class="faq-toggle">+</span></div>
+                        <div class="faq-answer"><p>After receiving your results, we recommend:</p><ul><li><strong>Review the detailed explanation</strong> to understand what genes were analyzed</li><li><strong>Consult a genetic counselor</strong> for professional interpretation</li><li><strong>Don't panic</strong> - genetic risk is just one factor among many</li><li><strong>Consider lifestyle factors</strong> that you can control</li></ul></div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question"><span>Can I share my results with my doctor?</span><span class="faq-toggle">+</span></div>
+                        <div class="faq-answer"><p>Yes! You can share your results by:</p><ul><li>Downloading a PDF report from your results page</li><li>Booking a consultation through the platform (results are shared automatically)</li><li>Exporting your data in standard formats for your healthcare provider</li></ul></div>
+                    </div>
+                </div>
+
+                <!-- Account & Access -->
+                <div class="faq-category" data-category="account">
+                    <div class="faq-category-header">
+                        <span class="faq-category-icon">👤</span>
+                        <h2 class="faq-category-title">Account & Access</h2>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question"><span>What user roles are available?</span><span class="faq-toggle">+</span></div>
+                        <div class="faq-answer"><p>PrivaGene supports multiple user roles:</p><ul><li><strong>Patients:</strong> Upload genetic data, run risk assessments, book consultations</li><li><strong>Healthcare Providers:</strong> View patient results (with consent), manage appointments</li><li><strong>Hospital Administrators:</strong> Manage disease gene databases, oversee hospital staff</li><li><strong>Researchers:</strong> Access anonymized, aggregated data for research</li><li><strong>System Administrators:</strong> Manage platform security and user accounts</li></ul></div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question"><span>How do I reset my password?</span><span class="faq-toggle">+</span></div>
+                        <div class="faq-answer"><p>To reset your password:</p><ul><li>Click "Forgot Password" on the login page</li><li>Enter your registered email address</li><li>Check your email for a reset link (valid for 24 hours)</li><li>Create a new strong password</li></ul><p>If you don't receive the email, check your spam folder or contact support.</p></div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-question"><span>Is PrivaGene free to use?</span><span class="faq-toggle">+</span></div>
+                        <div class="faq-answer"><p>PrivaGene offers:</p><ul><li><strong>Free account creation</strong> and basic features</li><li><strong>Risk assessments</strong> may have usage limits based on your plan</li><li><strong>Specialist consultations</strong> are booked separately through healthcare providers</li></ul><p>Check our pricing page for current plans and features.</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="noResults" class="no-results">
+                <div class="no-results-icon">🔍</div>
+                <h3>No results found</h3>
+                <p>Try different keywords or browse the categories above</p>
+            </div>
+
+            <div class="help-card">
+                <h3 style="color: white;">Still have questions?</h3>
+                <p style="color: rgb(210, 236, 245);">Our support team is here to help you with any questions or concerns.</p>
+                <a href="contact.html" class="btn" style="background: white; color: var(--primary-color);">Contact Support</a>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background: var(--bg-tertiary); padding: var(--space-2xl) 0; text-align: center;">
+        <div class="container">
+            <p class="text-secondary">© 2025 PrivaGene. Secure Genetic Risk Assessment Platform.</p>
+        </div>
+    </footer>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script>
+        Navigation.setActiveNav();
+
+        // Accordion functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                const wasActive = item.classList.contains('active');
+                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+                if (!wasActive) item.classList.add('active');
+            });
+        });
+
+        // Search functionality
+        const searchBox = document.getElementById('searchBox');
+        const faqItems = document.querySelectorAll('.faq-item');
+        const faqCategories = document.querySelectorAll('.faq-category');
+        const noResults = document.getElementById('noResults');
+
+        searchBox.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            let hasResults = false;
+
+            faqItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                const match = text.includes(query);
+                item.style.display = match ? '' : 'none';
+                if (match) hasResults = true;
+            });
+
+            faqCategories.forEach(cat => {
+                const visibleItems = cat.querySelectorAll('.faq-item[style=""], .faq-item:not([style])');
+                cat.style.display = visibleItems.length > 0 || query === '' ? '' : 'none';
+            });
+
+            noResults.style.display = hasResults || query === '' ? 'none' : 'block';
+        });
+
+        // Quick link filters
+        document.querySelectorAll('.quick-link').forEach(link => {
+            link.addEventListener('click', () => {
+                searchBox.value = link.dataset.filter;
+                searchBox.dispatchEvent(new Event('input'));
+            });
+        });
+    </script>
+</body>
+</html>

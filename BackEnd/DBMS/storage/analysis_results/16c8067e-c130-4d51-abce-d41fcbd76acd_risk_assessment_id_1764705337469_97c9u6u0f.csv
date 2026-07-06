@@ -1,0 +1,6 @@
+Risk Assessment Report
+Generated: 2025-12-02T19:55:37.469Z
+Overall Risk: 62%
+
+Category,Risk Percentage,Risk Level,Affected Genes
+ovarian_cancer,62%,medium,BRCA1; BRCA2

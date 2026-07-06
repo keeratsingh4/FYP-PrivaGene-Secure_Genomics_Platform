@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments - PrivaGene</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="javascript:void(0)"
+                style="display: flex; align-items: center; gap: var(--space-sm); text-decoration: none; cursor: default;">
+                <span style="font-size: var(--text-3xl);">🧬</span>
+                <span style="font-size: var(--text-xl); font-weight: 700; color: var(--primary-color);">PrivaGene</span>
+            </a>
+        </div>
+
+        <div
+            style="margin-bottom: var(--space-xl); padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);" data-user-name>Specialist</div>
+            <div style="font-size: var(--text-sm); color: var(--text-tertiary);" data-user-email>specialist@hospital.com
+            </div>
+        </div>
+
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item"><a href="dashboard.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📊</span>Dashboard</a></li>
+                <li class="sidebar-item"><a href="genes.html" class="sidebar-link active"><span
+                            class="sidebar-link-icon">🧬</span>Genes</a></li>
+                <li class="sidebar-item"><a href="appointments.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📅</span>Appointments</a></li>
+                <li class="sidebar-item"><a href="profile.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">👤</span>Profile</a></li>
+            </ul>
+        </nav>
+
+        <div style="margin-top: auto;"><button id="logout-btn" class="sidebar-link"
+                style="width: 100%; border: none; background: transparent; cursor: pointer;"><span
+                    class="sidebar-link-icon">🚪</span>Logout</button></div>
+    </aside>
+
+    <main class="main-with-sidebar">
+        <div class="container-fluid">
+            <div style="margin-bottom: var(--space-2xl);">
+                <h1 style="font-size: var(--text-4xl); font-weight: 700; margin-bottom: var(--space-sm);">Appointments
+                </h1>
+                <p class="text-secondary">Manage your consultation schedule</p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs" style="margin-bottom: var(--space-xl);">
+                <button class="tab-btn active" data-tab="upcoming">Upcoming</button>
+                <button class="tab-btn" data-tab="past">Past</button>
+                <button class="tab-btn" data-tab="cancelled">Cancelled</button>
+            </div>
+
+            <!-- Appointments List -->
+            <div class="card">
+                <div id="appointmentsContainer">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/api-backend.js"></script>
+    <script src="../../js/api-mock.js"></script>
+    <script src="../../js/navigation.js"></script>
+
+    <script>
+        Auth.requireRole('hospital');
+        const user = Auth.getCurrentUser();
+        Navigation.displayUserInfo(user);
+        Navigation.setActiveNav();
+
+        document.getElementById('logout-btn').addEventListener('click', () => Auth.logout());
+
+        let allAppointments = [];
+        let currentTab = 'upcoming';
+
+        async function loadAppointments() {
+            UI.showLoading('Loading appointments...');
+            try {
+                allAppointments = await API.getAppointments(user.id, 'hospital');
+                displayAppointments(currentTab);
+            } catch (error) {
+                console.error('Error loading appointments:', error);
+                UI.showAlert('Failed to load appointments', 'error');
+            } finally {
+                UI.hideLoading();
+            }
+        }
+
+        function displayAppointments(tab) {
+            const container = document.getElementById('appointmentsContainer');
+            const now = new Date();
+
+            let filtered = [];
+            if (tab === 'upcoming') {
+                filtered = allAppointments.filter(apt => new Date(apt.date) >= now && apt.status !== 'cancelled');
+            } else if (tab === 'past') {
+                filtered = allAppointments.filter(apt => new Date(apt.date) < now || apt.status === 'completed');
+            } else if (tab === 'cancelled') {
+                filtered = allAppointments.filter(apt => apt.status === 'cancelled');
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="padding: var(--space-2xl);">
+                        <div class="empty-state-icon">📅</div>
+                        <div class="empty-state-description">No ${tab} appointments</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const table = `
+                <div style="overflow-x: auto;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Patient</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${filtered.map(apt => `
+                                <tr>
+                                    <td>${UI.formatDate(apt.date)}</td>
+                                    <td>${apt.slot}</td>
+                                    <td class="text-secondary">Patient ${apt.patientId || apt.userId}</td>
+                                    <td>${apt.reason || 'Genetic Counseling'}</td>
+                                    <td><span class="badge badge-${apt.status === 'confirmed' ? 'success' : apt.status === 'cancelled' ? 'error' : 'warning'}">${apt.status}</span></td>
+                                    <td>
+                                        ${apt.status === 'confirmed' ? `
+                                            <button class="btn btn-sm btn-outline" onclick="completeAppointment('${apt.id}')">Complete</button>
+                                        ` : '-'}
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            container.innerHTML = table;
+        }
+
+        async function completeAppointment(aptId) {
+            const confirmed = await UI.confirm('Mark this appointment as completed?', 'Complete Appointment');
+            if (!confirmed) return;
+
+            UI.showLoading('Updating...');
+            try {
+                await API.updateAppointmentStatus(aptId, 'completed');
+                UI.showAlert('Appointment marked as completed', 'success');
+                await loadAppointments();
+            } catch (error) {
+                console.error('Error:', error);
+                UI.showAlert('Failed to update appointment', 'error');
+            } finally {
+                UI.hideLoading();
+            }
+        }
+
+        window.completeAppointment = completeAppointment;
+
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentTab = btn.dataset.tab;
+                displayAppointments(currentTab);
+            });
+        });
+
+        loadAppointments();
+    </script>
+</body>
+
+</html>

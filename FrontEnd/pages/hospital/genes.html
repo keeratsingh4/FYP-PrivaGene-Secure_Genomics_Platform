@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Disease Gene List - PrivaGene</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    
+    <style>
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        
+        .gene-tag {
+            display: inline-block;
+            background: var(--bg-tertiary);
+            color: var(--primary-color);
+            padding: 4px 10px;
+            margin: 2px;
+            border-radius: var(--radius-sm);
+            font-size: var(--text-sm);
+            font-family: var(--font-mono);
+        }
+        
+        .hash-preview {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            font-family: var(--font-mono);
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            word-break: break-all;
+            margin-top: var(--space-sm);
+        }
+        
+        .hash-preview-label {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-xs);
+            font-size: var(--text-sm);
+            color: var(--text-tertiary);
+        }
+        
+        .hash-preview-label .icon {
+            font-size: var(--text-base);
+        }
+        
+        .upload-progress {
+            margin-top: var(--space-lg);
+            padding: var(--space-lg);
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+        }
+        
+        .upload-progress .progress {
+            height: 8px;
+            margin-top: var(--space-md);
+        }
+        
+        .upload-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-md);
+            margin-top: var(--space-lg);
+        }
+        
+        .upload-summary-item {
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+        
+        .upload-summary-item.success {
+            background: hsla(142, 71%, 45%, 0.1);
+            color: var(--success-color);
+        }
+        
+        .upload-summary-item.warning {
+            background: hsla(38, 92%, 50%, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .upload-summary-item .count {
+            font-size: var(--text-3xl);
+            font-weight: 700;
+        }
+        
+        .upload-summary-item .label {
+            font-size: var(--text-sm);
+            margin-top: var(--space-xs);
+        }
+        
+        .btn-small {
+            padding: var(--space-xs) var(--space-sm);
+            font-size: var(--text-sm);
+        }
+        
+        .table td {
+            vertical-align: middle;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: var(--space-xs);
+        }
+        
+        .file-drop-zone {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--space-2xl);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+        
+        .file-drop-zone:hover,
+        .file-drop-zone.drag-over {
+            border-color: var(--primary-color);
+            background: hsla(var(--primary-hue), var(--primary-sat), var(--primary-light), 0.05);
+        }
+        
+        .file-drop-zone .icon {
+            font-size: var(--text-4xl);
+            color: var(--primary-color);
+            margin-bottom: var(--space-md);
+        }
+        
+        .selected-file {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            padding: var(--space-md);
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            margin-top: var(--space-md);
+        }
+        
+        .selected-file .file-icon {
+            font-size: var(--text-2xl);
+        }
+        
+        .selected-file .file-info {
+            flex: 1;
+        }
+        
+        .selected-file .file-name {
+            font-weight: 500;
+        }
+        
+        .selected-file .file-size {
+            font-size: var(--text-sm);
+            color: var(--text-tertiary);
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .spinner-inline {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border-light);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="#" style="display: flex; align-items: center; gap: var(--space-sm); text-decoration: none;">
+                <span style="font-size: var(--text-3xl);">🧬</span>
+                <span style="font-size: var(--text-xl); font-weight: 700; color: var(--primary-color);">PrivaGene</span>
+            </a>
+        </div>
+
+        <div style="margin-bottom: var(--space-xl); padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);" data-user-name>Specialist</div>
+            <div style="font-size: var(--text-sm); color: var(--text-tertiary);" data-user-email>specialist@hospital.com</div>
+        </div>
+
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item"><a href="dashboard.html" class="sidebar-link"><span 
+                    class="sidebar-link-icon">📊</span>Dashboard</a></li>
+                <li class="sidebar-item"><a href="genes.html" class="sidebar-link active"><span 
+                    class="sidebar-link-icon">🧬</span>Genes</a></li>
+                <li class="sidebar-item"><a href="profile.html" class="sidebar-link"><span 
+                    class="sidebar-link-icon">👤</span>Profile</a></li>
+            </ul>
+        </nav>
+
+        <div style="margin-top: auto;">
+            <button id="logout-btn" class="sidebar-link" style="width: 100%; border: none; background: transparent; cursor: pointer;">
+                <span class="sidebar-link-icon">🚪</span>Logout
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-with-sidebar">
+        <div class="container-fluid">
+            <!-- Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xl);">
+                <div>
+                    <h1 style="font-size: var(--text-3xl); font-weight: 700;">Disease Gene Management</h1>
+                    <p style="color: var(--text-secondary); margin-top: var(--space-xs);">
+                        Manage disease-associated genes for PSI risk assessments
+                    </p>
+                </div>
+                <div style="display: flex; gap: var(--space-sm);">
+                    <button id="addGeneBtn" class="btn btn-primary">
+                        + Add Disease
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="grid grid-cols-3 gap-lg" style="margin-bottom: var(--space-xl);">
+                <div class="card" style="padding: var(--space-lg);">
+                    <div class="text-tertiary text-sm" style="margin-bottom: var(--space-xs);">Total Entries</div>
+                    <div style="font-size: var(--text-3xl); font-weight: 700; color: var(--primary-color);" id="totalEntries">0</div>
+                </div>
+                <div class="card" style="padding: var(--space-lg);">
+                    <div class="text-tertiary text-sm" style="margin-bottom: var(--space-xs);">Unique Diseases</div>
+                    <div style="font-size: var(--text-3xl); font-weight: 700; color: var(--secondary-color);" id="uniqueDiseases">0</div>
+                </div>
+                <div class="card" style="padding: var(--space-lg);">
+                    <div class="text-tertiary text-sm" style="margin-bottom: var(--space-xs);">Unique Genes</div>
+                    <div style="font-size: var(--text-3xl); font-weight: 700; color: var(--accent-color);" id="uniqueGenes">0</div>
+                </div>
+            </div>
+
+            <!-- Gene Entries Table -->
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
+                    <h3 style="font-size: var(--text-xl); font-weight: 600;">Gene Entries</h3>
+                    <input type="text" id="searchInput" class="form-input" placeholder="Search genes, diseases..." style="width: 280px;">
+                </div>
+
+                <!-- Loading State -->
+                <div id="loadingSpinner" style="text-align: center; padding: 40px; display: none;">
+                    <div class="spinner spinner-lg"></div>
+                    <div style="margin-top: var(--space-md); color: var(--text-secondary);">Loading gene entries...</div>
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <div class="empty-state-icon">🧬</div>
+                    <h4 style="margin-bottom: var(--space-xs);">No gene entries found</h4>
+                    <p style="margin-bottom: var(--space-md); color: var(--text-tertiary);">
+                        Add your first disease or upload a CSV file
+                    </p>
+                    <button id="createFirstEntryBtn" class="btn btn-primary">Add First Entry</button>
+                </div>
+
+                <!-- Gene Table -->
+                <div class="table-container" id="tableContainer" style="display: none;">
+                    <table class="table" id="geneTable">
+                        <thead>
+                            <tr>
+                                <th>Disease Name</th>
+                                <th>Disease Code</th>
+                                <th>Gene Symbol</th>
+                                <th>Constant</th>
+                                <th>Description</th>
+                                <th>Created</th>
+                                <th style="width: 140px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="geneTableBody">
+                            <!-- JS populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add/Edit Gene Modal -->
+    <div class="modal-overlay" id="geneModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="modal-close" id="closeGeneModal">&times;</span>
+            <h3 id="geneModalTitle" style="margin-bottom: var(--space-xl);">Add Disease</h3>
+            
+            <form id="geneForm">
+                <input type="hidden" id="editGeneId">
+                
+                <div class="form-group">
+                    <label class="form-label form-label-required">Disease Name</label>
+                    <input id="diseaseNameInput" class="form-input" placeholder="e.g., Breast Cancer" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label form-label-required">Disease Code</label>
+                    <input id="diseaseCodeInput" class="form-input" placeholder="e.g., BRCA-RISK-2024" required>
+                    <span class="form-hint">Unique identifier for this disease category</span>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label form-label-required">Gene Symbols (Multiple)</label>
+                    <textarea id="geneSymbolInput" class="form-textarea" rows="3" placeholder="Enter gene symbols, separated by commas (e.g., BRCA1, BRCA2, PALB2)" required style="text-transform: uppercase;"></textarea>
+                    <span class="form-hint">Enter multiple gene symbols separated by commas. (Will be auto-capitalized)</span>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="descriptionInput" class="form-textarea" rows="3" 
+                              placeholder="Optional description of this gene's association with the disease"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label form-label-required">Risk Constant (%)</label>
+                    <input type="number" id="constantInput" class="form-input" 
+                        placeholder="e.g., 75.5" 
+                        min="0.01" max="100" step="0.01" required>
+                    <span class="form-hint">Value must be greater than 0 and up to 100. This affects risk calculation.</span>
+                </div>
+                <!-- Hash Preview -->
+                <div class="form-group">
+                    <div class="hash-preview-label">
+                        <span class="icon">🔐</span>
+                        <span>SHA-256 Hash Preview (for PSI computation)</span>
+                    </div>
+                    <div class="hash-preview" id="hashPreview">
+                        <em style="color: var(--text-tertiary);">Enter a gene symbol to see its hash</em>
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: flex-end; gap: var(--space-md); margin-top: var(--space-xl);">
+                    <button type="button" id="cancelGeneBtn" class="btn btn-outline">Cancel</button>
+                    <button type="submit" id="saveGeneBtn" class="btn btn-primary">
+                        <span id="saveGeneText">Save Entry</span>
+                        <span id="saveGeneSpinner" class="spinner-inline" style="display: none;"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content" style="max-width: 450px;">
+            <span class="modal-close" id="closeDeleteModal">&times;</span>
+            <h3 style="margin-bottom: var(--space-lg);">Confirm Delete</h3>
+            
+            <p style="color: var(--text-secondary); margin-bottom: var(--space-lg);">
+                Are you sure you want to delete this disease? This action cannot be undone.
+            </p>
+            
+            <div id="deleteEntryInfo" style="background: var(--bg-tertiary); padding: var(--space-md); border-radius: var(--radius-md); margin-bottom: var(--space-xl);">
+                <!-- Populated by JS -->
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; gap: var(--space-md);">
+                <button type="button" id="cancelDeleteBtn" class="btn btn-outline">Cancel</button>
+                <button type="button" id="confirmDeleteBtn" class="btn btn-danger">
+                    <span id="deleteText">Delete</span>
+                    <span id="deleteSpinner" class="spinner-inline" style="display: none;"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../../js/config.js"></script>
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/api-backend.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script src="../../js/genes-manager.js"></script>
+    <script src="../../js/genes-modals.js"></script>
+    
+    <script>
+        // =========================================
+        // AUTHENTICATION & INITIALIZATION
+        // =========================================
+        
+        // 1. Check if user is authenticated and has hospital role
+        Auth.requireRole('hospital');
+        
+        // 2. Get the current logged-in user
+        const user = Auth.getCurrentUser();
+        
+        // 3. Display user info in sidebar
+        Navigation.displayUserInfo(user);
+        Navigation.setActiveNav();
+        
+        // 4. Logout handler
+        document.getElementById('logout-btn').addEventListener('click', () => Auth.logout());
+        
+        // =========================================
+        // GENE MANAGEMENT INITIALIZATION
+        // =========================================
+        
+        // Initialize gene manager with current user
+        const geneManager = new GeneManager(user);
+        const modalManager = new ModalManager(geneManager);
+        
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            await geneManager.loadData();
+            
+            // Event listeners for main buttons
+            document.getElementById('addGeneBtn').addEventListener('click', () => {
+                modalManager.openGeneModal();
+            });
+            
+            
+            document.getElementById('createFirstEntryBtn').addEventListener('click', () => {
+                modalManager.openGeneModal();
+            });
+            
+            // Search functionality with debounce
+            let searchTimeout;
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    geneManager.searchEntries(e.target.value);
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html>

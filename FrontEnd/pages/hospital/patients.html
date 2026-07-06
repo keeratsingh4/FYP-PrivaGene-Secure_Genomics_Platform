@@ -1,0 +1,171 @@
+<!-- NOT IN USE -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Patients - PrivaGene</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="javascript:void(0)"
+                style="display: flex; align-items: center; gap: var(--space-sm); text-decoration: none; cursor: default;">
+                <span style="font-size: var(--text-3xl);">🧬</span>
+                <span style="font-size: var(--text-xl); font-weight: 700; color: var(--primary-color);">PrivaGene</span>
+            </a>
+        </div>
+
+        <div
+            style="margin-bottom: var(--space-xl); padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);" data-user-name>Specialist</div>
+            <div style="font-size: var(--text-sm); color: var(--text-tertiary);" data-user-email>specialist@hospital.com
+            </div>
+        </div>
+
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item"><a href="dashboard.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📊</span>Dashboard</a></li>
+                <li class="sidebar-item"><a href="genes.html" class="sidebar-link active"><span
+                            class="sidebar-link-icon">🧬</span>Genes</a></li>
+                <li class="sidebar-item"><a href="patients.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">👥</span>Patients</a></li>
+                <li class="sidebar-item"><a href="profile.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">👤</span>Profile</a></li>
+            </ul>
+        </nav>
+
+        <div style="margin-top: auto;"><button id="logout-btn" class="sidebar-link"
+                style="width: 100%; border: none; background: transparent; cursor: pointer;"><span
+                    class="sidebar-link-icon">🚪</span>Logout</button></div>
+    </aside>
+
+    <main class="main-with-sidebar">
+        <div class="container-fluid">
+            <div style="margin-bottom: var(--space-2xl);">
+                <h1 style="font-size: var(--text-4xl); font-weight: 700; margin-bottom: var(--space-sm);">My Patients
+                </h1>
+                <p class="text-secondary">View and manage patient consultations</p>
+            </div>
+
+            <!-- Search -->
+            <div class="card" style="margin-bottom: var(--space-xl);">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <input type="search" id="searchPatients" class="form-control form-control-lg"
+                        placeholder="Search by patient ID or email...">
+                </div>
+            </div>
+
+            <!-- Patients List -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Patient List</h3>
+                </div>
+                <div id="patientsContainer">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/api-backend.js"></script>
+    <script src="../../js/api-mock.js"></script>
+    <script src="../../js/navigation.js"></script>
+
+    <script>
+        Auth.requireRole('hospital');
+        const user = Auth.getCurrentUser();
+        Navigation.displayUserInfo(user);
+        Navigation.setActiveNav();
+
+        document.getElementById('logout-btn').addEventListener('click', () => Auth.logout());
+
+        let allPatients = [];
+
+        async function loadPatients() {
+            UI.showLoading('Loading patients...');
+            try {
+                const users = Storage.get('users') || [];
+
+                allPatients = users.filter(u => patientIds.includes(u.id) && u.role === 'patient');
+
+                displayPatients(allPatients);
+            } catch (error) {
+                console.error('Error loading patients:', error);
+                UI.showAlert('Failed to load patients', 'error');
+            } finally {
+                UI.hideLoading();
+            }
+        }
+
+        function displayPatients(patients) {
+            const container = document.getElementById('patientsContainer');
+
+            if (patients.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="padding: var(--space-2xl);">
+                        <div class="empty-state-icon">👥</div>
+                        <div class="empty-state-description">No patients found</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const table = `
+                <div style="overflow-x: auto;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Patient Name</th>
+                                <th>Email</th>
+                                <th>Date of Birth</th>
+                                <th>Last Consultation</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${patients.map(p => `
+                                <tr>
+                                    <td>${p.firstName || ''} ${p.lastName || ''}</td>
+                                    <td>${p.email}</td>
+                                    <td class="text-secondary">${p.dateOfBirth ? UI.formatDate(p.dateOfBirth) : 'N/A'}</td>
+                                    <td class="text-secondary">${p.lastConsultation ? UI.formatDate(p.lastConsultation) : 'Never'}</td>
+                                    <td><span class="badge badge-success">Active</span></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            container.innerHTML = table;
+        }
+
+        // Search functionality
+        document.getElementById('searchPatients').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = allPatients.filter(p =>
+                p.email.toLowerCase().includes(query) ||
+                (p.firstName && p.firstName.toLowerCase().includes(query)) ||
+                (p.lastName && p.lastName.toLowerCase().includes(query)) ||
+                (p.id && p.id.toLowerCase().includes(query))
+            );
+            displayPatients(filtered);
+        });
+
+        loadPatients();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risk Assessment - PrivaGene</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="../../index.html"
+                style="display: flex; align-items: center; gap: var(--space-sm); text-decoration: none;">
+                <span style="font-size: var(--text-3xl);">🧬</span>
+                <span style="font-size: var(--text-xl); font-weight: 700; color: var(--primary-color);">PrivaGene</span>
+            </a>
+        </div>
+
+        <div
+            style="margin-bottom: var(--space-xl); padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);" data-user-name>User</div>
+            <div style="font-size: var(--text-sm); color: var(--text-tertiary);" data-user-email>user@example.com</div>
+        </div>
+
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item"><a href="dashboard.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📊</span>Dashboard</a></li>
+                <li class="sidebar-item"><a href="upload-gene.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📤</span>Upload Gene Data</a></li>
+                <li class="sidebar-item"><a href="disease-selection.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">🧪</span>Risk Assessment</a></li>
+                <li class="sidebar-item"><a href="risk-results.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📈</span>My Results</a></li>
+                <li class="sidebar-item"><a href="family-access.html" class="sidebar-link">
+                        <span class="sidebar-link-icon">👨‍👩‍👧</span>Family Access</a></li>
+                <li class="sidebar-item"><a href="profile.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">👤</span>Profile</a></li>
+            </ul>
+        </nav>
+
+        <div style="margin-top: auto;"><button id="logout-btn" class="sidebar-link"
+                style="width: 100%; border: none; background: transparent; cursor: pointer;"><span
+                    class="sidebar-link-icon">🚪</span>Logout</button></div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-with-sidebar">
+        <div class="container-fluid">
+            <div style="margin-bottom: var(--space-2xl);">
+                <h1 style="font-size: var(--text-4xl); font-weight: 700; margin-bottom: var(--space-sm);">Select Disease
+                    Categories</h1>
+                <p class="text-secondary">Choose which disease categories you want to assess your risk for</p>
+            </div>
+
+            <div class="alert alert-warning" id="no-upload-warning"
+                style="margin-bottom: var(--space-2xl); display: none;">
+                <span class="alert-icon">⚠️</span>
+                <div class="alert-content">
+                    <div class="alert-title">No Genetic Data Found</div>
+                    <p>Please upload your genetic data before running an assessment. <a href="upload-gene.html"
+                            style="color: var(--warning-color); text-decoration: underline;">Upload Now</a></p>
+                </div>
+            </div>
+
+            <!-- Compute Button and Selection Count (Outside Card) -->
+            <div style="margin-bottom: var(--space-lg); display: flex; justify-content: space-between; align-items: center; gap: var(--space-md);">
+                <div>
+                    <div style="font-weight: 600; margin-bottom: var(--space-xs);">
+                        <span id="selectedCount">0</span> disease(s) selected
+                    </div>
+                    <div class="text-secondary text-sm">Select at least one disease to begin assessment</div>
+                </div>
+                <div style="display: flex; gap: var(--space-sm);">
+                    <button id="deselectAllBtn" class="btn btn-outline" style="display: none;">
+                        Deselect All
+                    </button>
+                    <button id="computeBtn" class="btn btn-primary" disabled>
+                        Compute Risk Assessment
+                    </button>
+                </div>
+            </div>
+
+            <div class="card" id="selection-card">
+                <!-- Search and Filter Bar -->
+                <div style="padding: var(--space-lg); background: var(--bg-secondary); border-radius: var(--radius-md) var(--radius-md) 0 0;">
+                    <!-- Search Bar -->
+                    <div style="margin-bottom: var(--space-md);">
+                        <div style="position: relative;">
+                            <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-tertiary); pointer-events: none;" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 17C13.4183 17 17 13.4183 17 9C17 4.58172 13.4183 1 9 1C4.58172 1 1 4.58172 1 9C1 13.4183 4.58172 17 9 17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M19 19L14.65 14.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <input 
+                                type="text" 
+                                id="searchInput" 
+                                placeholder="Search diseases by name or code..." 
+                                style="width: 100%; padding: 12px 40px 12px 44px; border: 1px solid var(--border-light); border-radius: var(--radius-md); font-size: var(--text-base); background: white; transition: border-color 0.2s;">
+                            <button id="clearSearch" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 4px; display: none; color: var(--text-tertiary);">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Hospital Filter -->
+                    <div style="display: flex; align-items: center; gap: var(--space-md); flex-wrap: wrap;">
+                        <label style="font-weight: 500; color: var(--text-secondary);">Filter by Provider:</label>
+                        <div id="hospitalFilters" style="display: flex; gap: var(--space-sm); flex-wrap: wrap;">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                        <button id="clearFilters" class="btn btn-sm btn-outline" style="display: none;">Clear Filters</button>
+                    </div>
+
+                    <!-- Results Count -->
+                    <div style="margin-top: var(--space-md); padding-top: var(--space-md); border-top: 1px solid var(--border-light);">
+                        <div class="text-secondary text-sm">
+                            Showing <span id="displayCount">0</span> of <span id="totalCount">0</span> diseases
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Disease List -->
+                <div id="categories-list" style="max-height: 600px; overflow-y: auto;">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/api-backend.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script src="../../js/run-psi.js"></script>
+
+    <script>
+        let allCategories = [];
+        let filteredCategories = [];
+        let selectedHospitals = new Set();
+
+        Auth.requireRole('patient');
+        const user = Auth.getCurrentUser();
+        Navigation.displayUserInfo(user);
+        Navigation.setActiveNav();
+
+        document.getElementById('logout-btn').addEventListener('click', () => Auth.logout());
+
+        const selectedCategories = new Set();
+        const computeBtn = document.getElementById('computeBtn');
+        const selectedCount = document.getElementById('selectedCount');
+        const searchInput = document.getElementById('searchInput');
+        const clearSearchBtn = document.getElementById('clearSearch');
+        const clearFiltersBtn = document.getElementById('clearFilters');
+
+        async function loadCategories() {
+            try {
+                // Check if genes are stored
+                const mappedGenes = localStorage.getItem("mappedGeneSymbols");
+
+                if (!mappedGenes) {
+                    document.getElementById('no-upload-warning').style.display = 'flex';
+                    document.getElementById('selection-card').style.display = 'none';
+                    return;
+                }
+
+                // Fetch disease categories from backend database
+                const categories = await API.getDiseaseCategories();
+                console.log('Categories received:', categories);
+                
+                allCategories = categories;
+                filteredCategories = categories;
+
+                if (categories.length === 0) {
+                    const container = document.getElementById('categories-list');
+                    container.innerHTML = `
+                        <div class="empty-state" style="padding: var(--space-xl);">
+                            <div class="empty-state-icon">🔬</div>
+                            <div class="empty-state-description">No disease categories available yet</div>
+                            <p class="text-secondary">Please check back later or contact support.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Build hospital filters
+                buildHospitalFilters();
+                
+                // Display categories
+                displayCategories(filteredCategories);
+                updateCounts();
+
+            } catch (error) {
+                console.error('Error loading categories:', error);
+                UI.showAlert('Failed to load disease categories: ' + error.message, 'error');
+            }
+        }
+
+        function buildHospitalFilters() {
+            const hospitals = [...new Set(allCategories.map(c => c.hospitalName || 'Unknown'))];
+            const filtersContainer = document.getElementById('hospitalFilters');
+            
+            filtersContainer.innerHTML = hospitals.map(hospital => `
+                <label style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: white; border: 1px solid var(--border-light); border-radius: var(--radius-md); cursor: pointer; font-size: var(--text-sm);">
+                    <input type="checkbox" class="hospital-filter" value="${hospital}" style="margin: 0;">
+                    <span>${hospital}</span>
+                </label>
+            `).join('');
+
+            // Add event listeners to hospital filters
+            document.querySelectorAll('.hospital-filter').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        selectedHospitals.add(e.target.value);
+                    } else {
+                        selectedHospitals.delete(e.target.value);
+                    }
+                    filterCategories();
+                });
+            });
+        }
+
+        function filterCategories() {
+            const searchQuery = searchInput.value.toLowerCase().trim();
+            
+            filteredCategories = allCategories.filter(category => {
+                // Search filter
+                const matchesSearch = !searchQuery || 
+                    category.name.toLowerCase().includes(searchQuery) ||
+                    (category.diseaseCode && category.diseaseCode.toLowerCase().includes(searchQuery)) ||
+                    (category.description && category.description.toLowerCase().includes(searchQuery));
+                
+                // Hospital filter
+                const matchesHospital = selectedHospitals.size === 0 || 
+                    selectedHospitals.has(category.hospitalName || 'Unknown');
+                
+                return matchesSearch && matchesHospital;
+            });
+
+            displayCategories(filteredCategories);
+            updateCounts();
+            
+            // Show/hide clear filters button
+            clearFiltersBtn.style.display = selectedHospitals.size > 0 ? 'inline-block' : 'none';
+        }
+
+        function displayCategories(categories) {
+            const container = document.getElementById('categories-list');
+            
+            if (categories.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="padding: var(--space-xl);">
+                        <div class="empty-state-icon">🔍</div>
+                        <div class="empty-state-description">No diseases match your search</div>
+                        <p class="text-secondary">Try adjusting your search or filters</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = categories.map(category => `
+                <label class="form-checkbox" style="padding: var(--space-md); border-bottom: 1px solid var(--border-light); cursor: pointer; display: flex;">
+                    <input type="checkbox" value="${category.id}" class="category-checkbox" ${selectedCategories.has(category.id) ? 'checked' : ''} style="margin-right: var(--space-md);">
+                    <div style="flex: 1;">
+                        <div style="font-weight: 500; margin-bottom: var(--space-xs);">${category.name}</div>
+                        <div class="text-secondary text-sm">${category.description || 'No description available'}</div>
+                        <div class="text-secondary text-sm" style="margin-top: var(--space-xs);">
+                            <span style="background: var(--bg-tertiary); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem;">
+                                🏥 Provider: ${category.hospitalName || 'Unknown'}
+                            </span>
+                            ${category.diseaseCode ? `
+                            <span style="background: var(--bg-tertiary); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; margin-left: 4px;">
+                                Code: ${category.diseaseCode}
+                            </span>
+                            ` : ''}
+                        </div>
+                    </div>
+                </label>
+            `).join('');
+
+            // Add change listeners
+            document.querySelectorAll('.category-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    if (checkbox.checked) {
+                        selectedCategories.add(checkbox.value);
+                    } else {
+                        selectedCategories.delete(checkbox.value);
+                    }
+                    updateSelection();
+                });
+            });
+        }
+
+        function updateCounts() {
+            document.getElementById('displayCount').textContent = filteredCategories.length;
+            document.getElementById('totalCount').textContent = allCategories.length;
+        }
+
+        function updateSelection() {
+            const deselectBtn = document.getElementById('deselectAllBtn');
+            selectedCount.textContent = selectedCategories.size;
+            computeBtn.disabled = selectedCategories.size === 0;
+            
+            // Show/hide deselect button based on selection count
+            deselectBtn.style.display = selectedCategories.size > 0 ? 'inline-block' : 'none';
+        }
+
+        // Search functionality
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim();
+            clearSearchBtn.style.display = query ? 'flex' : 'none';
+            filterCategories();
+        });
+
+        clearSearchBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            clearSearchBtn.style.display = 'none';
+            filterCategories();
+            searchInput.focus();
+        });
+
+        // Clear all filters
+        clearFiltersBtn.addEventListener('click', () => {
+            // Uncheck all hospital filters
+            document.querySelectorAll('.hospital-filter').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            selectedHospitals.clear();
+            filterCategories();
+        });
+
+        // Deselect all selected diseases
+        document.getElementById('deselectAllBtn').addEventListener('click', () => {
+            // Clear the selected categories Set
+            selectedCategories.clear();
+            
+            // Uncheck all category checkboxes
+            document.querySelectorAll('.category-checkbox').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            // Update the UI
+            updateSelection();
+        });
+
+        computeBtn.addEventListener("click", async () => {
+            const selectedDiseaseID = Array.from(selectedCategories);
+            console.log("====> selectedDiseaseID:", selectedDiseaseID);
+
+            if (selectedDiseaseID.length === 0) {
+                UI.showAlert("Please select at least one disease", "error");
+                return;
+            }
+
+            computeBtn.disabled = true;
+            UI.showLoading("Running Private Set Intersection...");
+
+            try {
+                const allResults = [];
+
+                // Loop through diseases and run PSI one-by-one
+                for (const diseaseID of selectedDiseaseID) {
+                    console.log("🔄 Running PSI for:", diseaseID);
+
+                    const result = await runPSI(diseaseID);
+
+                    allResults.push({
+                        disease: diseaseID,
+                        result: result
+                    });
+                }
+
+                // Save results to backend database
+                for (const entry of allResults) {
+                    await API.createRiskAssessment({
+                        userId: user.id,
+                        overallRisk: entry.result.riskPercentage,
+                        diseaseId: entry.disease,
+                        matchCount: entry.result.matchCount,
+                        matchedGenes: entry.result.matches,
+                        riskPercentage: entry.result.riskPercentage
+                    });
+                }
+
+                console.log("🟩 Final aggregated PSI results:", allResults);
+
+                // Save to localStorage as backup
+                localStorage.setItem("psiResult", JSON.stringify(allResults));
+
+                // Redirect to results page
+                window.location.href = "risk-results.html";
+
+            } catch (error) {
+                console.error("PSI Error:", error);
+                UI.showAlert("PSI computation failed: " + error.message, "error");
+            } finally {
+                UI.hideLoading();
+                computeBtn.disabled = false;
+            }
+        });
+
+        // Initial load
+        loadCategories();
+    </script>
+</body>
+
+</html>

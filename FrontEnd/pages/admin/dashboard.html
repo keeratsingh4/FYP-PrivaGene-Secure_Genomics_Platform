@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - PrivaGene</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="javascript:void(0)"
+                style="display: flex; align-items: center; gap: var(--space-sm); text-decoration: none; cursor: default;">
+                <span style="font-size: var(--text-3xl);">🧬</span>
+                <span style="font-size: var(--text-xl); font-weight: 700; color: var(--primary-color);">PrivaGene</span>
+            </a>
+        </div>
+
+        <div
+            style="margin-bottom: var(--space-xl); padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);" data-user-name>Admin</div>
+            <div style="font-size: var(--text-sm); color: var(--text-tertiary);" data-user-email>admin@hospital.com
+            </div>
+        </div>
+
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item"><a href="dashboard.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📊</span>Dashboard</a></li>
+                <li class="sidebar-item"><a href="disease-management.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">🧬</span>Disease Database</a></li>
+                <li class="sidebar-item"><a href="register-hospital-specialist.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">🧑‍⚕️</span>Create Specialist Account</a></li>
+                <li class="sidebar-item"><a href="profile.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">👤</span>Profile</a></li>
+            </ul>
+        </nav>
+
+        <div style="margin-top: auto;"><button id="logout-btn" class="sidebar-link"
+                style="width: 100%; border: none; background: transparent; cursor: pointer;"><span
+                    class="sidebar-link-icon">🚪</span>Logout</button></div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-with-sidebar">
+        <div class="container-fluid">
+            <div style="margin-bottom: var(--space-2xl);">
+                <h1 style="font-size: var(--text-4xl); font-weight: 700; margin-bottom: var(--space-sm);">
+                    Admin Dashboard
+                </h1>
+                <p class="text-secondary">Manage your organization's genetic database</p>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="grid grid-cols-4 gap-lg" style="margin-bottom: var(--space-2xl);">
+                <div class="card">
+                    <div class="text-tertiary text-sm" style="margin-bottom: var(--space-xs);">Unique Genes</div>
+                    <div style="font-size: var(--text-3xl); font-weight: 700; color: var(--primary-color);"
+                        id="geneCount">-</div>
+                </div>
+
+                <div class="card">
+                    <div class="text-tertiary text-sm" style="margin-bottom: var(--space-xs);">Disease Categories</div>
+                    <div style="font-size: var(--text-3xl); font-weight: 700; color: var(--secondary-color);"
+                        id="categoryCount">-</div>
+                </div>
+
+                <div class="card">
+                    <div class="text-tertiary text-sm" style="margin-bottom: var(--space-xs);">Hospital Specialists</div>
+                    <div style="font-size: var(--text-3xl); font-weight: 700; color: var(--accent-color);"
+                        id="specialistCount">-</div>
+                </div>
+
+                <div class="card">
+                    <div class="text-tertiary text-sm" style="margin-bottom: var(--space-xs);">Total Assessments</div>
+                    <div style="font-size: var(--text-3xl); font-weight: 700; color: var(--success-color);"
+                        id="assessmentCount">-</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-3 gap-lg" style="margin-bottom: var(--space-2xl);">
+                <div class="card action-card" onclick="window.location.href='disease-management.html'">
+                    <div class="action-card-icon">🧬</div>
+                    <h3 class="card-title text-center">View Diseases</h3>
+                    <p class="text-secondary text-center">View organization disease database</p>
+                </div>
+                <div class="card action-card" onclick="window.location.href='register-hospital-specialist.html'">
+                    <div class="action-card-icon">🧑‍⚕️</div>
+                    <h3 class="card-title text-center">Create Specialist</h3>
+                    <p class="text-secondary text-center">Add new specialist accounts</p>
+                </div>
+                <div class="card action-card" onclick="showAnalytics()">
+                    <div class="action-card-icon">📈</div>
+                    <h3 class="card-title text-center">View Analytics</h3>
+                    <p class="text-secondary text-center">Platform insights</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/api-backend.js"></script>
+    <script src="../../js/navigation.js"></script>
+
+    <script>
+        // Allow both 'admin' and 'hospital_admin' roles
+        const user = Auth.getCurrentUser();
+        if (!user || (user.role !== 'admin' && user.role !== 'hospital_admin')) {
+            Auth.requireAuth();
+            if (user) Auth.redirectToDashboard(user);
+        }
+        Navigation.displayUserInfo(user);
+        Navigation.setActiveNav();
+
+        document.getElementById('logout-btn').addEventListener('click', () => Auth.logout());
+
+        // Get organization name from current user
+        const organizationName = user.organizationName || user.organization_name || '';
+
+        // Store data globally for analytics
+        let dashboardData = {
+            diseases: [],
+            specialists: [],
+            uniqueGenes: new Set(),
+            assessmentCount: 0
+        };
+
+        async function loadDashboard() {
+            try {
+                // Fetch diseases by organization
+                const diseases = await API.getDiseasesByOrganization(organizationName);
+                dashboardData.diseases = diseases;
+
+                // Count unique genes from all diseases
+                const uniqueGenes = new Set();
+                diseases.forEach(disease => {
+                    const geneSymbols = disease.geneSymbols || disease.gene_symbols || [];
+                    geneSymbols.forEach(gene => {
+                        uniqueGenes.add(gene.toUpperCase());
+                    });
+                });
+                dashboardData.uniqueGenes = uniqueGenes;
+
+                // Fetch specialists by organization
+                const specialists = await API.getHospitalSpecialists(organizationName);
+                dashboardData.specialists = specialists;
+
+                // Get assessment count (placeholder - would need an API for this)
+                let assessmentCount = 0;
+                try {
+                    // If you have an API to get assessments by organization, use it here
+                    // For now, we'll show 0 or you can implement this later
+                    assessmentCount = 0;
+                } catch (e) {
+                    console.log('Could not load assessments:', e);
+                }
+                dashboardData.assessmentCount = assessmentCount;
+
+                // Update the UI
+                document.getElementById('geneCount').textContent = uniqueGenes.size;
+                document.getElementById('categoryCount').textContent = diseases.length;
+                document.getElementById('specialistCount').textContent = specialists.length;
+                document.getElementById('assessmentCount').textContent = assessmentCount;
+
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                document.getElementById('geneCount').textContent = '0';
+                document.getElementById('categoryCount').textContent = '0';
+                document.getElementById('specialistCount').textContent = '0';
+                document.getElementById('assessmentCount').textContent = '0';
+            }
+        }
+
+        async function showAnalytics() {
+            const { diseases, specialists, uniqueGenes, assessmentCount } = dashboardData;
+
+            // Get top diseases by gene count
+            const sortedDiseases = [...diseases].sort((a, b) => {
+                const aCount = (a.geneSymbols || a.gene_symbols || []).length;
+                const bCount = (b.geneSymbols || b.gene_symbols || []).length;
+                return bCount - aCount;
+            }).slice(0, 5);
+
+            const topDiseasesHtml = sortedDiseases.length > 0 
+                ? sortedDiseases.map(d => `
+                    <div style="display: flex; justify-content: space-between; padding: var(--space-sm) 0; border-bottom: 1px solid var(--border-light);">
+                        <span>${escapeHtml(d.diseaseName || d.disease_name || 'N/A')}</span>
+                        <span class="badge badge-info">${(d.geneSymbols || d.gene_symbols || []).length} genes</span>
+                    </div>
+                `).join('')
+                : '<p class="text-tertiary">No diseases found</p>';
+
+            UI.showModal({
+                title: 'Organization Analytics',
+                body: `
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-lg);">
+                        <div class="card" style="padding: var(--space-md);">
+                            <div class="text-tertiary text-sm">Unique Genes</div>
+                            <div style="font-size: var(--text-2xl); font-weight: 700; color: var(--primary-color);">${uniqueGenes.size}</div>
+                        </div>
+                        <div class="card" style="padding: var(--space-md);">
+                            <div class="text-tertiary text-sm">Disease Categories</div>
+                            <div style="font-size: var(--text-2xl); font-weight: 700; color: var(--secondary-color);">${diseases.length}</div>
+                        </div>
+                        <div class="card" style="padding: var(--space-md);">
+                            <div class="text-tertiary text-sm">Hospital Specialists</div>
+                            <div style="font-size: var(--text-2xl); font-weight: 700; color: var(--accent-color);">${specialists.length}</div>
+                        </div>
+                        <div class="card" style="padding: var(--space-md);">
+                            <div class="text-tertiary text-sm">Risk Assessments</div>
+                            <div style="font-size: var(--text-2xl); font-weight: 700; color: var(--success-color);">${assessmentCount}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: var(--space-xl);">
+                        <h4 style="margin-bottom: var(--space-md);">Top Diseases by Gene Count</h4>
+                        ${topDiseasesHtml}
+                    </div>
+
+                    <div style="margin-top: var(--space-xl);">
+                        <h4 style="margin-bottom: var(--space-md);">Organization</h4>
+                        <div style="display: flex; align-items: center; gap: var(--space-md);">
+                            <span style="font-size: var(--text-2xl);">🏥</span>
+                            <span style="font-weight: 600;">${escapeHtml(organizationName) || 'Unknown'}</span>
+                        </div>
+                    </div>
+                `,
+                buttons: [
+                    { text: 'Close', className: 'btn-primary' }
+                ]
+            });
+        }
+
+        // Helper function to escape HTML
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Make functions globally available
+        window.showAnalytics = showAnalytics;
+
+        // Load dashboard on page load
+        loadDashboard();
+    </script>
+</body>
+
+</html>

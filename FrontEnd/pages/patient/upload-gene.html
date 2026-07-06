@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Gene Data - PrivaGene</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+</head>
+
+<body>
+    <!-- Sidebar (same as dashboard) -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="../../index.html"
+                style="display: flex; align-items: center; gap: var(--space-sm); text-decoration: none;">
+                <span style="font-size: var(--text-3xl);">🧬</span>
+                <span style="font-size: var(--text-xl); font-weight: 700; color: var(--primary-color);">PrivaGene</span>
+            </a>
+        </div>
+
+        <div
+            style="margin-bottom: var(--space-xl); padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);" data-user-name>User</div>
+            <div style="font-size: var(--text-sm); color: var(--text-tertiary);" data-user-email>user@example.com</div>
+        </div>
+
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item"><a href="dashboard.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📊</span>Dashboard</a></li>
+                <li class="sidebar-item"><a href="upload-gene.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📤</span>Upload Gene Data</a></li>
+                <li class="sidebar-item"><a href="disease-selection.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">🧪</span>Risk Assessment</a></li>
+                <li class="sidebar-item"><a href="risk-results.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📈</span>My Results</a></li>
+                <li class="sidebar-item"><a href="family-access.html" class="sidebar-link">
+                        <span class="sidebar-link-icon">👨‍👩‍👧</span>Family Access</a></li>          
+                <li class="sidebar-item"><a href="profile.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">👤</span>Profile</a></li>
+            </ul>
+        </nav>
+
+        <div style="margin-top: auto;">
+            <button id="logout-btn" class="sidebar-link"
+                style="width: 100%; border: none; background: transparent; cursor: pointer;">
+                <span class="sidebar-link-icon">🚪</span>Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-with-sidebar">
+        <div class="container-fluid">
+            <div style="margin-bottom: var(--space-2xl);">
+                <h1 style="font-size: var(--text-4xl); font-weight: 700; margin-bottom: var(--space-sm);">Upload Genetic
+                    Data</h1>
+                <p class="text-secondary">Upload your genetic data file for secure analysis</p>
+            </div>
+
+            <div class="alert alert-info" style="margin-bottom: var(--space-2xl);">
+                <span class="alert-icon">ℹ️</span>
+                <div class="alert-content">
+                    <div class="alert-title">Supported File Formats</div>
+                    <p>VCF, FASTA, TXT, or CSV files containing your genetic data.</p>
+                    <!-- NEW LINK BUTTON -->
+                    <a id="openFormatGuide" class="format-guide-link">How should my file be formatted?</a>
+                </div>
+            </div>
+
+            <!-- Upload Area -->
+            <div class="card" id="upload-card">
+                <div class="file-upload" id="dropZone">
+                    <input type="file" id="fileInput" accept=".vcf,.fasta,.txt,.csv">
+                    <div class="file-upload-icon">📁</div>
+                    <div class="file-upload-text">Drop your file here or click to browse</div>
+                    <div class="file-upload-hint">Maximum file size: 100MB</div>
+                </div>
+
+                <div id="fileInfo" style="display: none; margin-top: var(--space-lg);">
+                    <div
+                        style="padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm);">
+                            <div>
+                                <div style="font-weight: 500;" id="fileName"></div>
+                                <div class="text-secondary text-sm" id="fileSize"></div>
+                            </div>
+                            <button id="removeFile" class="btn btn-ghost btn-sm">Remove</button>
+                        </div>
+
+                        <div class="progress" id="progressBar" style="display: none;">
+                            <div class="progress-bar progress-bar-animated" id="progress" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: var(--space-xl);">
+                    <button id="uploadBtn" class="btn btn-primary btn-block btn-lg" disabled>
+                        Upload
+                    </button>
+                </div>
+            </div>
+
+            <!-- Previous Uploads -->
+            <div class="card" style="margin-top: var(--space-2xl);">
+                <div class="card-header">
+                    <h3 class="card-title">Your Uploaded File</h3>
+                </div>
+                <div id="uploadHistory">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- File Format Guide Modal -->
+    <div id="formatGuideModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close" id="closeFormatGuide">&times;</span>
+
+            <h2>How to Format Your Genetic Data File</h2>
+            <p>Your file should contain a list of <strong>gene symbols</strong> such as <code>BRCA1</code>, <code>TP53</code>, <code>EGFR</code>, etc.</p>
+            <p>
+                You may upload <strong>VCF</strong>, <strong>FASTA</strong>, <strong>TXT</strong>, or <strong>CSV</strong> files.  
+            <p>We support simple, flexible formatting. Your file may contain:</p>
+            <ul>
+                <li>Comma-separated gene symbols</li>
+                <li>Space-separated gene symbols</li>
+                <li>Each gene on a new line</li>
+                <li>Any combination of the above</li>
+            </ul>
+            <br>
+
+            <h3>Rules</h3>
+            <ul>
+                <li>Only valid gene symbols (letters, numbers, hyphens, underscores)</li>
+                <li>Maximum of <strong>700 gene symbols</strong> per file</li>
+                <li>Blank lines and lines starting with <code>#</code> are ignored</li>
+                <li>Duplicate gene symbols are automatically removed</li>
+            </ul>
+            <br>
+            <h3>Good Examples</h3>
+            <pre class="example-block good">
+    GOOD (comma or space):
+    BRCA1, TP53, EGFR, VEGFA APOE MTHFR
+            </pre>
+            <pre class="example-block good">
+    GOOD (newline):
+    BRCA1
+    TP53
+    EGFR
+    VEGFA
+            </pre>
+            <pre class="example-block good">
+    GOOD (mixed formatting):
+    BRCA1 TP53, EGFR
+    APOE, MTHFR COMT
+            </pre>
+            <br>
+
+            
+            <h3>Bad Examples</h3>
+            <pre class="example-block bad">
+    BAD:
+    BRCA1 TP53   @@@$%     (invalid characters)
+    ABC123,      ,,,       (nonsense values)
+    x y z         (too vague, not gene symbols)
+            </pre>
+
+            <p style="margin-top: 20px; font-size: 14px; color: #666;">
+                <strong>Note:</strong> Gene symbol validation is approximate. If you're unsure, include it anyway.
+            </p>
+        </div>
+    </div>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script src="../../js/gene-utils.js"></script>
+
+    <script>
+        Auth.requireRole('patient');
+        const user = Auth.getCurrentUser();
+        Navigation.displayUserInfo(user);
+        Navigation.setActiveNav();
+
+        document.getElementById('logout-btn').addEventListener('click', () => Auth.logout());
+
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const uploadBtn = document.getElementById('uploadBtn');
+        let selectedFile = null;
+
+        // Drag and drop handlers
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.classList.add('drag-over');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.classList.remove('drag-over');
+            });
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            selectedFile = file;
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = UI.formatFileSize(file.size);
+            fileInfo.style.display = 'block';
+            uploadBtn.disabled = false;
+        }
+
+        document.getElementById('removeFile').addEventListener('click', () => {
+            selectedFile = null;
+            fileInput.value = '';
+            fileInfo.style.display = 'none';
+            uploadBtn.disabled = true;
+            document.getElementById('progressBar').style.display = 'none';
+        });
+
+        uploadBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
+
+            uploadBtn.disabled = true;
+            const progressBar = document.getElementById('progressBar');
+            const progress = document.getElementById('progress');
+
+            progressBar.style.display = 'block';
+
+            // Simulated progress bar
+            for (let i = 0; i <= 50; i += 10) {
+                progress.style.width = i + '%';
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+
+            const geneLimit = 700;
+
+            try {
+                // Parse file using GeneUtils
+                console.log("=== Parsing gene file ===");
+                const { valid, invalid, exceededLimit } = await GeneUtils.parseGeneFile(selectedFile, geneLimit);
+
+                // Check limit
+                if (exceededLimit) {
+                    UI.showAlert(
+                        `You have exceeded the maximum limit of ${geneLimit} gene symbols. File was NOT uploaded.`,
+                        "error"
+                    );
+                    uploadBtn.disabled = false;
+                    progressBar.style.display = 'none';
+                    return;
+                }
+
+                console.log("Valid genes:", valid.length);
+                console.log("Invalid entries:", invalid.length);
+
+                // Update progress
+                progress.style.width = '75%';
+
+                // Store in browser ONLY (no backend call)
+                GeneUtils.storeGeneData(valid, selectedFile.name, selectedFile.size);
+
+                const user = Auth.getCurrentUser();
+                if (user && user.id) {
+                    localStorage.setItem(`patient_${user.id}_genes`, JSON.stringify(valid));
+                    console.log(`✅ Genes stored for patient ${user.id}: ${valid.length} genes`);
+                }
+                
+                // Final progress
+                progress.style.width = '100%';
+
+                // Show appropriate message
+                if (invalid.length > 0) {
+                    const lineNumbers = invalid.map(x => x.lineNumber).join(", ");
+                    UI.showAlert(
+                        `File processed! ${invalid.length} invalid entries skipped (lines: ${lineNumbers}).`,
+                        "warning"
+                    );
+                } else {
+                    UI.showAlert(`File uploaded successfully! ${valid.length} genes stored securely in your browser.`, 'success');
+                }
+
+                // Reset UI
+                selectedFile = null;
+                fileInput.value = '';
+                fileInfo.style.display = 'none';
+                uploadBtn.disabled = true;
+                progressBar.style.display = 'none';
+
+                // Reload history
+                loadUploadHistory();
+
+                // For testing: View all genes from the uploaded file in console
+                const patientGenes = JSON.parse(localStorage.getItem("mappedGeneSymbols") || "[]");
+                console.log("Patient genes loaded:", patientGenes);
+
+            } catch (error) {
+                console.error('Upload error:', error);
+                UI.showAlert(error.message || 'Upload failed', 'error');
+                uploadBtn.disabled = false;
+                progressBar.style.display = 'none';
+            }
+        });
+
+        async function loadUploadHistory() {
+            try {
+                const container = document.getElementById('uploadHistory');
+                const uploads = GeneUtils.getUploadHistory();
+
+                if (uploads.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📁</div>
+                            <div class="empty-state-description">No files uploaded yet</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = uploads.map(upload => `
+                    <div style="padding: var(--space-md); border-bottom: 1px solid var(--border-light);">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-weight: 500;">📄 ${upload.fileName}</div>
+                                <div class="text-secondary text-sm">
+                                    ${UI.formatFileSize(upload.fileSize)} • 
+                                    ${upload.geneCount} genes • 
+                                    Uploaded ${UI.formatDate(upload.uploadedAt)}
+                                </div>
+                                <div class="text-sm" style="color: var(--success-color); margin-top: var(--space-xs);">
+                                    🔒 Stored securely in your browser
+                                </div>
+                            </div>
+                            <div>
+                                <a href="disease-selection.html" class="btn btn-primary btn-sm">
+                                    Continue to Disease Selection →
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error loading history:', error);
+            }
+        }
+
+        loadUploadHistory();
+        
+    </script>
+    <script>
+        const modal = document.getElementById("formatGuideModal");
+        const openBtn = document.getElementById("openFormatGuide");
+        const closeBtn = document.getElementById("closeFormatGuide");
+
+        openBtn.onclick = () => modal.style.display = "flex";
+        closeBtn.onclick = () => modal.style.display = "none";
+
+        window.onclick = (event) => {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        };
+    </script>
+</body>
+
+</html>

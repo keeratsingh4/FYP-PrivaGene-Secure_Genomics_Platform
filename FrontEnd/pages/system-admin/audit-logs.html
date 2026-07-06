@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Logs - PrivaGene</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="javascript:Navigation.goHome()"
+                style="display: flex; align-items: center; gap: var(--space-sm); text-decoration: none;">
+                <span style="font-size: var(--text-3xl);">🧬</span>
+                <span style="font-size: var(--text-xl); font-weight: 700; color: var(--primary-color);">PrivaGene</span>
+            </a>
+        </div>
+
+        <div
+            style="margin-bottom: var(--space-xl); padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);" data-user-name>User</div>
+            <div style="font-size: var(--text-sm); color: var(--text-tertiary);" data-user-role>System Admin</div>
+        </div>
+
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item"><a href="dashboard.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📊</span>Dashboard</a></li>
+                <li class="sidebar-item"><a href="audit-logs.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📋</span>Audit Logs</a></li>
+                <li class="sidebar-item"><a href="user-management.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">👥</span>User Management</a></li>
+                <li class="sidebar-item"><a href="organizations.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">🏥</span>Organizations</a></li>
+                <li class="sidebar-item"><a href="platform-analytics.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📈</span>Platform Analytics</a></li>
+                <li class="sidebar-item"><a href="system-settings.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">⚙️</span>System Settings</a></li>
+            </ul>
+        </nav>
+
+        <div style="margin-top: auto;">
+            <button id="logout-btn" class="sidebar-link"
+                style="width: 100%; border: none; background: transparent; cursor: pointer;">
+                <span class="sidebar-link-icon">🚪</span>
+                Logout
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-with-sidebar">
+        <div class="container-fluid">
+            <div style="margin-bottom: var(--space-2xl);">
+                <h1 style="font-size: var(--text-4xl); font-weight: 700; margin-bottom: var(--space-sm);">Audit Logs
+                </h1>
+                <p class="text-secondary">Monitor all system activity and user actions</p>
+            </div>
+
+            <!-- Filters -->
+            <div class="card" style="margin-bottom: var(--space-xl);">
+                <div class="card-header">
+                    <h3 class="card-title">Filters</h3>
+                </div>
+                <div class="card-body">
+                    <div class="grid grid-cols-4 gap-md">
+                        <div class="form-group">
+                            <label class="form-label">User Email</label>
+                            <input type="text" id="filterEmail" class="form-input" placeholder="user@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Action</label>
+                            <select id="filterAction" class="form-input">
+                                <option value="">All Actions</option>
+                                <optgroup label="Authentication">
+                                    <option value="login">Login</option>
+                                    <option value="logout">Logout</option>
+                                </optgroup>
+                                <optgroup label="User Management">
+                                    <option value="user_registered">User Registered</option>
+                                    <option value="user_approved">User Approved</option>
+                                    <option value="user_suspended">User Suspended</option>
+                                    <option value="user_activated">User Activated</option>
+                                    <option value="user_deleted">User Deleted</option>
+                                    <option value="update_profile">Update Profile</option>
+                                </optgroup>
+                                <optgroup label="Patient Actions">
+                                    <option value="upload_gene">Upload Gene</option>
+                                    <option value="compute_risk">Compute Risk</option>
+                                    <option value="book_appointment">Book Appointment</option>
+                                </optgroup>
+                                <optgroup label="Hospital Actions">
+                                    <option value="create_disease">Create Disease</option>
+                                    <option value="update_disease">Update Disease</option>
+                                    <option value="delete_disease">Delete Disease</option>
+                                </optgroup>
+                                <optgroup label="Data">
+                                    <option value="data_export">Data Export</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" id="filterStartDate" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">End Date</label>
+                            <input type="date" id="filterEndDate" class="form-input">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-4 gap-md" style="margin-top: var(--space-md);">
+                        <div class="form-group">
+                            <label class="form-label">Status</label>
+                            <select id="filterStatus" class="form-input">
+                                <option value="">All Status</option>
+                                <option value="success">Success</option>
+                                <option value="failure">Failure</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">User Role</label>
+                            <select id="filterRole" class="form-input">
+                                <option value="">All Roles</option>
+                                <option value="patient">Patient</option>
+                                <option value="hospital">Hospital</option>
+                                <option value="researcher">Researcher</option>
+                                <option value="system_admin">System Admin</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button id="applyFilters" class="btn btn-primary">Apply Filters</button>
+                    <button id="clearFilters" class="btn btn-outline">Clear</button>
+                </div>
+            </div>
+
+            <!-- Logs Table -->
+            <div class="card">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3 class="card-title">Activity Logs (<span id="logCount">0</span>)</h3>
+                    <button id="exportLogs" class="btn btn-outline btn-sm">Export CSV</button>
+                </div>
+                <div id="logsContainer">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/api-backend.js"></script>
+    <script src="../../js/navigation.js"></script>
+
+    <script>
+        Auth.requireRole('system_admin');
+        const user = Auth.getCurrentUser();
+        Navigation.displayUserInfo(user);
+        Navigation.setActiveNav();
+
+        document.getElementById('logout-btn').addEventListener('click', () => Auth.logout());
+
+        let allLogs = [];
+
+        async function loadLogs(filters = {}) {
+            UI.showLoading('Loading audit logs...');
+            try {
+                allLogs = await API.getAuditLogs(filters);
+                displayLogs(allLogs);
+            } catch (error) {
+                console.error('Error loading logs:', error);
+                UI.showAlert('Failed to load audit logs', 'error');
+            } finally {
+                UI.hideLoading();
+            }
+        }
+
+        function displayLogs(logs) {
+            const container = document.getElementById('logsContainer');
+            document.getElementById('logCount').textContent = logs.length;
+
+            if (logs.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="padding: var(--space-2xl);">
+                        <div class="empty-state-icon">📝</div>
+                        <div class="empty-state-description">No logs found</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const getStatusBadge = (status) => {
+                if (status === 'failure') return 'badge-danger';
+                return 'badge-success';
+            };
+
+            const getActionBadge = (action) => {
+                if (action.includes('delete') || action.includes('suspend')) return 'badge-danger';
+                if (action.includes('login') || action.includes('logout')) return 'badge-info';
+                if (action.includes('upload') || action.includes('compute')) return 'badge-primary';
+                return 'badge-secondary';
+            };
+
+            const formatDetails = (details) => {
+                if (!details || details === '-') return '-';
+                try {
+                    const parsed = typeof details === 'string' ? JSON.parse(details) : details;
+                    if (parsed.message) return parsed.message;
+                    return Object.entries(parsed).map(([k, v]) => `${k}: ${v}`).join(', ');
+                } catch {
+                    return details;
+                }
+            };
+
+            const table = `
+                <div style="overflow-x: auto;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>User</th>
+                                <th>Role</th>
+                                <th>Action</th>
+                                <th>Status</th>
+                                <th>IP Address</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${logs.map(log => `
+                                <tr>
+                                    <td class="text-sm">${UI.formatDateTime(log.timestamp)}</td>
+                                    <td>${log.userEmail || 'N/A'}</td>
+                                    <td><span class="badge badge-secondary">${log.userRole || 'N/A'}</span></td>
+                                    <td><span class="badge ${getActionBadge(log.action)}">${log.action}</span></td>
+                                    <td><span class="badge ${getStatusBadge(log.status)}">${log.status || 'success'}</span></td>
+                                    <td class="text-secondary text-sm">${log.ipAddress || 'N/A'}</td>
+                                    <td class="text-secondary text-sm" style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;" title="${formatDetails(log.details)}">${formatDetails(log.details)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            container.innerHTML = table;
+        }
+
+        document.getElementById('applyFilters').addEventListener('click', () => {
+            const filters = {
+                userEmail: document.getElementById('filterEmail').value,
+                action: document.getElementById('filterAction').value,
+                startDate: document.getElementById('filterStartDate').value,
+                endDate: document.getElementById('filterEndDate').value,
+                status: document.getElementById('filterStatus').value,
+                userRole: document.getElementById('filterRole').value
+            };
+
+            // Remove empty filters
+            Object.keys(filters).forEach(key => {
+                if (!filters[key]) delete filters[key];
+            });
+
+            loadLogs(filters);
+        });
+
+        document.getElementById('clearFilters').addEventListener('click', () => {
+            document.getElementById('filterEmail').value = '';
+            document.getElementById('filterAction').value = '';
+            document.getElementById('filterStartDate').value = '';
+            document.getElementById('filterEndDate').value = '';
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterRole').value = '';
+            loadLogs();
+        });
+
+        document.getElementById('exportLogs').addEventListener('click', () => {
+            // Check if there are logs to export
+            if (allLogs.length === 0) {
+                UI.showAlert('No logs to export', 'warning');
+                return;
+            }
+
+            // Convert logs to CSV
+            const headers = ['Timestamp', 'User', 'User Role', 'Action', 'Status', 'IP Address', 'Resource Type', 'Details'];
+            const rows = allLogs.map(log => [
+                log.timestamp || '',
+                log.userEmail || 'N/A',
+                log.userRole || 'N/A',
+                log.action || '',
+                log.status || 'success',
+                log.ipAddress || 'N/A',
+                log.resourceType || 'N/A',
+                log.details || '-'
+            ]);
+
+            // Escape CSV values properly (handle quotes and commas)
+            const escapeCSV = (value) => {
+                const str = String(value).replace(/"/g, '""');
+                return `"${str}"`;
+            };
+
+            const csvContent = [
+                headers.map(escapeCSV).join(','),
+                ...rows.map(row => row.map(escapeCSV).join(','))
+            ].join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `audit_logs_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+
+            UI.showAlert('Logs exported successfully', 'success');
+        });
+
+        loadLogs();
+    </script>
+</body>
+
+</html>

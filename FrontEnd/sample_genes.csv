@@ -1,0 +1,39 @@
+disease_name,disease_code,gene_symbol,description
+Breast Cancer,BRCA-RISK,BRCA1,Breast cancer susceptibility gene 1
+Breast Cancer,BRCA-RISK,BRCA2,Breast cancer susceptibility gene 2
+Breast Cancer,BRCA-RISK,TP53,Tumor protein p53
+Breast Cancer,BRCA-RISK,PALB2,Partner and localizer of BRCA2
+Breast Cancer,BRCA-RISK,ATM,ATM serine/threonine kinase
+Breast Cancer,BRCA-RISK,CHEK2,Checkpoint kinase 2
+Alzheimer's Disease,ALZ-RISK,APOE,Apolipoprotein E - major genetic risk factor
+Alzheimer's Disease,ALZ-RISK,APP,Amyloid precursor protein
+Alzheimer's Disease,ALZ-RISK,PSEN1,Presenilin 1
+Alzheimer's Disease,ALZ-RISK,TREM2,Triggering receptor expressed on myeloid cells 2
+Cardiovascular Disease,CVD-RISK,LDLR,Low density lipoprotein receptor
+Cardiovascular Disease,CVD-RISK,PCSK9,Proprotein convertase subtilisin/kexin type 9
+Cardiovascular Disease,CVD-RISK,APOB,Apolipoprotein B
+Cardiovascular Disease,CVD-RISK,LPA,Lipoprotein(a)
+Type 2 Diabetes,T2D-RISK,TCF7L2,Transcription factor 7-like 2
+Type 2 Diabetes,T2D-RISK,FTO,Fat mass and obesity-associated protein
+Type 2 Diabetes,T2D-RISK,KCNJ11,Potassium channel gene
+Type 2 Diabetes,T2D-RISK,SLC30A8,Zinc transporter 8
+Colorectal Cancer,CRC-RISK,APC,Adenomatous polyposis coli
+Colorectal Cancer,CRC-RISK,MLH1,MutL homolog 1
+Colorectal Cancer,CRC-RISK,MSH2,MutS homolog 2
+Colorectal Cancer,CRC-RISK,MSH6,MutS homolog 6
+Colorectal Cancer,CRC-RISK,MUTYH,MutY DNA glycosylase
+Lung Cancer,LUNG-RISK,EGFR,Epidermal growth factor receptor
+Lung Cancer,LUNG-RISK,KRAS,KRAS proto-oncogene
+Lung Cancer,LUNG-RISK,ALK,ALK receptor tyrosine kinase
+Lung Cancer,LUNG-RISK,BRAF,B-Raf proto-oncogene
+Obesity,OBS-RISK,MC4R,Melanocortin 4 receptor
+Obesity,OBS-RISK,LEP,Leptin
+Obesity,OBS-RISK,BDNF,Brain derived neurotrophic factor
+Inflammatory,INF-RISK,NOD2,Nucleotide binding oligomerization domain 2
+Inflammatory,INF-RISK,IL23R,Interleukin 23 receptor
+Parkinsons Disease,PD-RISK,LRRK2,Leucine rich repeat kinase 2
+Parkinsons Disease,PD-RISK,GBA1,Glucosylceramidase beta 1
+Parkinsons Disease,PD-RISK,PINK1,PTEN induced kinase 1
+Cystic Fibrosis,CF-RISK,CFTR,CF transmembrane conductance regulator
+Hypertrophic Cardiomyopathy,HCM-RISK,MYH7,Myosin heavy chain 7
+Hypertrophic Cardiomyopathy,HCM-RISK,MYBPC3,Myosin binding protein C3

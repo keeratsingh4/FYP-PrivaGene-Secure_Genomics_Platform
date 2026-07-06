@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Patient Gene Data - PrivaGene Caregiver</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+</head>
+
+<style>
+.permission-denied-container {
+    max-width: 500px;
+    margin: var(--space-xl) auto;
+    text-align: center;
+    padding: var(--space-lg);
+}
+
+.permission-denied-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--space-md);
+    background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.15);
+}
+
+.permission-denied-title {
+    font-size: var(--text-xl);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--space-xs);
+}
+
+.permission-denied-message {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-md);
+    line-height: 1.5;
+}
+
+.permission-denied-instructions {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin: var(--space-md) 0;
+    text-align: left;
+}
+
+.permission-denied-instructions h4 {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    margin-bottom: var(--space-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.permission-step {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-sm);
+    font-size: var(--text-sm);
+}
+
+.permission-step:last-child {
+    margin-bottom: 0;
+}
+
+.permission-step-number {
+    width: 20px;
+    height: 20px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    flex-shrink: 0;
+    font-size: 11px;
+}
+
+.permission-step-text {
+    flex: 1;
+    padding-top: 1px;
+}
+
+.permission-step-text strong {
+    display: block;
+    margin-bottom: 2px;
+    font-size: var(--text-sm);
+}
+
+.permission-step-text .text-secondary {
+    font-size: var(--text-xs);
+}
+
+.permission-actions {
+    display: flex;
+    gap: var(--space-sm);
+    justify-content: center;
+    margin-top: var(--space-md);
+}
+</style>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="../../index.html"
+                style="display: flex; align-items: center; gap: var(--space-sm); text-decoration: none;">
+                <span style="font-size: var(--text-3xl);">🧬</span>
+                <span style="font-size: var(--text-xl); font-weight: 700; color: var(--primary-color);">PrivaGene</span>
+            </a>
+        </div>
+
+        <div
+            style="margin-bottom: var(--space-xl); padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);" data-user-name>User</div>
+            <div style="font-size: var(--text-sm); color: var(--text-tertiary);" data-user-email>user@example.com</div>
+            <div style="margin-top: var(--space-sm);"><span class="badge badge-info">Caregiver</span></div>
+        </div>
+
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item"><a href="dashboard.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📊</span>Dashboard</a></li>
+                <li class="sidebar-item"><a href="my-patients.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">👥</span>My Patients</a></li>
+                <li class="sidebar-item"><a href="profile.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">👤</span>Profile</a></li>
+            </ul>
+        </nav>
+
+        <div style="margin-top: auto;">
+            <button id="logout-btn" class="sidebar-link"
+                style="width: 100%; border: none; background: transparent; cursor: pointer;">
+                <span class="sidebar-link-icon">🚪</span>Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-with-sidebar">
+        <div class="container-narrow">
+            <!-- Back button with patient context -->
+            <a id="backLink" href="my-patients.html" class="back-link">← Back to My Patients</a>
+
+            <div style="margin-bottom: var(--space-2xl); margin-top: var(--space-lg);">
+                <!-- Patient context banner -->
+                <div class="alert alert-info" style="margin-bottom: var(--space-lg);">
+                    <span class="alert-icon">👤</span>
+                    <div class="alert-content">
+                        <div class="alert-title">Running Assessment For</div>
+                        <p id="patientContext">Loading patient information...</p>
+                    </div>
+                </div>
+
+                <h1 style="font-size: var(--text-4xl); font-weight: 700; margin-bottom: var(--space-sm);">Upload Patient's Genetic Data</h1>
+                <p class="text-secondary">Upload the patient's genetic data file for secure analysis</p>
+            </div>
+
+            <div class="alert alert-info" style="margin-bottom: var(--space-2xl);">
+                <span class="alert-icon">ℹ️</span>
+                <div class="alert-content">
+                    <div class="alert-title">Supported File Formats</div>
+                    <p>VCF, FASTA, TXT, or CSV files containing genetic data.</p>
+                    <a id="openFormatGuide" class="format-guide-link">How should my file be formatted?</a>
+                </div>
+            </div>
+
+            <!-- Upload Area -->
+            <div class="card" id="upload-card">
+                <div class="file-upload" id="dropZone">
+                    <input type="file" id="fileInput" accept=".vcf,.fasta,.txt,.csv">
+                    <div class="file-upload-icon">📁</div>
+                    <div class="file-upload-text">Drop patient's file here or click to browse</div>
+                    <div class="file-upload-hint">Maximum file size: 100MB</div>
+                </div>
+
+                <div id="fileInfo" style="display: none; margin-top: var(--space-lg);">
+                    <div
+                        style="padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm);">
+                            <div>
+                                <div style="font-weight: 500;" id="fileName"></div>
+                                <div class="text-secondary text-sm" id="fileSize"></div>
+                            </div>
+                            <button id="removeFile" class="btn btn-ghost btn-sm">Remove</button>
+                        </div>
+
+                        <div class="progress" id="progressBar" style="display: none;">
+                            <div class="progress-bar progress-bar-animated" id="progress" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: var(--space-xl);">
+                    <button id="uploadBtn" class="btn btn-primary btn-block btn-lg" disabled>
+                        Process File & Continue
+                    </button>
+                </div>
+            </div>
+
+            <!-- Current Upload Status -->
+            <div class="card" style="margin-top: var(--space-2xl);">
+                <div class="card-header">
+                    <h3 class="card-title">Current Upload Status</h3>
+                </div>
+                <div id="uploadHistory">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- File Format Guide Modal -->
+    <div id="formatGuideModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close" id="closeFormatGuide">&times;</span>
+
+            <h2>How to Format Genetic Data File</h2>
+            <p>The file should contain a list of <strong>gene symbols</strong> such as <code>BRCA1</code>, <code>TP53</code>, <code>EGFR</code>, etc.</p>
+            <p>Supported formats: <strong>VCF</strong>, <strong>FASTA</strong>, <strong>TXT</strong>, or <strong>CSV</strong> files.</p>
+            <p>We support flexible formatting. The file may contain:</p>
+            <ul>
+                <li>Comma-separated gene symbols</li>
+                <li>Space-separated gene symbols</li>
+                <li>Each gene on a new line</li>
+                <li>Any combination of the above</li>
+            </ul>
+            <br>
+
+            <h3>Rules</h3>
+            <ul>
+                <li>Only valid gene symbols (letters, numbers, hyphens, underscores)</li>
+                <li>Maximum of <strong>700 gene symbols</strong> per file</li>
+                <li>Blank lines and lines starting with <code>#</code> are ignored</li>
+                <li>Duplicate gene symbols are automatically removed</li>
+            </ul>
+            <br>
+            
+            <h3>Good Examples</h3>
+            <pre class="example-block good">
+GOOD (comma or space):
+BRCA1, TP53, EGFR, VEGFA APOE MTHFR
+            </pre>
+            <pre class="example-block good">
+GOOD (newline):
+BRCA1
+TP53
+EGFR
+VEGFA
+            </pre>
+            <pre class="example-block good">
+GOOD (mixed formatting):
+BRCA1 TP53, EGFR
+APOE, MTHFR COMT
+            </pre>
+            <br>
+
+            <h3>Bad Examples</h3>
+            <pre class="example-block bad">
+BAD:
+BRCA1 TP53   @@@$%     (invalid characters)
+ABC123,      ,,,       (nonsense values)
+x y z         (too vague, not gene symbols)
+            </pre>
+
+            <button class="btn btn-primary" onclick="document.getElementById('formatGuideModal').style.display='none'">Got It</button>
+        </div>
+    </div>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/api-backend.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script src="../../js/gene-utils.js"></script>
+
+    <script>
+        Auth.requireRole('caregiver');
+
+        const user = Auth.getCurrentUser();
+        Navigation.displayUserInfo(user);
+        Navigation.setActiveNav();
+
+        document.getElementById('logout-btn').addEventListener('click', () => Auth.logout());
+
+        // Get patient ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const patientId = urlParams.get('patientId');
+
+        if (!patientId) {
+            alert('No patient selected');
+            window.location.href = 'my-patients.html';
+        }
+
+        // Update back link
+        document.getElementById('backLink').href = `patient-view.html?patientId=${patientId}`;
+
+        // Load patient information for context
+        let patientData = null;
+
+        async function loadPatientContext() {
+            try {
+                patientData = await API.getUserById(patientId);
+                const firstName = patientData.first_name || patientData.firstName || '';
+                const lastName = patientData.last_name || patientData.lastName || '';
+                const fullName = `${firstName} ${lastName}`.trim() || patientData.email;
+                
+                document.getElementById('patientContext').innerHTML = `
+                    <strong>${fullName}</strong> (${patientData.email})
+                `;
+
+            // Check assessment permission (New)
+            await checkAssessmentPermission();
+
+            } catch (error) {
+                console.error('Error loading patient context:', error);
+                document.getElementById('patientContext').textContent = 'Patient information unavailable';
+            }
+        }
+
+        loadPatientContext();
+
+        async function checkAssessmentPermission() {
+            try {
+                const access = await API.verifyCaregiverAccess(patientId);
+                
+                if (!access.hasAccess) {
+                    alert('You no longer have access to this patient');
+                    window.location.href = 'my-patients.html';
+                    return false;
+                }
+                
+                const patients = await API.getPatientsForCaregiver(user.id, 'active');
+                const patientAccess = patients.patients.find(p => p.patient_id === patientId);
+                
+                if (!patientAccess) {
+                    alert('Access details not found');
+                    window.location.href = 'my-patients.html';
+                    return false;
+                }
+                
+                const canRunAssessments = patientAccess.can_run_assessments || patientAccess.canRunAssessments || 0;
+                
+                if (!canRunAssessments) {
+                    const firstName = patientData?.first_name || patientData?.firstName || 'the patient';
+                    const fullName = `${patientData?.first_name || patientData?.firstName || ''} ${patientData?.last_name || patientData?.lastName || ''}`.trim() || 'the patient';
+                    
+                    document.getElementById('upload-card').innerHTML = `
+                        <div class="permission-denied-container">
+                            <div class="permission-denied-icon">🔒</div>
+                            
+                            <h2 class="permission-denied-title">Permission Required</h2>
+                            
+                            <p class="permission-denied-message">
+                                <strong>${fullName}</strong> hasn't granted permission to run assessments.
+                            </p>
+                            
+                            <div class="permission-denied-instructions">
+                                <h4><span>📋</span><span>How to Get Permission</span></h4>
+                                
+                                <div class="permission-step">
+                                    <div class="permission-step-number">1</div>
+                                    <div class="permission-step-text">
+                                        <strong>Ask ${firstName}</strong>
+                                        <span class="text-secondary">Contact them to enable permissions</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="permission-step">
+                                    <div class="permission-step-number">2</div>
+                                    <div class="permission-step-text">
+                                        <strong>Family Access Page</strong>
+                                        <span class="text-secondary">They open their Family Access settings</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="permission-step">
+                                    <div class="permission-step-number">3</div>
+                                    <div class="permission-step-text">
+                                        <strong>Toggle ON</strong>
+                                        <span class="text-secondary">"Can run risk assessments" for you</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="permission-actions">
+                                <a href="patient-view.html?patientId=${patientId}" class="btn btn-secondary btn-sm">
+                                    ← Back
+                                </a>
+                                <button onclick="location.reload()" class="btn btn-primary btn-sm">
+                                    🔄 Retry
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    const fileInputEl = document.getElementById('fileInput');
+                    const uploadBtnEl = document.getElementById('uploadBtn');
+                    if (fileInputEl) fileInputEl.disabled = true;
+                    if (uploadBtnEl) uploadBtnEl.disabled = true;
+                    
+                    return false;
+                }
+                
+                return true;
+                
+            } catch (error) {
+                console.error('Error checking assessment permission:', error);
+                return false;
+            }
+        }
+
+
+        // File upload logic (same as patient page)
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const uploadBtn = document.getElementById('uploadBtn');
+        let selectedFile = null;
+
+        // Drag and drop handlers
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.classList.add('drag-over');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dropZone.classList.remove('drag-over');
+            });
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            selectedFile = file;
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = UI.formatFileSize(file.size);
+            fileInfo.style.display = 'block';
+            uploadBtn.disabled = false;
+        }
+
+        document.getElementById('removeFile').addEventListener('click', () => {
+            selectedFile = null;
+            fileInput.value = '';
+            fileInfo.style.display = 'none';
+            uploadBtn.disabled = true;
+            document.getElementById('progressBar').style.display = 'none';
+        });
+
+        uploadBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
+
+            uploadBtn.disabled = true;
+            const progressBar = document.getElementById('progressBar');
+            const progress = document.getElementById('progress');
+
+            progressBar.style.display = 'block';
+
+            // Simulated progress bar
+            for (let i = 0; i <= 50; i += 10) {
+                progress.style.width = i + '%';
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+
+            const geneLimit = 700;
+
+            try {
+                // Parse file using GeneUtils
+                console.log("=== Parsing patient gene file (caregiver flow) ===");
+                const { valid, invalid, exceededLimit } = await GeneUtils.parseGeneFile(selectedFile, geneLimit);
+
+                // Check limit
+                if (exceededLimit) {
+                    UI.showAlert(
+                        `File exceeds the maximum limit of ${geneLimit} gene symbols. File was NOT processed.`,
+                        "error"
+                    );
+                    uploadBtn.disabled = false;
+                    progressBar.style.display = 'none';
+                    return;
+                }
+
+                console.log("Valid genes:", valid.length);
+                console.log("Invalid entries:", invalid.length);
+
+                // Update progress
+                progress.style.width = '75%';
+
+                // Store genes using BOTH standard key and patient-specific key
+                // This mimics what happens when a patient uploads
+                GeneUtils.storeGeneData(valid, selectedFile.name, selectedFile.size);
+                
+                // Also store with patient ID (for this patient)
+                localStorage.setItem(`patient_${patientId}_genes`, JSON.stringify(valid));
+                console.log(`✅ Genes stored for patient ${patientId}: ${valid.length} genes`);
+
+                // Final progress
+                progress.style.width = '100%';
+
+                // Show appropriate message
+                if (invalid.length > 0) {
+                    const lineNumbers = invalid.map(x => x.lineNumber).join(", ");
+                    UI.showAlert(
+                        `File processed! ${invalid.length} invalid entries skipped (lines: ${lineNumbers}).`,
+                        "warning"
+                    );
+                } else {
+                    UI.showAlert(`File processed successfully! ${valid.length} genes ready for risk assessment.`, 'success');
+                }
+
+                // Wait a moment then redirect to disease selection
+                setTimeout(() => {
+                    window.location.href = `disease-selection.html?patientId=${patientId}`;
+                }, 1500);
+
+            } catch (error) {
+                console.error('Upload error:', error);
+                UI.showAlert(error.message || 'File processing failed', 'error');
+                uploadBtn.disabled = false;
+                progressBar.style.display = 'none';
+            }
+        });
+
+        async function loadUploadHistory() {
+            try {
+                const container = document.getElementById('uploadHistory');
+                
+                // Check if genes are already stored for this patient
+                const storedGenes = localStorage.getItem(`patient_${patientId}_genes`);
+                const uploads = GeneUtils.getUploadHistory();
+
+                if (!storedGenes && uploads.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📁</div>
+                            <div class="empty-state-description">No file uploaded yet for this patient</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                if (storedGenes) {
+                    const genes = JSON.parse(storedGenes);
+                    const upload = uploads[0] || { fileName: 'Previous upload', fileSize: 0, uploadedAt: new Date().toISOString() };
+                    
+                    container.innerHTML = `
+                        <div style="padding: var(--space-md); border-bottom: 1px solid var(--border-light);">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-weight: 500;">📄 ${upload.fileName}</div>
+                                    <div class="text-secondary text-sm">
+                                        ${genes.length} genes ready for assessment
+                                    </div>
+                                    <div class="text-sm" style="color: var(--success-color); margin-top: var(--space-xs);">
+                                        🔒 Stored securely in your browser
+                                    </div>
+                                </div>
+                                <div>
+                                    <a href="disease-selection.html?patientId=${patientId}" class="btn btn-primary btn-sm">
+                                        Continue to Disease Selection →
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📁</div>
+                            <div class="empty-state-description">No file uploaded yet for this patient</div>
+                        </div>
+                    `;
+                }
+
+            } catch (error) {
+                console.error('Error loading history:', error);
+            }
+        }
+
+        loadUploadHistory();
+
+        // Format guide modal
+        const modal = document.getElementById("formatGuideModal");
+        const openBtn = document.getElementById("openFormatGuide");
+        const closeBtn = document.getElementById("closeFormatGuide");
+
+        openBtn.onclick = () => modal.style.display = "flex";
+        closeBtn.onclick = () => modal.style.display = "none";
+
+        window.onclick = (e) => {
+            if (e.target === modal) {
+                modal.style.display = "none";
+            }
+        };
+    </script>
+</body>
+
+</html>

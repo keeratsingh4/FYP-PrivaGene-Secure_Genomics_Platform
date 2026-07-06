@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disease Analytics - PrivaGene</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+
+    <style>
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: var(--space-lg);
+            transition: color var(--transition-base);
+        }
+
+        .back-link:hover {
+            color: var(--primary-color);
+        }
+
+        .disease-header {
+            margin-bottom: var(--space-2xl);
+        }
+
+        .disease-title {
+            font-size: var(--text-4xl);
+            font-weight: 700;
+            margin-bottom: var(--space-xs);
+        }
+
+        .disease-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--space-lg);
+            color: var(--text-secondary);
+        }
+
+        .disease-code {
+            font-family: monospace;
+            background: var(--bg-tertiary);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+        }
+
+        .hospital-badge {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: var(--space-md);
+            margin-bottom: var(--space-2xl);
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-md);
+            text-align: center;
+        }
+
+        .stat-card-value {
+            font-size: var(--text-2xl);
+            font-weight: 700;
+            margin-bottom: var(--space-xs);
+        }
+
+        .stat-card-label {
+            font-size: var(--text-xs);
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+        }
+
+        .stat-card.primary .stat-card-value {
+            color: var(--primary-color);
+        }
+
+        .stat-card.very-low .stat-card-value {
+            color: #10b981;
+        }
+
+        .stat-card.low .stat-card-value {
+            color: #22c55e;
+        }
+
+        .stat-card.medium .stat-card-value {
+            color: #f59e0b;
+        }
+
+        .stat-card.high .stat-card-value {
+            color: #f97316;
+        }
+
+        .stat-card.very-high .stat-card-value {
+            color: #ef4444;
+        }
+
+        .distribution-chart {
+            display: flex;
+            gap: var(--space-md);
+            justify-content: center;
+            align-items: flex-end;
+            height: 280px;
+            padding: var(--space-lg);
+            padding-bottom: var(--space-xl);
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-lg);
+        }
+
+        .distribution-bar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            gap: var(--space-sm);
+            height: 200px;
+            width: 80px;
+        }
+
+        .bar {
+            width: 50px;
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
+            transition: height var(--transition-base);
+            min-height: 4px;
+            max-height: 150px;
+        }
+
+        .bar.very-low {
+            background: #10b981;
+        }
+
+        .bar.low {
+            background: #22c55e;
+        }
+
+        .bar.medium {
+            background: #f59e0b;
+        }
+
+        .bar.high {
+            background: #f97316;
+        }
+
+        .bar.very-high {
+            background: #ef4444;
+        }
+
+        .bar-label {
+            font-size: var(--text-xs);
+            color: var(--text-secondary);
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .bar-value {
+            font-weight: 600;
+            font-size: var(--text-base);
+        }
+
+        .bar-range {
+            font-size: 10px;
+            color: var(--text-tertiary);
+        }
+
+        /* Age Distribution Pie Chart Styles */
+        .age-chart-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2xl);
+            padding: var(--space-lg);
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-lg);
+        }
+
+        .pie-chart {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .pie-legend {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            font-size: var(--text-sm);
+        }
+
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: var(--radius-sm);
+            flex-shrink: 0;
+        }
+
+        .legend-label {
+            color: var(--text-secondary);
+        }
+
+        .legend-value {
+            font-weight: 600;
+            margin-left: auto;
+            padding-left: var(--space-md);
+        }
+
+        .assessments-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .assessments-table th,
+        .assessments-table td {
+            padding: var(--space-md);
+            text-align: left;
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .assessments-table th {
+            font-weight: 600;
+            color: var(--text-tertiary);
+            font-size: var(--text-sm);
+            text-transform: uppercase;
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-full);
+            font-size: var(--text-sm);
+            font-weight: 500;
+        }
+
+        .risk-badge.very-low {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .risk-badge.low {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+        }
+
+        .risk-badge.medium {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .risk-badge.high {
+            background: rgba(249, 115, 22, 0.1);
+            color: #f97316;
+        }
+
+        .risk-badge.very-high {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: var(--space-3xl);
+            color: var(--text-tertiary);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-primary);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto var(--space-lg);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--space-3xl);
+            color: var(--text-tertiary);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: var(--space-lg);
+            opacity: 0.5;
+        }
+
+        .trend-chart {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+
+        .trend-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: var(--space-lg);
+            height: 180px;
+            padding-top: var(--space-lg);
+        }
+
+        .trend-bar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            gap: var(--space-xs);
+            width: 60px;
+            min-width: 50px;
+            max-width: 80px;
+            height: 100%;
+        }
+
+        .trend-bar-fill {
+            width: 40px;
+            background: var(--primary-color);
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            min-height: 4px;
+            max-height: 120px;
+        }
+
+        .trend-bar-label {
+            font-size: var(--text-xs);
+            color: var(--text-tertiary);
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .info-box {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-lg);
+        }
+
+        .info-box-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: var(--space-sm);
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="javascript:void(0)"
+                style="display: flex; align-items: center; gap: var(--space-sm); text-decoration: none; cursor: default;">
+                <span style="font-size: var(--text-3xl);">🧬</span>
+                <span style="font-size: var(--text-xl); font-weight: 700; color: var(--primary-color);">PrivaGene</span>
+            </a>
+        </div>
+
+        <div
+            style="margin-bottom: var(--space-xl); padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);" data-user-name>Researcher</div>
+            <div style="font-size: var(--text-sm); color: var(--text-tertiary);" data-user-email>
+                researcher@university.edu</div>
+        </div>
+
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item"><a href="dashboard.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📊</span>Dashboard</a></li>
+                <li class="sidebar-item"><a href="datasets.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📈</span>Datasets</a></li>
+                <li class="sidebar-item"><a href="analytics.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">🔬</span>Analytics</a></li>
+                <li class="sidebar-item"><a href="profile.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">👤</span>Profile</a></li>
+            </ul>
+        </nav>
+
+        <div style="margin-top: auto;"><button id="logout-btn" class="sidebar-link"
+                style="width: 100%; border: none; background: transparent; cursor: pointer;"><span
+                    class="sidebar-link-icon">🚪</span>Logout</button></div>
+    </aside>
+
+    <main class="main-with-sidebar">
+        <div class="container-fluid">
+            <a href="analytics.html" class="back-link">← Back to Analytics</a>
+
+            <div id="content">
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p>Loading disease analytics...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script src="../../js/api-backend.js"></script>
+
+    <script>
+        Auth.requireRole('researcher');
+        const user = Auth.getCurrentUser();
+        Navigation.displayUserInfo(user);
+        Navigation.setActiveNav();
+
+        document.getElementById('logout-btn').addEventListener('click', () => Auth.logout());
+
+        // Get disease ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const diseaseId = urlParams.get('id');
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Updated to 5 risk levels with your specified ranges
+        // 0-20%, >20-40%, >40-60%, >60-80%, >80-100%
+        function getRiskLevel(riskPercentage) {
+            if (riskPercentage > 80) return 'very-high';
+            if (riskPercentage > 60) return 'high';
+            if (riskPercentage > 40) return 'medium';
+            if (riskPercentage > 20) return 'low';
+            return 'very-low';
+        }
+
+        function getRiskLevelLabel(level) {
+            const labels = {
+                'very-low': 'Very Low',
+                'low': 'Low',
+                'medium': 'Medium',
+                'high': 'High',
+                'very-high': 'Very High'
+            };
+            return labels[level] || level;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Calculate 5-level distribution from assessments
+        // Ranges: 0-20%, >20-40%, >40-60%, >60-80%, >80-100%
+        // DEBUG VERSION - Replace the calculateDistribution function temporarily
+        function calculateDistribution(assessments) {
+            console.log('=== DEBUG: calculateDistribution ===');
+            console.log('Total assessments received:', assessments.length);
+            
+            const distribution = {
+                veryLow: 0,   // 0-20%
+                low: 0,       // 21-40%
+                medium: 0,    // 41-60%
+                high: 0,      // 61-80%
+                veryHigh: 0   // 81-100%
+            };
+
+            assessments.forEach((a, index) => {
+                const risk = a.riskPercentage;
+                console.log(`Assessment ${index + 1}: riskPercentage =`, risk, `(type: ${typeof risk})`);
+                
+                // Skip only if null or undefined, but INCLUDE 0
+                if (risk === null || risk === undefined) {
+                    console.log(`  -> SKIPPED (null or undefined)`);
+                    return;
+                }
+                
+                // Use inclusive ranges
+                if (risk >= 81) {
+                    distribution.veryHigh++;
+                    console.log(`  -> veryHigh (>= 81)`);
+                }
+                else if (risk >= 61) {
+                    distribution.high++;
+                    console.log(`  -> high (61-80)`);
+                }
+                else if (risk >= 41) {
+                    distribution.medium++;
+                    console.log(`  -> medium (41-60)`);
+                }
+                else if (risk >= 21) {
+                    distribution.low++;
+                    console.log(`  -> low (21-40)`);
+                }
+                else if (risk >= 0) {
+                    distribution.veryLow++;
+                    console.log(`  -> veryLow (0-20)`);
+                }
+                else {
+                    console.log(`  -> NOT CATEGORIZED! Risk value:`, risk);
+                }
+            });
+
+            console.log('Final distribution:', distribution);
+            console.log('Total categorized:', Object.values(distribution).reduce((sum, val) => sum + val, 0));
+            console.log('=================================');
+            
+            return distribution;
+        }
+
+        // Calculate age from date of birth
+        function calculateAge(dateOfBirth) {
+            if (!dateOfBirth) return null;
+            const today = new Date();
+            const birthDate = new Date(dateOfBirth);
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+        // Calculate age distribution for pie chart
+        function calculateAgeDistribution(assessments) {
+            const distribution = {
+                under20: 0,
+                age21to30: 0,
+                age31to40: 0,
+                age41to50: 0,
+                age51to60: 0,
+                above60: 0
+            };
+
+            assessments.forEach(a => {
+                const age = calculateAge(a.dateOfBirth);
+                if (age === null) return;
+                
+                if (age <= 20) distribution.under20++;
+                else if (age <= 30) distribution.age21to30++;
+                else if (age <= 40) distribution.age31to40++;
+                else if (age <= 50) distribution.age41to50++;
+                else if (age <= 60) distribution.age51to60++;
+                else distribution.above60++;
+            });
+
+            return distribution;
+        }
+
+        // Generate CSS conic-gradient for pie chart
+        function generatePieChartGradient(ageDistribution) {
+            const colors = {
+                under20: '#8b5cf6',    // Purple
+                age21to30: '#3b82f6',  // Blue
+                age31to40: '#10b981',  // Green
+                age41to50: '#f59e0b',  // Yellow
+                age51to60: '#f97316',  // Orange
+                above60: '#ef4444'     // Red
+            };
+
+            const total = Object.values(ageDistribution).reduce((sum, val) => sum + val, 0);
+            if (total === 0) return 'conic-gradient(#e5e7eb 0deg 360deg)';
+
+            let currentAngle = 0;
+            const segments = [];
+
+            Object.entries(ageDistribution).forEach(([key, value]) => {
+                if (value > 0) {
+                    const angle = (value / total) * 360;
+                    segments.push(`${colors[key]} ${currentAngle}deg ${currentAngle + angle}deg`);
+                    currentAngle += angle;
+                }
+            });
+
+            return `conic-gradient(${segments.join(', ')})`;
+        }
+
+        function renderAnalytics(analytics) {
+            const content = document.getElementById('content');
+            const stats = analytics.statistics;
+            
+            // Calculate 5-level distribution from recent assessments
+            const distribution = calculateDistribution(analytics.recentAssessments);
+            
+            // Calculate age distribution for pie chart
+            const ageDistribution = calculateAgeDistribution(analytics.recentAssessments);
+            const pieChartGradient = generatePieChartGradient(ageDistribution);
+            const totalWithAge = Object.values(ageDistribution).reduce((sum, val) => sum + val, 0);
+
+            // Calculate max for scaling bars
+            const maxDistribution = Math.max(
+                distribution.veryLow, 
+                distribution.low, 
+                distribution.medium, 
+                distribution.high, 
+                distribution.veryHigh, 
+                1
+            );
+            const maxTrend = Math.max(...analytics.monthlyTrend.map(t => t.count), 1);
+
+            content.innerHTML = `
+                <!-- Disease Header -->
+                <div class="disease-header">
+                    <h1 class="disease-title">${escapeHtml(analytics.diseaseName)}</h1>
+                    <div class="disease-meta">
+                        <span class="disease-code">${escapeHtml(analytics.diseaseCode)}</span>
+                        <span class="hospital-badge">
+                            🏥 ${escapeHtml(analytics.hospitalName)}
+                        </span>
+                    </div>
+                    ${analytics.description ? `<p class="text-secondary" style="margin-top: var(--space-md);">${escapeHtml(analytics.description)}</p>` : ''}
+                </div>
+
+                <!-- Privacy Notice -->
+                <div class="info-box">
+                    <div class="info-box-title">🔒 Privacy-Preserved Data</div>
+                    <p class="text-secondary text-sm">
+                        All data shown is from patients who have explicitly consented to share their anonymized 
+                        risk assessment data for research purposes. Individual patient identities are protected.
+                    </p>
+                </div>
+
+                <!-- Stats Grid - Updated for 5 levels -->
+                <div class="stats-grid">
+                    <div class="stat-card primary">
+                        <div class="stat-card-value">${stats.totalAssessments}</div>
+                        <div class="stat-card-label">Total Assessments</div>
+                    </div>
+                    <div class="stat-card primary">
+                        <div class="stat-card-value">${stats.avgRisk !== null ? stats.avgRisk + '%' : '-'}</div>
+                        <div class="stat-card-label">Average Risk</div>
+                    </div>
+                </div>
+
+                ${stats.totalAssessments > 0 ? `
+                    <!-- Risk Distribution Chart - 5 Bars -->
+                    <div class="card" style="margin-bottom: var(--space-2xl);">
+                        <h2 style="font-size: var(--text-xl); font-weight: 600; margin-bottom: var(--space-lg);">
+                            Risk Distribution
+                        </h2>
+                        <div class="distribution-chart">
+                            <div class="distribution-bar">
+                                <div class="bar very-low" style="height: ${(distribution.veryLow / maxDistribution) * 150}px;"></div>
+                                <div class="bar-value">${distribution.veryLow}</div>
+                                <div class="bar-label">Very Low</div>
+                                <div class="bar-range">0-20%</div>
+                            </div>
+                            <div class="distribution-bar">
+                                <div class="bar low" style="height: ${(distribution.low / maxDistribution) * 150}px;"></div>
+                                <div class="bar-value">${distribution.low}</div>
+                                <div class="bar-label">Low</div>
+                                <div class="bar-range">21-40%</div>
+                            </div>
+                            <div class="distribution-bar">
+                                <div class="bar medium" style="height: ${(distribution.medium / maxDistribution) * 150}px;"></div>
+                                <div class="bar-value">${distribution.medium}</div>
+                                <div class="bar-label">Medium</div>
+                                <div class="bar-range">41-60%</div>
+                            </div>
+                            <div class="distribution-bar">
+                                <div class="bar high" style="height: ${(distribution.high / maxDistribution) * 150}px;"></div>
+                                <div class="bar-value">${distribution.high}</div>
+                                <div class="bar-label">High</div>
+                                <div class="bar-range">61-80%</div>
+                            </div>
+                            <div class="distribution-bar">
+                                <div class="bar very-high" style="height: ${(distribution.veryHigh / maxDistribution) * 150}px;"></div>
+                                <div class="bar-value">${distribution.veryHigh}</div>
+                                <div class="bar-label">Very High</div>
+                                <div class="bar-range">81-100%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    ${analytics.monthlyTrend.length > 0 ? `
+                        <!-- Monthly Trend Chart -->
+                        <div class="card" style="margin-bottom: var(--space-2xl);">
+                            <h2 style="font-size: var(--text-xl); font-weight: 600; margin-bottom: var(--space-lg);">
+                                Monthly Assessment Trend (Last 6 Months)
+                            </h2>
+                            <div class="trend-chart">
+                                <div class="trend-bars">
+                                    ${analytics.monthlyTrend.map(t => `
+                                        <div class="trend-bar">
+                                            <div class="trend-bar-fill" style="height: ${(t.count / maxTrend) * 120}px;" title="${t.count} assessments"></div>
+                                            <div class="bar-value" style="font-size: var(--text-sm);">${t.count}</div>
+                                            <div class="trend-bar-label">${t.month}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <!-- Age Distribution Pie Chart -->
+                    <div class="card" style="margin-bottom: var(--space-2xl);">
+                        <h2 style="font-size: var(--text-xl); font-weight: 600; margin-bottom: var(--space-lg);">
+                            Age Distribution
+                        </h2>
+                        ${totalWithAge > 0 ? `
+                            <div class="age-chart-container">
+                                <div class="pie-chart" style="background: ${pieChartGradient};"></div>
+                                <div class="pie-legend">
+                                    <div class="legend-item">
+                                        <div class="legend-color" style="background: #8b5cf6;"></div>
+                                        <span class="legend-label">20 and below</span>
+                                        <span class="legend-value">${ageDistribution.under20}</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <div class="legend-color" style="background: #3b82f6;"></div>
+                                        <span class="legend-label">21 to 30</span>
+                                        <span class="legend-value">${ageDistribution.age21to30}</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <div class="legend-color" style="background: #10b981;"></div>
+                                        <span class="legend-label">31 to 40</span>
+                                        <span class="legend-value">${ageDistribution.age31to40}</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <div class="legend-color" style="background: #f59e0b;"></div>
+                                        <span class="legend-label">41 to 50</span>
+                                        <span class="legend-value">${ageDistribution.age41to50}</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <div class="legend-color" style="background: #f97316;"></div>
+                                        <span class="legend-label">51 to 60</span>
+                                        <span class="legend-value">${ageDistribution.age51to60}</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <div class="legend-color" style="background: #ef4444;"></div>
+                                        <span class="legend-label">Above 60</span>
+                                        <span class="legend-value">${ageDistribution.above60}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        ` : `
+                            <p class="text-secondary text-center" style="padding: var(--space-xl);">
+                                No age data available for assessments.
+                            </p>
+                        `}
+                    </div>
+
+                    <!-- Recent Assessments Table -->
+                    <div class="card">
+                        <h2 style="font-size: var(--text-xl); font-weight: 600; margin-bottom: var(--space-lg);">
+                            Recent Assessments (Anonymized)
+                        </h2>
+                        <div style="overflow-x: auto;">
+                            <table class="assessments-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Age</th>
+                                        <th>Risk Level</th>
+                                        <th>Risk %</th>
+                                        <th>Matched Genes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${analytics.recentAssessments.map(a => {
+                                        const age = calculateAge(a.dateOfBirth);
+                                        return `
+                                        <tr>
+                                            <td>${formatDate(a.createdAt)}</td>
+                                            <td>${age !== null ? age : '-'}</td>
+                                            <td>
+                                                <span class="risk-badge ${getRiskLevel(a.riskPercentage)}">
+                                                    ${getRiskLevelLabel(getRiskLevel(a.riskPercentage))}
+                                                </span>
+                                            </td>
+                                            <td>${a.riskPercentage !== null ? a.riskPercentage.toFixed(1) + '%' : '-'}</td>
+                                            <td>${a.matchCount} gene${a.matchCount !== 1 ? 's' : ''}</td>
+                                        </tr>
+                                    `}).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                ` : `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📊</div>
+                        <h3>No Assessment Data Yet</h3>
+                        <p>There are no risk assessments from consented patients for this disease yet.</p>
+                    </div>
+                `}
+            `;
+        }
+
+        async function loadDiseaseAnalytics() {
+            const content = document.getElementById('content');
+
+            if (!diseaseId) {
+                content.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <h3>No Disease Selected</h3>
+                        <p>Please select a disease from the analytics page.</p>
+                        <a href="analytics.html" class="btn btn-primary" style="margin-top: var(--space-lg);">
+                            Go to Analytics
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const analytics = await API.getDiseaseAnalytics(diseaseId);
+                
+                
+                // Find where you call API.getDiseaseAnalytics() and add this right after:
+
+                async function loadAnalytics() {
+                    try {
+                        const diseaseId = new URLSearchParams(window.location.search).get('id');
+                        
+                        if (!diseaseId) {
+                            // ... error handling
+                        }
+
+                        const response = await API.getDiseaseAnalytics(diseaseId);
+                        const analytics = response.analytics;
+                        
+                        // 🐛 DEBUG: Check what we received from backend
+                        console.log('=== BACKEND DATA DEBUG ===');
+                        console.log('Full analytics object:', analytics);
+                        console.log('Statistics:', analytics.statistics);
+                        console.log('Recent assessments:', analytics.recentAssessments);
+                        console.log('Number of recent assessments:', analytics.recentAssessments?.length);
+                        
+                        // Check each assessment's riskPercentage
+                        analytics.recentAssessments?.forEach((a, i) => {
+                            console.log(`Backend Assessment ${i + 1}:`, {
+                                id: a.id,
+                                riskPercentage: a.riskPercentage,
+                                type: typeof a.riskPercentage,
+                                matchCount: a.matchCount,
+                                createdAt: a.createdAt
+                            });
+                        });
+                        console.log('========================');
+
+                        renderAnalytics(analytics);
+
+                    } catch (error) {
+                        console.error('Error loading analytics:', error);
+                        // ... error handling
+                    }
+                }
+                if (!analytics) {
+                    content.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🔍</div>
+                            <h3>Disease Not Found</h3>
+                            <p>The requested disease could not be found.</p>
+                            <a href="analytics.html" class="btn btn-primary" style="margin-top: var(--space-lg);">
+                                Back to Analytics
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                renderAnalytics(analytics);
+
+            } catch (error) {
+                console.error('Error loading disease analytics:', error);
+                content.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <h3>Error Loading Analytics</h3>
+                        <p>Failed to load disease analytics. Please try again later.</p>
+                        <a href="analytics.html" class="btn btn-primary" style="margin-top: var(--space-lg);">
+                            Back to Analytics
+                        </a>
+                    </div>
+                `;
+            }
+        }
+
+        loadDiseaseAnalytics();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caregiver Profile - PrivaGene</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+</head>
+
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="../../index.html"
+                style="display: flex; align-items: center; gap: var(--space-sm); text-decoration: none;">
+                <span style="font-size: var(--text-3xl);">🧬</span>
+                <span style="font-size: var(--text-xl); font-weight: 700; color: var(--primary-color);">PrivaGene</span>
+            </a>
+        </div>
+
+        <div
+            style="margin-bottom: var(--space-xl); padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);" data-user-name>User</div>
+            <div style="font-size: var(--text-sm); color: var(--text-tertiary);" data-user-email><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="780d0b1d0a381d00191508141d561b1715">[email&#160;protected]</a></div>
+            <div style="margin-top: var(--space-sm);">
+                <span class="badge badge-info">Caregiver</span>
+            </div>
+        </div>
+
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="dashboard.html" class="sidebar-link">
+                        <span class="sidebar-link-icon">📊</span>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="my-patients.html" class="sidebar-link">
+                        <span class="sidebar-link-icon">👥</span>
+                        My Patients
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="profile.html" class="sidebar-link">
+                        <span class="sidebar-link-icon">👤</span>
+                        Profile
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div style="margin-top: auto;">
+            <button id="logout-btn" class="sidebar-link"
+                style="width: 100%; border: none; background: transparent; cursor: pointer;">
+                <span class="sidebar-link-icon">🚪</span>
+                Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-with-sidebar">
+        <div class="container-fluid">
+            <div style="margin-bottom: var(--space-2xl);">
+                <h1 style="font-size: var(--text-4xl); font-weight: 700; margin-bottom: var(--space-sm);">
+                    Profile Settings
+                </h1>
+                <p class="text-secondary">Manage your caregiver account</p>
+            </div>
+
+            <div class="grid grid-cols-3 gap-lg">
+                <!-- Profile Info -->
+                <div class="card" style="grid-column: span 2;">
+                    <div class="card-header">
+                        <h3 class="card-title">Personal Information</h3>
+                    </div>
+
+                    <form id="profileForm">
+                        <div class="grid grid-cols-2 gap-lg">
+                            <div class="form-group">
+                                <label for="firstName" class="form-label">First Name</label>
+                                <input type="text" id="firstName" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName" class="form-label">Last Name</label>
+                                <input type="text" id="lastName" class="form-input" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" id="email" class="form-input" disabled>
+                            <span class="form-hint">Email cannot be changed</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" id="phone" class="form-input" placeholder="+65 9223 4567">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+
+                <!-- Account Summary -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Account Summary</h3>
+                    </div>
+
+                    <div style="text-align: center; padding: var(--space-lg) 0;">
+                        <div id="avatarDisplay"
+                            style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-lg); font-size: var(--text-2xl); color: white; font-weight: 600;">
+                        </div>
+                        <h4 id="displayName" style="font-size: var(--text-xl); margin-bottom: var(--space-xs);"></h4>
+                        <span class="badge badge-info">Caregiver</span>
+                    </div>
+
+                    <div style="border-top: 1px solid var(--border-light); padding-top: var(--space-lg);">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-md);">
+                            <span class="text-secondary">Patients</span>
+                            <span id="patientCount" style="font-weight: 600;">0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: var(--space-md);">
+                            <span class="text-secondary">Member Since</span>
+                            <span id="memberSince" style="font-weight: 600;"></span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span class="text-secondary">Status</span>
+                            <span class="badge badge-success">Active</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Change Password -->
+            <div class="card" style="margin-bottom: var(--space-xl);">
+                <div class="card-header">
+                    <h3 class="card-title">Security</h3>
+                </div>
+                <div style="padding: var(--space-md);">
+                    <button onclick="showChangePasswordModal()" class="btn btn-outline">Change Password</button>
+                </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="card" style="margin-top: var(--space-2xl); border: 1px solid var(--error-color);">
+                <div class="card-header">
+                    <h3 class="card-title" style="color: var(--error-color);">⚠️ Danger Zone</h3>
+                </div>
+                <p class="text-secondary">
+                    Deleting your account will remove all your data and revoke access to all patients.
+                    This action cannot be undone.
+                </p>
+                <button class="btn btn-danger" onclick="confirmDeleteAccount()">Delete Account</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/api-backend.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/navigation.js"></script>
+
+    <script>
+        Auth.requireRole('caregiver');
+
+        const user = Auth.getCurrentUser();
+        Navigation.displayUserInfo(user);
+        Navigation.setActiveNav();
+
+        document.getElementById('logout-btn').addEventListener('click', () => Auth.logout());
+
+        async function loadUserName() {
+            try {
+                const fullUser = await API.getUserById(user.id);
+                const firstName = fullUser.first_name || fullUser.firstName;
+                const lastName = fullUser.last_name || fullUser.lastName;
+                
+                const userName = firstName && lastName 
+                    ? `${firstName} ${lastName}`
+                    : firstName || lastName || user.email.split('@')[0];
+                
+                // Update all elements with data-user-name attribute
+                document.querySelectorAll('[data-user-name]').forEach(el => {
+                    el.textContent = userName;
+                });
+            } catch (error) {
+                console.error('Error loading user name:', error);
+                // Fallback to email prefix if fetch fails
+                document.querySelectorAll('[data-user-name]').forEach(el => {
+                    el.textContent = user.email.split('@')[0];
+                });
+            }
+        }
+
+        // Update email display in sidebar
+        const emailEl = document.querySelector('[data-user-email]');
+        if (emailEl) {
+            emailEl.textContent = user.email;
+        }
+
+        document.getElementById('logout-btn').addEventListener('click', () => Auth.logout());
+
+        // Load user name from backend
+        loadUserName();
+
+        // Load profile data
+        function loadProfile() {
+            document.getElementById('firstName').value = user.firstName || user.first_name || '';
+            document.getElementById('lastName').value = user.lastName || user.last_name || '';
+            document.getElementById('email').value = user.email || '';
+            document.getElementById('phone').value = user.phone || '';
+
+            // Display name and avatar
+            const firstName = user.firstName || user.first_name || 'User';
+            const lastName = user.lastName || user.last_name || '';
+            const fullName = `${firstName} ${lastName}`;
+            const initials = `${firstName[0]}${lastName ? lastName[0] : ''}`.toUpperCase();
+
+            document.getElementById('displayName').textContent = fullName;
+            document.getElementById('avatarDisplay').textContent = initials;
+
+            // Member since
+            const createdAt = user.createdAt || user.created_at;
+            const memberDate = new Date(createdAt);
+            document.getElementById('memberSince').textContent = memberDate.toLocaleDateString('en-US', {
+                month: 'short',
+                year: 'numeric'
+            });
+
+            // Patient count
+            // Patient count - requires backend implementation for family access
+            // For now, show 0
+            document.getElementById('patientCount').textContent = '0';
+        }
+
+        // Profile form submit
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const updates = {
+                firstName: document.getElementById('firstName').value.trim(),
+                lastName: document.getElementById('lastName').value.trim(),
+                phone: document.getElementById('phone').value.trim()
+            };
+
+            UI.showLoading('Saving...');
+            try {
+                // Update user via backend API
+                await API.updateUser(user.id, updates);
+                
+                // Update session storage with new data
+                const currentUser = Auth.getCurrentUser();
+                const mergedUser = { 
+                    ...currentUser, 
+                    firstName: updates.firstName,
+                    first_name: updates.firstName,
+                    lastName: updates.lastName,
+                    last_name: updates.lastName,
+                    phone: updates.phone
+                };
+                sessionStorage.setItem('privagene_current_user', JSON.stringify(mergedUser));
+                
+                // Update displayed user info
+                Navigation.displayUserInfo(mergedUser);
+
+                UI.hideLoading();
+                UI.showAlert('Profile updated successfully', 'success');
+                loadProfile();
+            } catch (error) {
+                UI.hideLoading();
+                UI.showAlert(error.message || 'Failed to update profile', 'error');
+            }
+        });
+
+        // Password form submit
+        function showChangePasswordModal() {
+            const user = Auth.getCurrentUser();
+            UI.showModal({
+                title: 'Change Password',
+                body: `
+                <form id="password-form">
+                    <div class="form-group">
+                    <label for="currentPassword" class="form-label form-label-required">Current Password</label>
+                    <input type="password" id="currentPassword" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                    <label for="newPassword" class="form-label form-label-required">New Password</label>
+                    <input type="password" id="newPassword" class="form-input" required minlength="8">
+                    <small class="text-secondary" style="display: block; margin-top: var(--space-xs);">Must be at least 8 characters</small>
+                    </div>
+                    
+                    <div class="form-group">
+                    <label for="confirmPassword" class="form-label form-label-required">Confirm New Password</label>
+                    <input type="password" id="confirmPassword" class="form-input" required>
+                    </div>
+                </form>
+                `,
+                buttons: [
+                    { text: 'Cancel', className: 'btn btn-outline' },
+                    {
+                        text: 'Change Password',
+                        className: 'btn btn-primary',
+                        onClick: async () => {
+                            const form = document.getElementById('password-form');
+                            if (!form.checkValidity()) {
+                                form.reportValidity();
+                                return false;
+                            }
+
+                            const current = document.getElementById('currentPassword').value;
+                            const newPass = document.getElementById('newPassword').value;
+                            const confirm = document.getElementById('confirmPassword').value;
+
+                            if (newPass !== confirm) {
+                                UI.showAlert('Passwords do not match', 'error');
+                                return false;
+                            }
+
+                            if (newPass.length < 8) {
+                                UI.showAlert('Password must be at least 8 characters long', 'error');
+                                return false;
+                            }
+
+                            UI.showLoading('Changing password...');
+
+                            try {
+                                await BackendAPI.updatePassword(user.id, current, newPass);
+                                UI.hideLoading();
+                                UI.showAlert('Password changed successfully!', 'success');
+                                return true;
+                            } catch (error) {
+                                UI.hideLoading();
+                                UI.showAlert(error.message || 'Failed to change password', 'error');
+                                return false;
+                            }
+                        }
+                    }
+                ]
+            });
+        }
+
+        async function confirmDeleteAccount() {
+            const confirmed = await UI.confirm('Are you sure you want to delete your account? This action cannot be undone.');
+            if (!confirmed) return;
+
+            const doubleConfirm = await UI.confirm('This will permanently remove all your data. Continue?');
+            if (!doubleConfirm) return;
+
+            UI.showLoading('Deleting account...');
+            try {
+                // Delete user via backend API
+                await API.deleteUser(user.id);
+
+                UI.hideLoading();
+                UI.showAlert('Account deleted. Redirecting...', 'info');
+
+                setTimeout(() => {
+                    Auth.logout();
+                }, 2000);
+            } catch (error) {
+                UI.hideLoading();
+                UI.showAlert(error.message || 'Failed to delete account', 'error');
+            }
+        }
+
+        loadProfile();
+    </script>
+</body>
+
+</html>

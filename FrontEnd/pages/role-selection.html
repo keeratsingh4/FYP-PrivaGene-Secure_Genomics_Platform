@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your Role - PrivaGene</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/components.css">
+
+    <style>
+        .role-selection-container {
+            min-height: 100vh;
+            padding: var(--space-2xl) var(--space-lg);
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+        }
+
+        .role-selection-header {
+            text-align: center;
+            margin-bottom: var(--space-3xl);
+            padding-top: var(--space-2xl);
+        }
+
+        .role-selection-logo {
+            font-size: var(--text-5xl);
+            margin-bottom: var(--space-md);
+        }
+
+        .role-selection-title {
+            font-size: var(--text-4xl);
+            font-weight: 700;
+            margin-bottom: var(--space-md);
+        }
+
+        .roles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax (280px, 1fr));
+            gap: var(--space-xl);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .role-card {
+            cursor: pointer;
+            transition: all var(--transition-base);
+            text-align: center;
+            padding: var(--space-2xl);
+            border: 2px solid transparent;
+        }
+
+        .role-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-5px);
+        }
+
+        .role-icon {
+            font-size: var(--text-5xl);
+            margin-bottom: var(--space-lg);
+            display: block;
+        }
+
+        .role-name {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+        }
+
+        .role-description {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-lg);
+        }
+
+        .role-features {
+            text-align: left;
+            margin-bottom: var(--space-lg);
+            padding-left: var(--space-lg);
+        }
+
+        .role-features li {
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+            margin-bottom: var(--space-xs);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="role-selection-container">
+        <div class="container">
+            <a href="index.html" class="back-link">← Back to Home</a>
+        </div>
+
+        <div class="role-selection-header fade-in">
+            <div class="role-selection-logo">🧬</div>
+            <h1 class="role-selection-title">Choose Your Role</h1>
+            <p class="text-secondary text-lg">Select how you'll be using PrivaGene</p>
+        </div>
+
+        <div class="roles-grid">
+            <!-- Patient -->
+            <div class="card-glass role-card fade-in" data-role="patient">
+                <span class="role-icon">👤</span>
+                <h2 class="role-name">Patient</h2>
+                <p class="role-description">
+                    Discover your genetic disease risk profile
+                </p>
+                <ul class="role-features">
+                    <li>✓ Upload genetic data securely</li>
+                    <li>✓ Get disease risk assessments</li>
+                    <li>✓ Book appointments with specialists</li>
+                    <li>✓ View personalized recommendations</li>
+                </ul>
+                <button class="btn btn-primary btn-block">Register as Patient</button>
+            </div>
+
+
+
+            <!-- Hospital Admin -->
+            <div class="card-glass role-card fade-in" data-role="admin">
+                <span class="role-icon">⚙️</span>
+                <h2 class="role-name">Hospital Admin</h2>
+                <p class="role-description">
+                    Manage organizational data and gene database
+                </p>
+                <ul class="role-features">
+                    <li>✓ Register organization</li>
+                    <li>✓ Add gene database entries</li>
+                    <li>✓ Manage gene information</li>
+                    <li>✓ View organization statistics</li>
+                </ul>
+                <button class="btn btn-primary btn-block">Register as Admin</button>
+            </div>
+
+
+
+            <!-- Researcher -->
+            <div class="card-glass role-card fade-in" data-role="researcher">
+                <span class="role-icon">📈</span>
+                <h2 class="role-name">Researcher</h2>
+                <p class="role-description">
+                    Access anonymized data for research
+                </p>
+                <ul class="role-features">
+                    <li>✓ View anonymized analytics</li>
+                    <li>✓ Filter and query data</li>
+                    <li>✓ Export research datasets</li>
+                    <li>✓ Generate visualizations</li>
+                </ul>
+                <button class="btn btn-primary btn-block">Register as Researcher</button>
+            </div>
+
+            <!-- Caregiver -->
+            <div class="card-glass role-card fade-in" data-role="caregiver">
+                <span class="role-icon">👨‍👩‍👧</span>
+                <h2 class="role-name">Family Caregiver</h2>
+                <p class="role-description">
+                    Support your loved ones' health journey
+                </p>
+                <ul class="role-features">
+                    <li>✓ View risk results for family members</li>
+                    <li>✓ Track assessment history</li>
+                    <li>✓ Help loved ones understand results</li>
+                    <li>✓ Privacy-protected access</li>
+                </ul>
+                <button class="btn btn-primary btn-block">Register as Caregiver</button>
+            </div>
+            
+        </div>
+
+        
+        <div style="text-align: center; margin-top: var(--space-3xl);">
+            <p class="text-secondary">
+                Already have an account?
+                <a href="login.html" style="color: var(--primary-color); font-weight: 500;">
+                    Sign in
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/navigation.js"></script>
+
+    <script>
+        // Redirect if already logged in
+        if (Auth.isAuthenticated()) {
+            Auth.redirectToDashboard(Auth.getCurrentUser());
+        }
+
+        // Handle role selection
+        const roleCards = document.querySelectorAll('.role-card');
+
+        roleCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const role = card.dataset.role;
+                window.location.href = `register-${role}.html`;
+            });
+        });
+    </script>
+</body>
+
+</html>

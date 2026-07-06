@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Registration - PrivaGene</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/components.css">
+
+    <style>
+        .register-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            padding: var(--space-xl);
+        }
+
+        .register-box {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+        }
+
+        .password-strength {
+            height: 4px;
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-full);
+            margin-top: var(--space-sm);
+            overflow: hidden;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: all var(--transition-base);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="register-container">
+        <div class="register-box fade-in">
+            <a href="role-selection.html" class="back-link">← Choose Different Role</a>
+            <br><br/> 
+
+            <div class="card-glass" style="padding: var(--space-2xl);">
+                <div class="register-header">
+                    <div style="font-size: var(--text-4xl); margin-bottom: var(--space-md);">👤</div>
+                    <h1 style="font-size: var(--text-3xl); font-weight: 700; margin-bottom: var(--space-sm);">
+                        Patient Registration
+                    </h1>
+                    <p class="text-secondary">Create your account to start your genetic health journey</p>
+                </div>
+                <form id="register-form">
+                    <div class="grid grid-cols-2 gap-lg">
+                        <div class="form-group">
+                            <label for="firstName" class="form-label form-label-required">First Name</label>
+                            <input type="text" id="firstName" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastName" class="form-label form-label-required">Last Name</label>
+                            <input type="text" id="lastName" class="form-input" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label form-label-required">Email Address</label>
+                        <input type="email" id="email" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dateOfBirth" class="form-label form-label-required">Date of Birth</label>
+                        <input type="date" id="dateOfBirth" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="tel" id="phone" class="form-input" placeholder="+65 9223 4567">
+                        <span class="form-hint">Optional, for appointment reminders</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label form-label-required">Password</label>
+                        <input type="password" id="password" class="form-input" required>
+                        <div class="password-strength">
+                            <div class="password-strength-bar" id="passwordStrengthBar"></div>
+                        </div>
+                        <span class="form-hint" id="passwordHint">At least 8 characters</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label form-label-required">Confirm Password</label>
+                        <input type="password" id="confirmPassword" class="form-input" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-checkbox">
+                            <input type="checkbox" id="terms" required>
+                            <span class="text-sm">
+                                I agree to the <a href="terms.html" style="color: var(--primary-color);">Terms of
+                                    Service</a>
+                                and <a href="privacy.html" style="color: var(--primary-color);">Privacy Policy</a>
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-checkbox">
+                            <input type="checkbox" id="dataSharing">
+                            <span class="text-sm">
+                                I consent to share anonymized data for research purposes
+                            </span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block btn-lg">
+                        Create Account
+                    </button>
+                </form>
+
+                <div style="margin-top: var(--space-xl); text-align: center;">
+                    <p class="text-secondary">
+                        Already have an account?
+                        <a href="login.html" style="color: var(--primary-color); font-weight: 500;">
+                            Sign in
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/navigation.js"></script>
+
+    <script>
+        const form = document.getElementById('register-form');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const passwordStrengthBar = document.getElementById('passwordStrengthBar');
+        const passwordHint = document.getElementById('passwordHint');
+
+        // Password strength indicator
+        passwordInput.addEventListener('input', () => {
+            const password = passwordInput.value;
+            let strength = 0;
+            let hints = [];
+
+            if (password.length >= 8) strength += 25;
+            if (password.match(/[a-z]/)) strength += 25;
+            if (password.match(/[A-Z]/)) strength += 25;
+            if (password.match(/[0-9]/)) strength += 15;
+            if (password.match(/[^a-zA-Z0-9]/)) strength += 10;
+
+            passwordStrengthBar.style.width = strength + '%';
+
+            if (strength < 25) {
+                passwordStrengthBar.style.background = 'var(--error-color)';
+                passwordHint.textContent = 'Weak password';
+                passwordHint.style.color = 'var(--error-color)';
+            } else if (strength < 50) {
+                passwordStrengthBar.style.background = 'var(--warning-color)';
+                passwordHint.textContent = 'Fair password';
+                passwordHint.style.color = 'var(--warning-color)';
+            } else if (strength < 75) {
+                passwordStrengthBar.style.background = 'var(--info-color)';
+                passwordHint.textContent = 'Good password';
+                passwordHint.style.color = 'var(--info-color)';
+            } else {
+                passwordStrengthBar.style.background = 'var(--success-color)';
+                passwordHint.textContent = 'Strong password';
+                passwordHint.style.color = 'var(--success-color)';
+            }
+
+            UI.clearFormError(passwordInput);
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Clear previous errors
+            document.querySelectorAll('.form-input').forEach(input => {
+                UI.clearFormError(input);
+            });
+
+            // Get values - NOW INCLUDES researchConsent
+            const formData = {
+                firstName: document.getElementById('firstName').value.trim(),
+                lastName: document.getElementById('lastName').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                dateOfBirth: document.getElementById('dateOfBirth').value,
+                phone: document.getElementById('phone').value.trim(),
+                password: passwordInput.value,
+                role: 'patient',
+                researchConsent: document.getElementById('dataSharing').checked  // NEW: Capture consent checkbox
+            };
+
+            const confirmPassword = confirmPasswordInput.value;
+            const termsAccepted = document.getElementById('terms').checked;
+
+            // Validate
+            let isValid = true;
+
+            if (!formData.firstName) {
+                UI.setFormError(document.getElementById('firstName'), 'First name is required');
+                isValid = false;
+            }
+
+            if (!formData.lastName) {
+                UI.setFormError(document.getElementById('lastName'), 'Last name is required');
+                isValid = false;
+            }
+
+            if (!formData.email) {
+                UI.setFormError(document.getElementById('email'), 'Email is required');
+                isValid = false;
+            }
+
+            if (!formData.dateOfBirth) {
+                UI.setFormError(document.getElementById('dateOfBirth'), 'Date of birth is required');
+                isValid = false;
+            }
+
+            if (formData.password.length < 8) {
+                UI.setFormError(passwordInput, 'Password must be at least 8 characters');
+                isValid = false;
+            }
+
+            if (formData.password !== confirmPassword) {
+                UI.setFormError(confirmPasswordInput, 'Passwords do not match');
+                isValid = false;
+            }
+
+            if (!termsAccepted) {
+                UI.showAlert('You must accept the Terms of Service', 'error');
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            // Show loading
+            UI.showLoading('Creating your account...');
+
+            try {
+                // BACKEND_INTEGRATION: Auth.register() will call your backend API
+                const user = await Auth.register(formData);
+
+                UI.hideLoading();
+                UI.showAlert('Account created successfully! Redirecting to your dashboard...', 'success');
+
+                setTimeout(() => {
+                    Auth.redirectToDashboard(user);
+                }, 1500);
+
+            } catch (error) {
+                UI.hideLoading();
+                UI.showAlert(error.message || 'Registration failed. Please try again.', 'error');
+
+                if (error.message.includes('email')) {
+                    UI.setFormError(document.getElementById('email'), error.message);
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

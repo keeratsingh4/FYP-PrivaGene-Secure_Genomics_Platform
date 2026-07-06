@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Researcher Dashboard - PrivaGene</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    
+    <style>
+        .recent-assessments-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-primary);
+        }
+        
+        .recent-assessments-table th,
+        .recent-assessments-table td {
+            padding: var(--space-md);
+            text-align: left;
+            border-bottom: 1px solid var(--border-primary);
+        }
+        
+        .recent-assessments-table th {
+            font-weight: 600;
+            color: var(--text-tertiary);
+            font-size: var(--text-sm);
+            text-transform: uppercase;
+            background: var(--bg-tertiary);
+        }
+        
+        .recent-assessments-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .recent-assessments-table tr:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        .risk-badge {
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-full);
+            font-size: var(--text-xs);
+            font-weight: 600;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+        
+        .risk-badge.very-low {
+            background: hsla(142, 71%, 45%, 0.15);
+            color: #10b981;
+        }
+        
+        .risk-badge.low {
+            background: hsla(142, 71%, 45%, 0.15);
+            color: #22c55e;
+        }
+        
+        .risk-badge.medium {
+            background: hsla(38, 92%, 50%, 0.15);
+            color: #f59e0b;
+        }
+        
+        .risk-badge.high {
+            background: hsla(24, 95%, 53%, 0.15);
+            color: #f97316;
+        }
+        
+        .risk-badge.very-high {
+            background: hsla(0, 84%, 60%, 0.15);
+            color: #ef4444;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: var(--space-2xl);
+            color: var(--text-tertiary);
+        }
+        
+        .empty-state-icon {
+            font-size: var(--text-4xl);
+            margin-bottom: var(--space-md);
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="javascript:void(0)"
+                style="display: flex; align-items: center; gap: var(--space-sm); text-decoration: none; cursor: default;">
+                <span style="font-size: var(--text-3xl);">🧬</span>
+                <span style="font-size: var(--text-xl); font-weight: 700; color: var(--primary-color);">PrivaGene</span>
+            </a>
+        </div>
+
+        <div
+            style="margin-bottom: var(--space-xl); padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);" data-user-name>Researcher</div>
+            <div style="font-size: var(--text-sm); color: var(--text-tertiary);" data-user-email>
+                researcher@university.edu</div>
+        </div>
+
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item"><a href="dashboard.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📊</span>Dashboard</a></li>
+                <li class="sidebar-item"><a href="datasets.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📈</span>Datasets</a></li>
+                <li class="sidebar-item"><a href="analytics.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">🔬</span>Analytics</a></li>
+                <li class="sidebar-item"><a href="profile.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">👤</span>Profile</a></li>
+            </ul>
+        </nav>
+
+        <div style="margin-top: auto;"><button id="logout-btn" class="sidebar-link"
+                style="width: 100%; border: none; background: transparent; cursor: pointer;"><span
+                    class="sidebar-link-icon">🚪</span>Logout</button></div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-with-sidebar">
+        <div class="container-fluid">
+            <div style="margin-bottom: var(--space-2xl);">
+                <h1 style="font-size: var(--text-4xl); font-weight: 700; margin-bottom: var(--space-sm);">Research
+                    Dashboard</h1>
+                <p class="text-secondary">Access anonymized genetic data for research</p>
+            </div>
+
+            <!-- Privacy Notice -->
+            <div class="alert alert-info">
+                <span class="alert-icon">🔒</span>
+                <div class="alert-content">
+                    <div class="alert-title">Privacy Protected Data</div>
+                    <p>All data accessed through this portal is anonymized and aggregated. Individual patient
+                        information cannot be identified. Usage is logged for audit purposes.</p>
+                </div>
+            </div>
+            <!-- Dataset Stats -->
+            <div class="grid grid-cols-2 gap-lg" style="margin-bottom: var(--space-2xl);">
+
+                <div class="card">
+                    <div class="text-tertiary text-sm" style="margin-bottom: var(--space-xs);">Anonymized Records</div>
+                    <div style="font-size: var(--text-3xl); font-weight: 700; color: var(--secondary-color);"
+                        id="recordCount">0</div>
+                </div>
+
+                <div class="card">
+                    <div class="text-tertiary text-sm" style="margin-bottom: var(--space-xs);">Disease Categories</div>
+                    <div style="font-size: var(--text-3xl); font-weight: 700; color: var(--accent-color);"
+                        id="categoryCount">0</div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-2 gap-lg" style="margin-bottom: var(--space-2xl);">
+
+
+                <div class="card action-card" onclick="window.location.href='datasets.html'">
+                    <div class="action-card-icon">📈</div>
+                    <h3 class="card-title text-center">Browse Datasets</h3>
+                    <p class="text-secondary text-center">Access anonymized data</p>
+                </div>
+                <div class="card action-card" onclick="window.location.href='analytics.html'">
+                    <div class="action-card-icon">🔬</div>
+                    <h3 class="card-title text-center">Statistical Analysis</h3>
+                    <p class="text-secondary text-center">View insights</p>
+                </div>
+                
+            </div>
+
+            <!-- Recent Assessments Section -->
+            <div style="margin-bottom: var(--space-2xl);">
+                <h2 style="font-size: var(--text-xl); font-weight: 600; margin-bottom: var(--space-lg);">
+                    Recent Risk Assessments
+                </h2>
+                <div id="recentAssessments">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⏳</div>
+                        <p>Loading assessments...</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/api-backend.js"></script>
+    <script src="../../js/navigation.js"></script>
+
+    <script>
+        Auth.requireRole('researcher');
+        const user = Auth.getCurrentUser();
+        Navigation.displayUserInfo(user);
+        Navigation.setActiveNav();
+
+        document.getElementById('logout-btn').addEventListener('click', () => Auth.logout());
+
+        // Helper function to calculate age from date of birth
+        function calculateAge(dateOfBirth) {
+            if (!dateOfBirth) return null;
+            const today = new Date();
+            const birthDate = new Date(dateOfBirth);
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+        // Helper function to get risk level from percentage
+        function getRiskLevel(riskPercentage) {
+            if (riskPercentage > 80) return 'very-high';
+            if (riskPercentage > 60) return 'high';
+            if (riskPercentage > 40) return 'medium';
+            if (riskPercentage > 20) return 'low';
+            return 'very-low';
+        }
+
+        // Helper function to get risk level label
+        function getRiskLevelLabel(level) {
+            const labels = {
+                'very-low': 'Very Low',
+                'low': 'Low',
+                'medium': 'Medium',
+                'high': 'High',
+                'very-high': 'Very High'
+            };
+            return labels[level] || level;
+        }
+
+        // Helper function to format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Helper function to escape HTML
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Render recent assessments as table rows
+        function renderRecentAssessments(assessments) {
+            const container = document.getElementById('recentAssessments');
+            
+            if (!assessments || assessments.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📊</div>
+                        <p>No recent assessments from consented patients yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <table class="recent-assessments-table">
+                    <thead>
+                        <tr>
+                            <th>Disease</th>
+                            <th>Hospital</th>
+                            <th>Age</th>
+                            <th>Risk Level</th>
+                            <th>Risk %</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${assessments.map(a => {
+                            const age = calculateAge(a.dateOfBirth);
+                            const riskLevel = getRiskLevel(a.riskPercentage);
+                            
+                            return `
+                                <tr>
+                                    <td><strong>${escapeHtml(a.diseaseName || 'Unknown Disease')}</strong></td>
+                                    <td>${escapeHtml(a.hospitalName || 'Unknown Hospital')}</td>
+                                    <td>${age !== null ? age : '-'}</td>
+                                    <td><span class="risk-badge ${riskLevel}">${getRiskLevelLabel(riskLevel)}</span></td>
+                                    <td>${a.riskPercentage !== null ? a.riskPercentage.toFixed(1) + '%' : '-'}</td>
+                                    <td>${formatDate(a.createdAt)}</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        async function loadDashboard() {
+            try {
+                // Fetch disease statistics and recent assessments from backend
+                const [diseaseStats, recentAssessments] = await Promise.all([
+                    BackendAPI.getDiseaseStatistics(),
+                    BackendAPI.getRecentAssessmentsForResearcher(6)
+                ]);
+
+                // Update record count (total assessments from consented users)
+                const totalRecords = diseaseStats.reduce((sum, d) => sum + (d.assessmentCount || 0), 0);
+                document.getElementById('recordCount').textContent = totalRecords;
+
+                // Update category count (unique diseases)
+                document.getElementById('categoryCount').textContent = diseaseStats.length;
+
+                // Render recent assessments
+                renderRecentAssessments(recentAssessments);
+
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                document.getElementById('recentAssessments').innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div class="empty-state-icon">⚠️</div>
+                        <p>Failed to load data. Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+
+        loadDashboard();
+    </script>
+</body>
+
+</html>

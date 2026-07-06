@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Hospital Specialist - PrivaGene</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="javascript:Navigation.goHome()"
+                style="display: flex; align-items: center; gap: var(--space-sm); text-decoration: none;">
+                <span style="font-size: var(--text-3xl);">🧬</span>
+                <span style="font-size: var(--text-xl); font-weight: 700; color: var(--primary-color);">PrivaGene</span>
+            </a>
+        </div>
+
+        <div
+            style="margin-bottom: var(--space-xl); padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);" data-user-name>Hospital Admin</div>
+            <div style="font-size: var(--text-sm); color: var(--text-tertiary);" data-user-email>admin@hospital.com
+            </div>
+        </div>
+
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item"><a href="dashboard.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📊</span>Dashboard</a></li>
+                <li class="sidebar-item"><a href="disease-management.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">🧬</span>Disease Database</a></li>
+                <li class="sidebar-item"><a href="register-hospital-specialist.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">🧑‍⚕️</span>Create Specialist Account</a></li>
+                <li class="sidebar-item"><a href="profile.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">👤</span>Profile</a></li>
+            </ul>
+        </nav>
+
+        <div style="margin-top: auto;"><button id="logout-btn" class="sidebar-link"
+                style="width: 100%; border: none; background: transparent; cursor: pointer;"><span
+                    class="sidebar-link-icon">🚪</span>Logout</button></div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-with-sidebar">
+        <div class="container-fluid">
+            <div style="margin-bottom: var(--space-2xl);">
+                <h1 style="font-size: var(--text-4xl); font-weight: 700; margin-bottom: var(--space-sm);">Create Hospital Specialist Account</h1>
+                <p class="text-secondary">Add a new specialist to your hospital's team</p>
+            </div>
+
+            <!-- Organization Info Card -->
+            <div class="card" style="margin-bottom: var(--space-xl); background: var(--bg-secondary);">
+                <div style="padding: var(--space-lg); display: flex; align-items: center; gap: var(--space-md);">
+                    <span style="font-size: var(--text-2xl);">🏥</span>
+                    <div>
+                        <div class="text-tertiary text-sm">Organization</div>
+                        <div style="font-weight: 600; font-size: var(--text-lg);" id="organizationName">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Create Specialist Form -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Specialist Information</h3>
+                </div>
+                <div style="padding: var(--space-xl);">
+                    <form id="createSpecialistForm">
+                        <div class="grid grid-cols-2 gap-lg" style="margin-bottom: var(--space-lg);">
+                            <div class="form-group">
+                                <label class="form-label form-label-required" for="firstName">First Name</label>
+                                <input type="text" id="firstName" name="firstName" class="form-input" placeholder="Enter first name" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label form-label-required" for="lastName">Last Name</label>
+                                <input type="text" id="lastName" name="lastName" class="form-input" placeholder="Enter last name" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: var(--space-lg);">
+                            <label class="form-label form-label-required" for="email">Email Address</label>
+                            <input type="email" id="email" name="email" class="form-input" placeholder="specialist@hospital.com" required>
+                            <div class="text-tertiary text-sm" style="margin-top: var(--space-xs);">This will be used for login</div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: var(--space-lg);">
+                            <label class="form-label form-label-required" for="password">Password</label>
+                            <input type="password" id="password" name="password" class="form-input" placeholder="Enter password" required minlength="6">
+                            <div class="text-tertiary text-sm" style="margin-top: var(--space-xs);">Minimum 6 characters</div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: var(--space-lg);">
+                            <label class="form-label form-label-required" for="confirmPassword">Confirm Password</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" placeholder="Confirm password" required>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: var(--space-lg);">
+                            <label class="form-label form-label-required" for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" class="form-input" placeholder="+65 91234567" required>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: var(--space-xl);">
+                            <label class="form-label form-label-required" for="licenseNumber">License Number</label>
+                            <input type="text" id="licenseNumber" name="licenseNumber" class="form-input" placeholder="e.g., LIC123456" required>
+                            <div class="text-tertiary text-sm" style="margin-top: var(--space-xs);">Medical license or registration number</div>
+                        </div>
+
+                        <!-- Error Message Display -->
+                        <div id="errorMessage" class="alert alert-error" style="display: none; margin-bottom: var(--space-lg);">
+                            <span id="errorText"></span>
+                        </div>
+
+                        <!-- Success Message Display -->
+                        <div id="successMessage" class="alert alert-success" style="display: none; margin-bottom: var(--space-lg);">
+                            <span id="successText"></span>
+                        </div>
+
+                        <div style="display: flex; gap: var(--space-md);">
+                            <button type="submit" class="btn btn-primary" id="submitBtn">
+                                <span id="submitBtnText">Create Specialist Account</span>
+                                <span id="submitBtnLoading" style="display: none;">Creating...</span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear Form</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Existing Specialists List -->
+            <div class="card" style="margin-top: var(--space-xl);">
+                <div class="card-header">
+                    <h3 class="card-title">Hospital Specialists</h3>
+                </div>
+                <div style="padding: var(--space-lg);">
+                    <div id="specialistsList">
+                        <p class="text-tertiary">Loading specialists...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/api-backend.js"></script>
+    <script src="../../js/navigation.js"></script>
+
+    <script>
+        // Require hospital_admin role
+        Auth.requireRole('hospital_admin');
+        const currentUser = Auth.getCurrentUser();
+        Navigation.displayUserInfo(currentUser);
+        Navigation.setActiveNav();
+
+        document.getElementById('logout-btn').addEventListener('click', () => Auth.logout());
+
+        // Display organization name
+        document.getElementById('organizationName').textContent = currentUser.organizationName || currentUser.organization_name || 'Unknown Organization';
+
+        // Form submission handler
+        document.getElementById('createSpecialistForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Hide previous messages
+            hideMessages();
+            
+            // Get form values
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const phone = document.getElementById('phone').value.trim();
+            const licenseNumber = document.getElementById('licenseNumber').value.trim();
+
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                showError('Passwords do not match');
+                return;
+            }
+
+            // Validate password length
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters');
+                return;
+            }
+
+            // Show loading state
+            setLoading(true);
+
+            try {
+                // Get organization name from current user (handle both camelCase and snake_case)
+                const organizationName = currentUser.organizationName || currentUser.organization_name;
+
+                // Call API to create specialist
+                const result = await API.createHospitalSpecialist({
+                    email: email,
+                    password: password,
+                    firstName: firstName,
+                    lastName: lastName,
+                    phone: phone,
+                    licenseNumber: licenseNumber,
+                    organizationName: organizationName
+                });
+
+                if (result.success) {
+                    showSuccess(`Specialist account created successfully for ${firstName} ${lastName}`);
+                    clearForm();
+                    loadSpecialists(); // Refresh the list
+                } else {
+                    showError(result.message || 'Failed to create specialist account');
+                }
+            } catch (error) {
+                console.error('Error creating specialist:', error);
+                showError(error.message || 'An error occurred while creating the account');
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorDiv.style.display = 'block';
+            
+            // Scroll to error message
+            errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            const successText = document.getElementById('successText');
+            successText.textContent = message;
+            successDiv.style.display = 'block';
+            
+            // Scroll to success message
+            successDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function hideMessages() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        function setLoading(loading) {
+            const submitBtn = document.getElementById('submitBtn');
+            const submitBtnText = document.getElementById('submitBtnText');
+            const submitBtnLoading = document.getElementById('submitBtnLoading');
+            
+            submitBtn.disabled = loading;
+            submitBtnText.style.display = loading ? 'none' : 'inline';
+            submitBtnLoading.style.display = loading ? 'inline' : 'none';
+        }
+
+        function clearForm() {
+            document.getElementById('createSpecialistForm').reset();
+            hideMessages();
+        }
+
+        async function loadSpecialists() {
+            const listContainer = document.getElementById('specialistsList');
+            
+            try {
+                // Get organization name from current user (handle both camelCase and snake_case)
+                const organizationName = currentUser.organizationName || currentUser.organization_name;
+                const specialists = await API.getHospitalSpecialists(organizationName);
+                
+                if (!specialists || specialists.length === 0) {
+                    listContainer.innerHTML = '<p class="text-tertiary">No specialists found for your organization.</p>';
+                    return;
+                }
+
+                let html = '<div class="table-container"><table class="table"><thead><tr>';
+                html += '<th>Name</th><th>Email</th><th>Phone</th><th>License #</th><th>Status</th><th>Created</th>';
+                html += '</tr></thead><tbody>';
+
+                specialists.forEach(specialist => {
+                    // Handle both camelCase and snake_case field names
+                    const firstName = specialist.firstName || specialist.first_name || '';
+                    const lastName = specialist.lastName || specialist.last_name || '';
+                    const createdAt = specialist.createdAt || specialist.created_at;
+                    const licenseNumber = specialist.licenseNumber || specialist.license_number || 'N/A';
+                    
+                    const createdDate = createdAt ? new Date(createdAt).toLocaleDateString() : 'N/A';
+                    const statusClass = specialist.status === 'active' ? 'badge-success' : 'badge-warning';
+                    
+                    html += `<tr>
+                        <td>${firstName} ${lastName}</td>
+                        <td>${specialist.email}</td>
+                        <td>${specialist.phone || 'N/A'}</td>
+                        <td>${licenseNumber}</td>
+                        <td><span class="badge ${statusClass}">${specialist.status || 'active'}</span></td>
+                        <td>${createdDate}</td>
+                    </tr>`;
+                });
+
+                html += '</tbody></table></div>';
+                listContainer.innerHTML = html;
+
+            } catch (error) {
+                console.error('Error loading specialists:', error);
+                listContainer.innerHTML = '<p class="text-tertiary">Error loading specialists.</p>';
+            }
+        }
+
+        // Load specialists on page load
+        loadSpecialists();
+    </script>
+
+    <style>
+        .alert {
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-md);
+        }
+
+        .alert-error {
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--error-color);
+            color: var(--error-color);
+        }
+
+        .alert-success {
+            background-color: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success-color);
+            color: var(--success-color);
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: var(--space-sm) var(--space-md);
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table th {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+        }
+
+        .table tbody tr:hover {
+            background-color: var(--bg-secondary);
+        }
+    </style>
+</body>
+
+</html>

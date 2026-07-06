@@ -1,0 +1,19 @@
+{
+  "id": "id_1764704230732_a1psqx9ot",
+  "userId": "id_1764683868475_yrqtseuj1",
+  "results": [
+    {
+      "category": "hemochromatosis",
+      "riskPercentage": 59,
+      "riskLevel": "medium",
+      "affectedGenes": [
+        "BRCA1",
+        "BRCA2",
+        "TP53"
+      ]
+    }
+  ],
+  "overallRisk": 59,
+  "computedAt": "2025-12-02T19:37:10.732Z",
+  "createdAt": "2025-12-02T19:37:10.732Z"
+}

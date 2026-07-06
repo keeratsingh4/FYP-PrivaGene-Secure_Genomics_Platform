@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Login - PrivaGene</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+
+    <style>
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            padding: var(--space-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #e94560 0%, transparent 70%);
+            opacity: 0.08;
+        }
+
+        .login-container::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            right: -30%;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(circle, #0f3460 0%, transparent 60%);
+            opacity: 0.3;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: var(--space-2xl);
+        }
+
+        .login-logo {
+            font-size: var(--text-5xl);
+            margin-bottom: var(--space-md);
+        }
+
+        .login-title {
+            font-size: var(--text-3xl);
+            font-weight: 700;
+            margin-bottom: var(--space-sm);
+            color: #fff;
+        }
+
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: var(--space-xs) var(--space-md);
+            background: rgba(233, 69, 96, 0.15);
+            border: 1px solid rgba(233, 69, 96, 0.3);
+            border-radius: var(--radius-full);
+            color: #e94560;
+            font-size: var(--text-sm);
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            margin-bottom: var(--space-lg);
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+
+        .back-link:hover {
+            color: #e94560;
+        }
+
+        .card-security {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-xl);
+            padding: var(--space-2xl);
+        }
+
+        .form-input-security {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            width: 100%;
+            font-size: var(--text-base);
+            transition: all var(--transition-fast);
+        }
+
+        .form-input-security::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .form-input-security:focus {
+            outline: none;
+            border-color: #e94560;
+            box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.2);
+        }
+
+        .form-label-security {
+            display: block;
+            margin-bottom: var(--space-xs);
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .btn-security {
+            width: 100%;
+            padding: var(--space-md) var(--space-xl);
+            background: linear-gradient(135deg, #e94560 0%, #c73659 100%);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: var(--text-base);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-security:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(233, 69, 96, 0.4);
+        }
+
+        .btn-security:active {
+            transform: translateY(0);
+        }
+
+        .btn-security:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .warning-banner {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-sm);
+            padding: var(--space-md);
+            background: rgba(233, 69, 96, 0.1);
+            border: 1px solid rgba(233, 69, 96, 0.2);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-xl);
+        }
+
+        .warning-banner-icon {
+            font-size: var(--text-xl);
+            flex-shrink: 0;
+        }
+
+        .warning-banner-text {
+            font-size: var(--text-sm);
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #f87171;
+            padding: var(--space-md);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-md);
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-box fade-in">
+            <a href="../index.html" class="back-link">← Back to Home</a>
+
+            <div class="card-security">
+                <div class="login-header">
+                    <div class="security-badge">
+                        🔒 Restricted Access
+                    </div>
+                    <div class="login-logo">🛡️</div>
+                    <h1 class="login-title">Security Administrator Login</h1>
+                    <p style="color: rgba(255, 255, 255, 0.6);">Restricted access. Authorized personnel only.</p>
+                </div>
+
+                <div class="warning-banner">
+                    <span class="warning-banner-icon">⚠️</span>
+                    <span class="warning-banner-text">
+                        This portal is for authorized security personnel only. 
+                        All login attempts are monitored and logged.
+                    </span>
+                </div>
+
+                <div id="error-message" class="error-message"></div>
+
+                <form id="security-login-form">
+                    <div class="form-group">
+                        <label for="email" class="form-label-security">Email Address</label>
+                        <input type="email" id="email" class="form-input-security" 
+                            placeholder="security@privagene.com" required autocomplete="off">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password" class="form-label-security">Password</label>
+                        <input type="password" id="password" class="form-input-security" 
+                            placeholder="Enter your password" required autocomplete="off">
+                    </div>
+
+                    <button type="submit" id="login-btn" class="btn-security">
+                        🔐 Secure Login
+                    </button>
+                </form>
+
+                <div style="margin-top: var(--space-xl); text-align: center;">
+                    <p style="color: rgba(255, 255, 255, 0.5); font-size: var(--text-sm);">
+                        Regular users should use the 
+                        <a href="../login.html" style="color: #e94560;">standard login</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script src="../../js/api-backend.js"></script>
+    <script src="../../js/security-auth.js"></script>
+</body>
+
+</html>
+

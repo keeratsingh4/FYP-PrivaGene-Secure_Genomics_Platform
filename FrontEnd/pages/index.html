@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrivaGene - Secure Genetic Risk Assessment Platform</title>
+    <meta name="description"
+        content="PrivaGene provides secure, privacy-focused genetic disease risk assessment using advanced genomic analysis and encryption technology.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/components.css">
+
+    <style>
+        /* Landing Page Specific Styles */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: space-around;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, var(--primary-color) 0%, transparent 70%);
+            opacity: 0.1;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 900px;
+            padding: var(--space-2xl);
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-logo {
+            font-size: var(--text-5xl);
+            margin-bottom: var(--space-md);
+            margin-top: var(--space-lg);
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: var(--space-2xl);
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: var(--text-xl);
+            color: var(--text-secondary);
+            margin-top: var(--space-xl);
+            margin-bottom: var(--space-xl);
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: var(--space-lg);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .features {
+            padding: var(--space-3xl) 0;
+            background: var(--bg-secondary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-xl);
+            margin-top: var(--space-2xl);
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: var(--space-2xl);
+        }
+
+        .feature-icon {
+            font-size: var(--text-5xl);
+            margin-bottom: var(--space-lg);
+            display: block;
+        }
+
+        .feature-title {
+            font-size: var(--text-xl);
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+        }
+
+        .roles-section {
+            padding: var(--space-3xl) 0;
+        }
+
+        .roles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-lg);
+            margin-top: var(--space-2xl);
+        }
+
+        .role-card {
+            padding: var(--space-xl);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .role-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .role-icon {
+            font-size: var(--text-4xl);
+            margin-bottom: var(--space-md);
+            display: block;
+        }
+
+        .role-name {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            margin-bottom: var(--space-sm);
+        }
+
+        .footer {
+            background: var(--bg-tertiary);
+            padding: var(--space-2xl) 0;
+            margin-top: var(--space-3xl);
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="#" class="navbar-brand">
+                    <span class="navbar-brand-icon">🧬</span>
+                    PrivaGene
+                </a>
+                <ul class="navbar-menu">
+                    <li><a href="login.html" class="navbar-link">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content fade-in">
+            <div class="hero-logo">🧬</div>
+            <h1 class="hero-title">Understand Your Genetic Risk with Privacy</h1>
+            <p class="hero-subtitle">
+                PrivaGene combines advanced genomic analysis with state-of-the-art encryption
+                to help you understand your genetic disease risks while keeping your data completely secure.
+            </p>
+            <div class="hero-buttons">
+                <a href="role-selection.html" class="btn btn-primary btn-lg">Get Started Free</a>
+                <a href="#features" class="btn btn-outline btn-lg">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="text-center">Why Choose PrivaGene?</h2>
+            <div class="features-grid">
+                <div class="card-glass feature-card fade-in">
+                    <span class="feature-icon">🔒</span>
+                    <h3 class="feature-title">Privacy-First Architecture</h3>
+                    <p class="text-secondary">
+                        Your genetic data is encrypted end-to-end and never stored in plaintext.
+                        We use secure multi-party computation for risk analysis.
+                    </p>
+                </div>
+
+                <div class="card-glass feature-card fade-in">
+                    <span class="feature-icon">🧪</span>
+                    <h3 class="feature-title">Advanced Risk Assessment</h3>
+                    <p class="text-secondary">
+                        State-of-the-art PSI (Private Set Intersection) algorithms compute your disease
+                        risks without exposing your genetic information.
+                    </p>
+                </div>
+
+                <div class="card-glass feature-card fade-in">
+                    <span class="feature-icon">👨‍⚕️</span>
+                    <h3 class="feature-title">Expert Consultation</h3>
+                    <p class="text-secondary">
+                        Book appointments with certified genetic counselors and specialists
+                        to discuss your results and get personalized recommendations.
+                    </p>
+                </div>
+
+                <div class="card-glass feature-card fade-in">
+                    <span class="feature-icon">📊</span>
+                    <h3 class="feature-title">Research Collaboration</h3>
+                    <p class="text-secondary">
+                        Contribute anonymized data to research while maintaining complete privacy.
+                        Help advance genetic disease understanding.
+                    </p>
+                </div>
+
+                <div class="card-glass feature-card fade-in">
+                    <span class="feature-icon">⚡</span>
+                    <h3 class="feature-title">Fast Results</h3>
+                    <p class="text-secondary">
+                        Get comprehensive risk assessments in minutes, not weeks.
+                        Our optimized PSI engine provides rapid, accurate analysis.
+                    </p>
+                </div>
+
+                <div class="card-glass feature-card fade-in">
+                    <span class="feature-icon">🌐</span>
+                    <h3 class="feature-title">Always Accessible</h3>
+                    <p class="text-secondary">
+                        Access your results anytime, anywhere through our secure web portal.
+                        Track your health journey over time.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Information Tabs Section -->
+    <section id="info" class="roles-section">
+        <div class="container">
+            <h2 class="text-center" style="margin-bottom: var(--space-2xl);">Learn More About PrivaGene</h2>
+
+            <!-- Tab Navigation -->
+            <div
+                style="display: flex; justify-content: center; gap: var(--space-md); margin-bottom: var(--space-2xl); flex-wrap: wrap;">
+                <button class="btn btn-outline tab-btn active" data-tab="faq">FAQ</button>
+                <button class="btn btn-outline tab-btn" data-tab="terms">Terms of Service</button>
+                <button class="btn btn-outline tab-btn" data-tab="privacy">Privacy Policy</button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="faq-content">
+                <div class="grid grid-cols-3 gap-lg">
+                    <div class="card">
+                        <h3 style="font-weight: 600; margin-bottom: var(--space-md);">What is PSI Technology?</h3>
+                        <p class="text-secondary" style="margin-bottom: var(--space-md);">Private Set Intersection
+                            allows secure risk computation without exposing your genetic data.</p>
+                        <a href="faq.html" class="text-sm" style="color: var(--primary-color);">Learn more →</a>
+                    </div>
+                    <div class="card">
+                        <h3 style="font-weight: 600; margin-bottom: var(--space-md);">How secure is my data?</h3>
+                        <p class="text-secondary" style="margin-bottom: var(--space-md);">AES-256 encryption and PSI
+                            technology ensure your genetic information remains completely private.</p>
+                        <a href="faq.html#security" class="text-sm" style="color: var(--primary-color);">Learn more
+                            →</a>
+                    </div>
+                    <div class="card">
+                        <h3 style="font-weight: 600; margin-bottom: var(--space-md);">Can I contribute to research?</h3>
+                        <p class="text-secondary" style="margin-bottom: var(--space-md);">Yes, you can optionally contribute
+                            anonymized data to help advance genetic disease research.</p>
+                        <a href="faq.html#research" class="text-sm" style="color: var(--primary-color);">Learn more
+                            →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="terms-content" style="display: none;">
+                <div class="grid grid-cols-3 gap-lg">
+                    <div class="card">
+                        <h3 style="font-weight: 600; margin-bottom: var(--space-md);">User Responsibilities</h3>
+                        <p class="text-secondary" style="margin-bottom: var(--space-md);">Users must provide accurate
+                            information and maintain account security at all times.</p>
+                        <a href="terms.html#responsibilities" class="text-sm" style="color: var(--primary-color);">Read
+                            full terms →</a>
+                    </div>
+                    <div class="card">
+                        <h3 style="font-weight: 600; margin-bottom: var(--space-md);">Medical Disclaimer</h3>
+                        <p class="text-secondary" style="margin-bottom: var(--space-md);">PrivaGene provides risk
+                            assessments, not medical diagnosis. Consult healthcare professionals.</p>
+                        <a href="terms.html#disclaimer" class="text-sm" style="color: var(--primary-color);">Read full
+                            terms →</a>
+                    </div>
+                    <div class="card">
+                        <h3 style="font-weight: 600; margin-bottom: var(--space-md);">Data Usage</h3>
+                        <p class="text-secondary" style="margin-bottom: var(--space-md);">Your data is used solely for
+                            risk assessment unless you consent to research sharing.</p>
+                        <a href="terms.html#data-usage" class="text-sm" style="color: var(--primary-color);">Read full
+                            terms →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="privacy-content" style="display: none;">
+                <div class="grid grid-cols-3 gap-lg">
+                    <div class="card">
+                        <h3 style="font-weight: 600; margin-bottom: var(--space-md);">Data Collection</h3>
+                        <p class="text-secondary" style="margin-bottom: var(--space-md);">We only collect data necessary
+                            for risk assessment and platform functionality.</p>
+                        <a href="privacy.html#collection" class="text-sm" style="color: var(--primary-color);">Read full
+                            policy →</a>
+                    </div>
+                    <div class="card">
+                        <h3 style="font-weight: 600; margin-bottom: var(--space-md);">Data Protection</h3>
+                        <p class="text-secondary" style="margin-bottom: var(--space-md);">Industry-standard encryption,
+                            secure storage, and regular security audits protect your data.</p>
+                        <a href="privacy.html#protection" class="text-sm" style="color: var(--primary-color);">Read full
+                            policy →</a>
+                    </div>
+                    <div class="card">
+                        <h3 style="font-weight: 600; margin-bottom: var(--space-md);">Your Rights</h3>
+                        <p class="text-secondary" style="margin-bottom: var(--space-md);">Access, modify, or delete your
+                            data anytime. Full control over your genetic information.</p>
+                        <a href="privacy.html#rights" class="text-sm" style="color: var(--primary-color);">Read full
+                            policy →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p class="text-secondary">
+                © 2025 PrivaGene. Secure Genetic Risk Assessment Platform.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/navigation.js"></script>
+
+    <script>
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Tab switching
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                button.classList.add('active');
+
+                // Hide all tab content
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.style.display = 'none';
+                });
+
+                // Show selected tab content
+                const tabName = button.dataset.tab;
+                document.getElementById(`${tabName}-content`).style.display = 'block';
+            });
+        });
+
+        // Redirect if already logged in
+        if (Auth.isAuthenticated()) {
+            const user = Auth.getCurrentUser();
+            // Show a quick message
+            setTimeout(() => {
+                Auth.redirectToDashboard(user);
+            }, 1000);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - PrivaGene</title>
+    <meta name="description" content="Get help from the PrivaGene support team. Contact us for technical support, privacy inquiries, or general questions.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2xl); }
+        @media (max-width: 768px) { .contact-grid { grid-template-columns: 1fr; } }
+        .contact-info { display: flex; flex-direction: column; gap: var(--space-xl); }
+        .contact-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-base);
+        }
+        .contact-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .contact-card-icon {
+            width: 48px; height: 48px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-lg);
+            display: flex; align-items: center; justify-content: center;
+            font-size: var(--text-xl);
+            margin-bottom: var(--space-md);
+        }
+        .contact-card h3 { font-size: var(--text-lg); font-weight: 600; margin-bottom: var(--space-sm); }
+        .contact-card p { color: var(--text-secondary); font-size: var(--text-sm); margin-bottom: var(--space-sm); }
+        .contact-card a { color: var(--primary-color); text-decoration: none; font-weight: 500; }
+        .contact-card a:hover { text-decoration: underline; }
+        .form-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl);
+            padding: var(--space-2xl);
+            box-shadow: var(--shadow-md);
+        }
+        .form-card h2 { font-size: var(--text-2xl); font-weight: 700; margin-bottom: var(--space-lg); }
+        .response-time {
+            display: flex; align-items: center; gap: var(--space-sm);
+            padding: var(--space-md);
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.1));
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-xl);
+            font-size: var(--text-sm);
+            color: var(--success-color);
+        }
+        .faq-link {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            margin-top: var(--space-xl);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+        .faq-link-icon { font-size: var(--text-2xl); }
+        .faq-link-text h4 { font-weight: 600; margin-bottom: var(--space-xs); }
+        .faq-link-text p { font-size: var(--text-sm); color: var(--text-secondary); margin: 0; }
+        .office-hours {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            margin-top: var(--space-lg);
+        }
+        .office-hours h4 { font-weight: 600; margin-bottom: var(--space-md); display: flex; align-items: center; gap: var(--space-sm); }
+        .office-hours p { font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-xs); }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-content">
+                <a href="index.html" class="navbar-brand"><span class="navbar-brand-icon">🧬</span>PrivaGene</a>
+                <ul class="navbar-menu">
+                    <li><a href="faq.html" class="navbar-link">FAQ</a></li>
+                    <li><a href="privacy.html" class="navbar-link">Privacy</a></li>
+                    <li><a href="terms.html" class="navbar-link">Terms</a></li>
+                    <li><a href="contact.html" class="navbar-link">Contact</a></li>
+                    <li><a href="login.html" class="navbar-link">Login</a></li>
+                    <li><a href="role-selection.html" class="btn btn-primary btn-sm">Get Started</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container" style="padding-top: var(--space-3xl); padding-bottom: var(--space-3xl);">
+        <div style="max-width: 1100px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: var(--space-3xl);">
+                <h1 style="font-size: var(--text-4xl); font-weight: 700; margin-bottom: var(--space-md);">Contact Us</h1>
+                <p class="text-secondary" style="max-width: 600px; margin: 0 auto;">Have questions or need assistance? We're here to help. Choose the best way to reach us below.</p>
+            </div>
+
+            <div class="contact-grid">
+                <!-- Contact Information -->
+                <div class="contact-info">
+                    <div class="contact-card">
+                        <div class="contact-card-icon">📧</div>
+                        <h3>General Support</h3>
+                        <p>For technical issues, account questions, and general inquiries</p>
+                        <a href="mailto:support@privagene.com">support@privagene.com</a>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="contact-card-icon">🔒</div>
+                        <h3>Privacy & Data Protection</h3>
+                        <p>For PDPA requests, data access, or privacy concerns</p>
+                        <a href="mailto:dpo@privagene.com">dpo@privagene.com</a>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="contact-card-icon">🏥</div>
+                        <h3>Healthcare Providers</h3>
+                        <p>For hospital registration and partnership inquiries</p>
+                        <a href="mailto:partners@privagene.com">partners@privagene.com</a>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="contact-card-icon">🔬</div>
+                        <h3>Research Inquiries</h3>
+                        <p>For research collaboration and data access requests</p>
+                        <a href="mailto:research@privagene.com">research@privagene.com</a>
+                    </div>
+
+                    <div class="office-hours">
+                        <h4>🕐 Support Hours</h4>
+                        <p><strong>Monday - Friday:</strong> 9:00 AM - 6:00 PM (SGT)</p>
+                        <p><strong>Saturday:</strong> 10:00 AM - 2:00 PM (SGT)</p>
+                        <p><strong>Sunday & Public Holidays:</strong> Closed</p>
+                        <p style="margin-top: var(--space-md); font-style: italic;">Emergency support available 24/7 for critical security issues</p>
+                    </div>
+
+                    <div class="faq-link">
+                        <div class="faq-link-icon">💡</div>
+                        <div class="faq-link-text">
+                            <h4>Check our FAQ first</h4>
+                            <p>Find instant answers to common questions</p>
+                        </div>
+                        <a href="faq.html" class="btn btn-outline btn-sm" style="margin-left: auto;">View FAQ</a>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="form-card">
+                    <h2>Send us a message</h2>
+                    <div class="response-time">
+                        <span>⚡</span>
+                        <span>We typically respond within 24 hours</span>
+                    </div>
+
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name" class="form-label">Full Name <span style="color: var(--error-color);">*</span></label>
+                            <input type="text" id="name" name="name" class="form-input" required placeholder="Your full name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email Address <span style="color: var(--error-color);">*</span></label>
+                            <input type="email" id="email" name="email" class="form-input" required placeholder="your@email.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="userType" class="form-label">I am a... <span style="color: var(--error-color);">*</span></label>
+                            <select id="userType" name="userType" class="form-input" required>
+                                <option value="">Select your role...</option>
+                                <option value="patient">Patient</option>
+                                <option value="healthcare">Healthcare Provider</option>
+                                <option value="hospital-admin">Hospital Administrator</option>
+                                <option value="researcher">Researcher</option>
+                                <option value="other">Other / Not a User Yet</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject" class="form-label">Subject <span style="color: var(--error-color);">*</span></label>
+                            <select id="subject" name="subject" class="form-input" required>
+                                <option value="">Select a topic...</option>
+                                <option value="technical">Technical Issue / Bug Report</option>
+                                <option value="account">Account & Login Issues</option>
+                                <option value="privacy">Privacy & Data Protection (PDPA)</option>
+                                <option value="results">Risk Assessment Results</option>
+                                <option value="appointments">Appointments & Consultations</option>
+                                <option value="billing">Billing & Payments</option>
+                                <option value="partnership">Partnership / Integration</option>
+                                <option value="feedback">Feedback & Suggestions</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message" class="form-label">Message <span style="color: var(--error-color);">*</span></label>
+                            <textarea id="message" name="message" class="form-input" rows="5" required placeholder="Please describe your question or issue in detail..."></textarea>
+                            <span class="form-hint">Minimum 20 characters. Include any relevant details like error messages or steps to reproduce.</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-checkbox">
+                                <input type="checkbox" id="consent" required>
+                                <span>I agree to the <a href="privacy.html" style="color: var(--primary-color);">Privacy Policy</a> and consent to PrivaGene processing my data to respond to this inquiry.</span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
+                            <span id="submitText">Send Message</span>
+                            <span id="submitLoading" style="display: none;">
+                                <span class="spinner spinner-sm" style="margin-right: var(--space-sm);"></span>
+                                Sending...
+                            </span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Location Info -->
+            <div style="margin-top: var(--space-3xl); text-align: center;">
+                <h3 style="font-size: var(--text-xl); font-weight: 600; margin-bottom: var(--space-lg);">Our Office</h3>
+                <div style="background: var(--bg-secondary); border-radius: var(--radius-xl); padding: var(--space-xl); display: inline-block;">
+                    <p style="font-size: var(--text-lg); font-weight: 600; margin-bottom: var(--space-sm);">PrivaGene Pte Ltd</p>
+                    <p class="text-secondary">Singapore</p>
+                    <p class="text-secondary" style="margin-top: var(--space-md);">
+                        <span style="margin-right: var(--space-lg);">📞 +65 6123 4567</span>
+                        <span>✉️ info@privagene.com</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background: var(--bg-tertiary); padding: var(--space-2xl) 0; text-align: center;">
+        <div class="container">
+            <p class="text-secondary">© 2025 PrivaGene. Secure Genetic Risk Assessment Platform.</p>
+        </div>
+    </footer>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/api-mock.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script>
+        Navigation.setActiveNav();
+
+        const form = document.getElementById('contactForm');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const submitText = document.getElementById('submitText');
+        const submitLoading = document.getElementById('submitLoading');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const message = document.getElementById('message').value;
+            if (message.length < 20) {
+                alert('Message must be at least 20 characters long');
+                return;
+            }
+
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                userType: document.getElementById('userType').value,
+                subject: document.getElementById('subject').value,
+                message: message,
+                submittedAt: new Date().toISOString()
+            };
+
+            submitBtn.disabled = true;
+            submitText.style.display = 'none';
+            submitLoading.style.display = 'inline-flex';
+
+            try {
+                await API.submitContactForm(formData);
+                
+                // Show success message
+                form.innerHTML = `
+                    <div style="text-align: center; padding: var(--space-2xl);">
+                        <div style="font-size: 4rem; margin-bottom: var(--space-lg);">✅</div>
+                        <h3 style="font-size: var(--text-2xl); margin-bottom: var(--space-md);">Message Sent!</h3>
+                        <p class="text-secondary" style="margin-bottom: var(--space-xl);">Thank you for contacting us. We'll get back to you within 24 hours.</p>
+                        <p class="text-secondary" style="font-size: var(--text-sm);">Ticket ID: ${formData.submittedAt.slice(0,10)}-${Math.random().toString(36).substr(2,6).toUpperCase()}</p>
+                        <a href="index.html" class="btn btn-primary" style="margin-top: var(--space-xl);">Return to Home</a>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error submitting contact form:', error);
+                alert('Failed to send message. Please try again or email us directly at support@privagene.com');
+                submitBtn.disabled = false;
+                submitText.style.display = 'inline';
+                submitLoading.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

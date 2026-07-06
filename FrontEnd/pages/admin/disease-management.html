@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disease Management - PrivaGene</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="javascript:void(0)"
+                style="display: flex; align-items: center; gap: var(--space-sm); text-decoration: none; cursor: default;">
+                <span style="font-size: var(--text-3xl);">🧬</span>
+                <span style="font-size: var(--text-xl); font-weight: 700; color: var(--primary-color);">PrivaGene</span>
+            </a>
+        </div>
+        <div
+            style="margin-bottom: var(--space-xl); padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);" data-user-name>Admin</div>
+            <div style="font-size: var(--text-sm); color: var(--text-tertiary);" data-user-email>admin@hospital.com
+            </div>
+        </div>
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item"><a href="dashboard.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📊</span>Dashboard</a></li>
+                <li class="sidebar-item"><a href="disease-management.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">🧬</span>Disease Database</a></li>
+                <li class="sidebar-item"><a href="register-hospital-specialist.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">🧑‍⚕️</span>Create Specialist Account</a></li>
+                <li class="sidebar-item"><a href="profile.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">👤</span>Profile</a></li>
+            </ul>
+        </nav>
+        <div style="margin-top: auto;"><button id="logout-btn" class="sidebar-link"
+                style="width: 100%; border: none; background: transparent; cursor: pointer;"><span
+                    class="sidebar-link-icon">🚪</span>Logout</button></div>
+    </aside>
+
+    <main class="main-with-sidebar">
+        <div class="container-fluid">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-2xl);">
+                <div>
+                    <h1 style="font-size: var(--text-4xl); font-weight: 700; margin-bottom: var(--space-sm);">Disease
+                        Database</h1>
+                    <p class="text-secondary">View all diseases created by specialists in your organization</p>
+                </div>
+            </div>
+
+            <!-- Organization Info -->
+            <div class="card" style="margin-bottom: var(--space-xl); background: var(--bg-secondary);">
+                <div style="padding: var(--space-lg); display: flex; align-items: center; gap: var(--space-md);">
+                    <span style="font-size: var(--text-2xl);">🏥</span>
+                    <div>
+                        <div class="text-tertiary text-sm">Organization</div>
+                        <div style="font-weight: 600; font-size: var(--text-lg);" id="organizationName">Loading...</div>
+                    </div>
+                    <div style="margin-left: auto; display: flex; gap: var(--space-lg);">
+                        <div style="text-align: center;">
+                            <div class="text-tertiary text-sm">Total Diseases</div>
+                            <div style="font-weight: 700; font-size: var(--text-xl); color: var(--primary-color);" id="totalDiseases">0</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div class="text-tertiary text-sm">Total Genes</div>
+                            <div style="font-weight: 700; font-size: var(--text-xl); color: var(--secondary-color);" id="totalGenes">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Disease List -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Diseases</h3>
+                    <br/>
+                    <input type="text" class="form-input" placeholder="Search diseases..." id="searchDiseases"
+                        style="max-width: 300px;">
+                </div>
+                
+                <!-- Loading State -->
+                <div id="loadingState" style="padding: var(--space-xl); text-align: center;">
+                    <p class="text-tertiary">Loading diseases...</p>
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" style="padding: var(--space-xl); text-align: center; display: none;">
+                    <div style="font-size: var(--text-4xl); margin-bottom: var(--space-md);">📋</div>
+                    <h3 style="margin-bottom: var(--space-sm);">No Diseases Found</h3>
+                    <p class="text-secondary">No diseases have been created by specialists in your organization yet.</p>
+                    <p class="text-secondary" style="margin-top: var(--space-sm);">Hospital specialists can create disease entries from their dashboard.</p>
+                </div>
+
+                <!-- Disease Table -->
+                <div id="diseaseTableContainer" style="display: none;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Disease Name</th>
+                                <th>Disease Code</th>
+                                <th>Genes</th>
+                                <th>Constant</th>
+                                <th>Created By</th>
+                                <th>Created At</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="diseasesList"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Disease Details Modal -->
+    <div id="diseaseModalBackdrop" class="modal-backdrop" style="display: none;">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Disease Details</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content will be inserted dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/api-backend.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/navigation.js"></script>
+
+    <script>
+        // Allow both 'admin' and 'hospital_admin' roles
+        const user = Auth.getCurrentUser();
+        if (!user || (user.role !== 'admin' && user.role !== 'hospital_admin')) {
+            Auth.requireAuth();
+            if (user) Auth.redirectToDashboard(user);
+        }
+        Navigation.displayUserInfo(user);
+        Navigation.setActiveNav();
+        document.getElementById('logout-btn').addEventListener('click', () => Auth.logout());
+
+        // Get organization name from current user
+        const organizationName = user.organizationName || user.organization_name || 'Unknown Organization';
+        document.getElementById('organizationName').textContent = organizationName;
+
+        // Store diseases globally for search functionality
+        let allDiseases = [];
+
+        async function loadDiseases() {
+            const loadingState = document.getElementById('loadingState');
+            const emptyState = document.getElementById('emptyState');
+            const tableContainer = document.getElementById('diseaseTableContainer');
+            
+            try {
+                // Fetch diseases by organization
+                const diseases = await API.getDiseasesByOrganization(organizationName);
+                allDiseases = diseases;
+
+                // Update stats
+                document.getElementById('totalDiseases').textContent = diseases.length;
+                
+                let totalGenes = 0;
+                diseases.forEach(d => {
+                    totalGenes += d.geneCount || 0;
+                });
+                document.getElementById('totalGenes').textContent = totalGenes;
+
+                // Hide loading state
+                loadingState.style.display = 'none';
+
+                if (diseases.length === 0) {
+                    emptyState.style.display = 'block';
+                    tableContainer.style.display = 'none';
+                } else {
+                    emptyState.style.display = 'none';
+                    tableContainer.style.display = 'block';
+                    renderDiseases(diseases);
+                }
+
+            } catch (error) {
+                console.error('Error loading diseases:', error);
+                loadingState.innerHTML = '<p class="text-error">Error loading diseases. Please try again.</p>';
+            }
+        }
+
+        function renderDiseases(diseases) {
+            const tbody = document.getElementById('diseasesList');
+
+            tbody.innerHTML = diseases.map(disease => {
+                const createdDate = disease.createdAt ? new Date(disease.createdAt).toLocaleDateString() : 'N/A';
+                const geneCount = disease.geneCount || 0;
+                
+                return `
+                    <tr>
+                        <td style="font-weight: 500;">${escapeHtml(disease.diseaseName || 'N/A')}</td>
+                        <td><span class="badge badge-info">${escapeHtml(disease.diseaseCode || 'N/A')}</span></td>
+                        <td>
+                            <span class="badge badge-secondary">${geneCount} gene${geneCount !== 1 ? 's' : ''}</span>
+                        </td>
+                        <td>${disease.constant || 'N/A'}</td>
+                        <td class="text-secondary text-sm">${escapeHtml(disease.creatorName || 'Unknown')}</td>
+                        <td class="text-secondary text-sm">${createdDate}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline" onclick="viewDiseaseDetails('${disease.id}')">View Details</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function viewDiseaseDetails(diseaseId) {
+            const disease = allDiseases.find(d => d.id === diseaseId);
+            if (!disease) {
+                alert('Disease not found');
+                return;
+            }
+
+            const createdDate = disease.createdAt ? new Date(disease.createdAt).toLocaleDateString() : 'N/A';
+            const updatedDate = disease.updatedAt ? new Date(disease.updatedAt).toLocaleDateString() : 'N/A';
+            const geneSymbols = disease.geneSymbols || [];
+
+            document.getElementById('modalTitle').textContent = disease.diseaseName || 'Disease Details';
+            document.getElementById('modalBody').innerHTML = `
+                <div style="display: grid; gap: var(--space-md);">
+                    <div>
+                        <div class="text-tertiary text-sm">Disease Code</div>
+                        <div style="font-weight: 500;">${escapeHtml(disease.diseaseCode || 'N/A')}</div>
+                    </div>
+                    
+                    <div>
+                        <div class="text-tertiary text-sm">Description</div>
+                        <div>${escapeHtml(disease.description || 'No description provided')}</div>
+                    </div>
+                    
+                    <div>
+                        <div class="text-tertiary text-sm">Constant</div>
+                        <div style="font-weight: 500;">${disease.constant || 'N/A'}</div>
+                    </div>
+                    
+                    <div>
+                        <div class="text-tertiary text-sm">Gene Symbols (${geneSymbols.length})</div>
+                        <div style="display: flex; flex-wrap: wrap; gap: var(--space-xs); margin-top: var(--space-xs);">
+                            ${geneSymbols.length > 0 
+                                ? geneSymbols.map(g => `<span class="badge badge-info">${escapeHtml(g)}</span>`).join('') 
+                                : '<span class="text-secondary">No genes associated</span>'
+                            }
+                        </div>
+                    </div>
+                    
+                    <hr style="border: none; border-top: 1px solid var(--border-color); margin: var(--space-sm) 0;">
+                    
+                    <div>
+                        <div class="text-tertiary text-sm">Created By</div>
+                        <div>${escapeHtml(disease.creatorName || 'Unknown')}</div>
+                        <div class="text-tertiary text-sm">${escapeHtml(disease.creatorEmail || '')}</div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
+                        <div>
+                            <div class="text-tertiary text-sm">Created At</div>
+                            <div>${createdDate}</div>
+                        </div>
+                        <div>
+                            <div class="text-tertiary text-sm">Last Updated</div>
+                            <div>${updatedDate}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('diseaseModalBackdrop').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('diseaseModalBackdrop').style.display = 'none';
+        }
+
+        // Close modal when clicking on backdrop (but not on modal content)
+        document.getElementById('diseaseModalBackdrop').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Close modal on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Search functionality
+        document.getElementById('searchDiseases').addEventListener('input', (e) => {
+            const search = e.target.value.toLowerCase().trim();
+            
+            if (!search) {
+                renderDiseases(allDiseases);
+                return;
+            }
+
+            const filtered = allDiseases.filter(disease => {
+                const diseaseName = (disease.diseaseName || '').toLowerCase();
+                const diseaseCode = (disease.diseaseCode || '').toLowerCase();
+                const description = (disease.description || '').toLowerCase();
+                const creatorName = (disease.creatorName || '').toLowerCase();
+                const geneSymbols = (disease.geneSymbols || []).join(' ').toLowerCase();
+
+                return diseaseName.includes(search) ||
+                       diseaseCode.includes(search) ||
+                       description.includes(search) ||
+                       creatorName.includes(search) ||
+                       geneSymbols.includes(search);
+            });
+
+            renderDiseases(filtered);
+        });
+
+        // Helper function to escape HTML
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Make functions globally accessible
+        window.viewDiseaseDetails = viewDiseaseDetails;
+        window.closeModal = closeModal;
+
+        // Load diseases on page load
+        loadDiseases();
+    </script>
+
+    <style>
+        /* Custom slide-up animation for modal */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #diseaseModalBackdrop .modal {
+            animation: slideInUp 0.3s ease-out;
+            cursor: default;
+        }
+
+        /* Ensure modal backdrop click closes modal */
+        #diseaseModalBackdrop {
+            cursor: pointer;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: var(--space-sm) var(--space-md);
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table th {
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+            background: var(--bg-secondary);
+        }
+
+        .table tbody tr:hover {
+            background-color: var(--bg-tertiary);
+        }
+
+        .text-error {
+            color: var(--error-color);
+        }
+    </style>
+</body>
+
+</html>

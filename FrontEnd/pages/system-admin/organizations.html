@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizations - PrivaGene</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="javascript:void(0)"
+                style="display: flex; align-items: center; gap: var(--space-sm); text-decoration: none; cursor: default;">
+                <span style="font-size: var(--text-3xl);">🧬</span>
+                <span style="font-size: var(--text-xl); font-weight: 700; color: var(--primary-color);">PrivaGene</span>
+            </a>
+        </div>
+
+        <div
+            style="margin-bottom: var(--space-xl); padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);" data-user-name>System Admin</div>
+            <div style="font-size: var(--text-sm); color: var(--text-tertiary);" data-user-email>admin@privagene.com
+            </div>
+        </div>
+
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item"><a href="dashboard.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📊</span>Dashboard</a></li>
+                <li class="sidebar-item"><a href="audit-logs.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📋</span>Audit Logs</a></li>
+                <li class="sidebar-item"><a href="user-management.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">👥</span>User Management</a></li>
+                <li class="sidebar-item"><a href="organizations.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">🏥</span>Organizations</a></li>
+                <li class="sidebar-item"><a href="platform-analytics.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📈</span>Platform Analytics</a></li>
+                <li class="sidebar-item"><a href="system-settings.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">⚙️</span>System Settings</a></li>
+            </ul>
+        </nav>
+
+        <div style="margin-top: auto;">
+            <button id="logout-btn" class="sidebar-link"
+                style="width: 100%; border: none; background: transparent; cursor: pointer;">
+                <span class="sidebar-link-icon">🚪</span>Logout
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-with-sidebar">
+        <div class="container-fluid">
+            <div style="margin-bottom: var(--space-2xl);">
+                <h1 style="font-size: var(--text-4xl); font-weight: 700; margin-bottom: var(--space-sm);">Manage
+                    Organizations</h1>
+                <p class="text-secondary">Approve and manage hospital and research organization registrations</p>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-lg); margin-bottom: var(--space-2xl);">
+                <div class="card" style="padding: var(--space-lg);">
+                    <div class="text-tertiary text-sm" style="margin-bottom: var(--space-xs);">Active Organizations</div>
+                    <div style="font-size: var(--text-3xl); font-weight: 700;" id="statActiveOrgs">-</div>
+                </div>
+                <div class="card" style="padding: var(--space-lg);">
+                    <div class="text-tertiary text-sm" style="margin-bottom: var(--space-xs);">Pending Approvals</div>
+                    <div style="font-size: var(--text-3xl); font-weight: 700; color: var(--warning-color);" id="statPending">-</div>
+                </div>
+                <div class="card" style="padding: var(--space-lg);">
+                    <div class="text-tertiary text-sm" style="margin-bottom: var(--space-xs);">New This Month</div>
+                    <div style="font-size: var(--text-3xl); font-weight: 700; color: var(--success-color);" id="statRecent">-</div>
+                </div>
+            </div>
+
+            <!-- Pending Registrations -->
+            <div class="card" style="margin-bottom: var(--space-2xl);">
+                <div class="card-header">
+                    <h3 class="card-title">Pending Organization Registrations</h3>
+                    <span class="badge badge-warning" id="pendingCount" style="display: none;">0</span>
+                </div>
+
+                <div id="pendingOrgs">
+                    <!-- Loading state -->
+                    <div class="empty-state" style="padding: var(--space-2xl);">
+                        <div class="empty-state-description">Loading pending registrations...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Organizations -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Active Organizations</h3>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Organization</th>
+                            <th>Type</th>
+                            <th>Admin</th>
+                            <th>Users</th>
+                            <th>Joined</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activeOrgs">
+                        <!-- Loading state -->
+                        <tr>
+                            <td colspan="6" class="text-center text-secondary">Loading organizations...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script src="../../js/api-backend.js"></script>
+
+    <script>
+        Auth.requireRole('system_admin');
+        const user = Auth.getCurrentUser();
+        Navigation.displayUserInfo(user);
+        Navigation.setActiveNav();
+
+        document.getElementById('logout-btn').addEventListener('click', () => Auth.logout());
+
+        // Load statistics
+        async function loadStatistics() {
+            try {
+                const stats = await BackendAPI.getOrganizationStatistics();
+                if (stats) {
+                    document.getElementById('statActiveOrgs').textContent = stats.totalActiveOrganizations || 0;
+                    document.getElementById('statPending').textContent = stats.pendingRegistrations || 0;
+                    document.getElementById('statRecent').textContent = stats.recentRegistrations || 0;
+                }
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+            }
+        }
+
+        // Load pending registrations
+        async function loadPendingOrganizations() {
+            const pendingContainer = document.getElementById('pendingOrgs');
+            const pendingCountBadge = document.getElementById('pendingCount');
+            
+            try {
+                const pending = await BackendAPI.getPendingOrganizations();
+                
+                if (pending.length === 0) {
+                    pendingContainer.innerHTML = '<div class="empty-state" style="padding: var(--space-2xl);"><div class="empty-state-description">No pending registrations</div></div>';
+                    pendingCountBadge.style.display = 'none';
+                } else {
+                    pendingCountBadge.textContent = pending.length;
+                    pendingCountBadge.style.display = 'inline-block';
+                    
+                    pendingContainer.innerHTML = pending.map(org => `
+                        <div style="padding: var(--space-lg); border-bottom: 1px solid var(--border-light);">
+                            <div style="display: flex; justify-content: space-between; align-items: start;">
+                                <div>
+                                    <div style="font-weight: 600; margin-bottom: var(--space-xs);">${escapeHtml(org.organizationName || org.organization_name || 'N/A')}</div>
+                                    <div class="text-secondary text-sm">${escapeHtml(org.email)} • ${formatRole(org.role)}</div>
+                                    <div class="text-tertiary text-sm">Contact: ${escapeHtml(org.firstName || org.first_name || '')} ${escapeHtml(org.lastName || org.last_name || '')}</div>
+                                    <div class="text-tertiary text-sm">Registered: ${formatDate(org.createdAt || org.created_at)}</div>
+                                    ${org.licenseNumber || org.license_number ? `<div class="text-tertiary text-sm">License: ${escapeHtml(org.licenseNumber || org.license_number)}</div>` : ''}
+                                </div>
+                                <div style="display: flex; gap: var(--space-sm);">
+                                    <button class="btn btn-sm btn-success" onclick="approveOrg('${org.id}')">Approve</button>
+                                    <button class="btn btn-sm btn-error" onclick="rejectOrg('${org.id}')">Reject</button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading pending organizations:', error);
+                pendingContainer.innerHTML = '<div class="empty-state" style="padding: var(--space-2xl);"><div class="empty-state-description text-error">Failed to load pending registrations</div></div>';
+            }
+        }
+
+        // Load active organizations
+        async function loadActiveOrganizations() {
+            const activeContainer = document.getElementById('activeOrgs');
+            
+            try {
+                const organizations = await BackendAPI.getActiveOrganizations();
+                
+                if (organizations.length === 0) {
+                    activeContainer.innerHTML = '<tr><td colspan="6" class="text-center text-secondary">No active organizations</td></tr>';
+                } else {
+                    activeContainer.innerHTML = organizations.map(org => `
+                        <tr>
+                            <td style="font-weight: 500;">${escapeHtml(org.name)}</td>
+                            <td>${escapeHtml(org.type)}</td>
+                            <td class="text-secondary">${escapeHtml(org.adminEmail)}</td>
+                            <td>${org.userCount}</td>
+                            <td class="text-secondary text-sm">${formatDate(org.joinedDate)}</td>
+                            <td><span class="badge badge-success">Active</span></td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading active organizations:', error);
+                activeContainer.innerHTML = '<tr><td colspan="6" class="text-center text-error">Failed to load organizations</td></tr>';
+            }
+        }
+
+        // Approve organization
+        async function approveOrg(userId) {
+            UI.showLoading('Approving...');
+            try {
+                await BackendAPI.approveOrganization(userId);
+                UI.hideLoading();
+                UI.showAlert('Organization approved successfully', 'success');
+                await loadAllData();
+            } catch (error) {
+                UI.hideLoading();
+                UI.showAlert(error.message || 'Failed to approve organization', 'error');
+            }
+        }
+
+        // Reject organization
+        async function rejectOrg(userId) {
+            const confirmed = await UI.confirm('Reject this organization registration? This action cannot be undone.');
+            if (!confirmed) return;
+
+            UI.showLoading('Rejecting...');
+            try {
+                await BackendAPI.rejectOrganization(userId);
+                UI.hideLoading();
+                UI.showAlert('Organization rejected', 'success');
+                await loadAllData();
+            } catch (error) {
+                UI.hideLoading();
+                UI.showAlert(error.message || 'Failed to reject organization', 'error');
+            }
+        }
+
+        // Helper functions
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatRole(role) {
+            const roleMap = {
+                'hospital': 'Hospital Admin',
+                'hospital_admin': 'Hospital Admin',
+                'admin': 'Organization Admin',
+                'doctor': 'Medical Professional',
+                'system_admin': 'System Administrator'
+            };
+            return roleMap[role] || role;
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return 'N/A';
+            try {
+                const date = new Date(dateStr);
+                return date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            } catch (e) {
+                return dateStr;
+            }
+        }
+
+        // Load all data
+        async function loadAllData() {
+            await Promise.all([
+                loadStatistics(),
+                loadPendingOrganizations(),
+                loadActiveOrganizations()
+            ]);
+        }
+
+        // Make functions globally available
+        window.approveOrg = approveOrg;
+        window.rejectOrg = rejectOrg;
+
+        // Initial load
+        loadAllData();
+    </script>
+</body>
+
+</html>

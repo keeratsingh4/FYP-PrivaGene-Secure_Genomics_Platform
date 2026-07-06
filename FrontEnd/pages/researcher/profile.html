@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - PrivaGene</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="../../index.html"
+                style="display: flex; align-items: center; gap: var(--space-sm); text-decoration: none;">
+                <span style="font-size: var(--text-3xl);">🧬</span>
+                <span style="font-size: var(--text-xl); font-weight: 700; color: var(--primary-color);">PrivaGene</span>
+            </a>
+        </div>
+
+        <div
+            style="margin-bottom: var(--space-xl); padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);" data-user-name>User</div>
+            <div style="font-size: var(--text-sm); color: var(--text-tertiary);" data-user-email>user@example.com</div>
+        </div>
+
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item"><a href="dashboard.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📊</span>Dashboard</a></li>
+                <li class="sidebar-item"><a href="datasets.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">📈</span>Datasets</a></li>
+                <li class="sidebar-item"><a href="analytics.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">🔬</span>Analytics</a></li>
+                <li class="sidebar-item"><a href="profile.html" class="sidebar-link"><span
+                            class="sidebar-link-icon">👤</span>Profile</a></li>
+            </ul>
+        </nav>
+
+        <div style="margin-top: auto;"><button id="logout-btn" class="sidebar-link"
+                style="width: 100%; border: none; background: transparent; cursor: pointer;"><span
+                    class="sidebar-link-icon">🚪</span>Logout</button></div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-with-sidebar">
+        <div class="container-fluid">
+            <div style="margin-bottom: var(--space-2xl);">
+                <h1 style="font-size: var(--text-4xl); font-weight: 700; margin-bottom: var(--space-sm);">Profile
+                    Settings</h1>
+                <p class="text-secondary">Manage your research account information</p>
+            </div>
+
+            <!-- Personal Information -->
+            <div class="card" style="margin-bottom: var(--space-xl);">
+                <div class="card-header">
+                    <h3 class="card-title">Researcher Information</h3>
+                </div>
+
+                <form id="profile-form">
+                    <div class="grid grid-cols-2 gap-lg">
+                        <div class="form-group">
+                            <label for="firstName" class="form-label">First Name</label>
+                            <input type="text" id="firstName" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName" class="form-label">Last Name</label>
+                            <input type="text" id="lastName" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" id="email" class="form-input" readonly>
+                        <small class="text-secondary" style="display: block; margin-top: var(--space-xs);">Email cannot be changed</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="institution" class="form-label">Institution</label>
+                        <input type="text" id="institution" class="form-input" placeholder="e.g., University of California">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="researchArea" class="form-label">Research Focus Area</label>
+                        <input type="text" id="researchArea" class="form-input"
+                            placeholder="e.g., Oncogenetics, Cardiovascular Genetics">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+
+            <!-- Change Password -->
+            <div class="card" style="margin-bottom: var(--space-xl);">
+                <div class="card-header">
+                    <h3 class="card-title">Security</h3>
+                </div>
+                <div style="padding: var(--space-md);">
+                    <button onclick="showChangePasswordModal()" class="btn btn-outline">Change Password</button>
+                </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="card" style="border-color: var(--error-color);">
+                <div class="card-header">
+                    <h3 class="card-title" style="color: var(--error-color);">Delete Account</h3>
+                </div>
+
+                <div style="padding: var(--space-md);">
+                    <p class="text-secondary" style="margin-bottom: var(--space-md);">
+                        Once you delete your account, all your data will be permanently removed. This cannot be undone.
+                    </p>
+                    <button onclick="confirmDeleteAccount()" class="btn btn-danger">Delete Account</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Load required scripts -->
+    <script src="../../js/config.js"></script>
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/api-backend.js"></script>
+    <script src="../../js/navigation.js"></script>
+
+    <script>
+        // Require researcher role
+        Auth.requireRole('researcher');
+        const user = Auth.getCurrentUser();
+        
+        // Debug: Log user data to console
+        console.log('Current user data:', user);
+        
+        // Display user info in sidebar
+        Navigation.displayUserInfo(user);
+        Navigation.setActiveNav();
+
+        // Logout handler
+        document.getElementById('logout-btn').addEventListener('click', () => Auth.logout());
+
+        // Load user data into form fields - handle both snake_case and camelCase
+        const firstName = user.first_name || user.firstName || '';
+        const lastName = user.last_name || user.lastName || '';
+        const email = user.email || '';
+        const institution = user.institution || '';
+        const researchArea = user.research_area || user.researchArea || user.researchFocus || '';
+
+        console.log('Loading form data:', { firstName, lastName, email, institution, researchArea });
+
+        // Populate form fields
+        const firstNameInput = document.getElementById('firstName');
+        const lastNameInput = document.getElementById('lastName');
+        const emailInput = document.getElementById('email');
+        const institutionInput = document.getElementById('institution');
+        const researchAreaInput = document.getElementById('researchArea');
+
+        console.log('Form elements:', {
+            firstNameInput,
+            lastNameInput,
+            emailInput,
+            institutionInput,
+            researchAreaInput
+        });
+
+        if (firstNameInput) firstNameInput.value = firstName;
+        if (lastNameInput) lastNameInput.value = lastName;
+        if (emailInput) emailInput.value = email;
+        if (institutionInput) institutionInput.value = institution;
+        if (researchAreaInput) researchAreaInput.value = researchArea;
+
+        console.log('After setting values:', {
+            firstName: firstNameInput?.value,
+            lastName: lastNameInput?.value,
+            email: emailInput?.value,
+            institution: institutionInput?.value,
+            researchArea: researchAreaInput?.value
+        });
+
+        // Save profile changes
+        document.getElementById('profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const updatedData = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                institution: document.getElementById('institution').value,
+                researchArea: document.getElementById('researchArea').value
+            };
+
+            UI.showLoading('Saving changes...');
+
+            try {
+                // Call backend API to update user profile
+                const updatedUser = await BackendAPI.updateUserProfile(user.id, updatedData);
+
+                // Update session storage with the new user data
+                Auth.setCurrentUser(updatedUser);
+                Navigation.displayUserInfo(updatedUser);
+
+                UI.hideLoading();
+                UI.showAlert('Profile updated successfully!', 'success');
+
+            } catch (error) {
+                console.error('Profile update error:', error);
+                UI.hideLoading();
+                UI.showAlert('Failed to update profile: ' + error.message, 'error');
+            }
+        });
+
+        function showChangePasswordModal() {
+            const user = Auth.getCurrentUser();
+            UI.showModal({
+                title: 'Change Password',
+                body: `
+                <form id="password-form">
+                    <div class="form-group">
+                    <label for="currentPassword" class="form-label form-label-required">Current Password</label>
+                    <input type="password" id="currentPassword" class="form-input" required>
+                    </div>
+                    
+                    <div class="form-group">
+                    <label for="newPassword" class="form-label form-label-required">New Password</label>
+                    <input type="password" id="newPassword" class="form-input" required minlength="8">
+                    <small class="text-secondary" style="display: block; margin-top: var(--space-xs);">Must be at least 8 characters</small>
+                    </div>
+                    
+                    <div class="form-group">
+                    <label for="confirmPassword" class="form-label form-label-required">Confirm New Password</label>
+                    <input type="password" id="confirmPassword" class="form-input" required>
+                    </div>
+                </form>
+                `,
+                buttons: [
+                    { text: 'Cancel', className: 'btn btn-outline' },
+                    {
+                        text: 'Change Password',
+                        className: 'btn btn-primary',
+                        onClick: async () => {
+                            const form = document.getElementById('password-form');
+                            if (!form.checkValidity()) {
+                                form.reportValidity();
+                                return false;
+                            }
+
+                            const current = document.getElementById('currentPassword').value;
+                            const newPass = document.getElementById('newPassword').value;
+                            const confirm = document.getElementById('confirmPassword').value;
+
+                            if (newPass !== confirm) {
+                                UI.showAlert('Passwords do not match', 'error');
+                                return false;
+                            }
+
+                            if (newPass.length < 8) {
+                                UI.showAlert('Password must be at least 8 characters long', 'error');
+                                return false;
+                            }
+
+                            UI.showLoading('Changing password...');
+
+                            try {
+                                await BackendAPI.updatePassword(user.id, current, newPass);
+                                UI.hideLoading();
+                                UI.showAlert('Password changed successfully!', 'success');
+                                return true;
+                            } catch (error) {
+                                UI.hideLoading();
+                                UI.showAlert(error.message || 'Failed to change password', 'error');
+                                return false;
+                            }
+                        }
+                    }
+                ]
+            });
+        }
+
+        async function confirmDeleteAccount() {
+            const confirmed = await UI.confirm(
+                'Are you sure you want to delete your account? This action cannot be undone.'
+            );
+            if (!confirmed) return;
+
+            const doubleConfirm = await UI.confirm(
+                'This will permanently remove all your data. Continue?'
+            );
+            if (!doubleConfirm) return;
+
+            UI.showLoading('Deleting account...');
+            try {
+                const user = Auth.getCurrentUser();
+                
+                // Soft delete - Admin can restore later
+                await API.deleteUser(user.id);
+
+                UI.hideLoading();
+                UI.showAlert('Account deleted. Redirecting...', 'info');
+
+                setTimeout(() => {
+                    Auth.logout();
+                }, 2000);
+            } catch (error) {
+                UI.hideLoading();
+                UI.showAlert(error.message || 'Failed to delete account', 'error');
+            }
+        }
+    </script>
+</body>
+
+</html>

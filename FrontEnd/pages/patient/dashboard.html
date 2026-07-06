@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - PrivaGene</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="../../css/components.css">
+</head>
+
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="../../index.html"
+                style="display: flex; align-items: center; gap: var(--space-sm); text-decoration: none;">
+                <span style="font-size: var(--text-3xl);">🧬</span>
+                <span style="font-size: var(--text-xl); font-weight: 700; color: var(--primary-color);">PrivaGene</span>
+            </a>
+        </div>
+
+        <div
+            style="margin-bottom: var(--space-xl); padding: var(--space-md); background: var(--bg-tertiary); border-radius: var(--radius-md);">
+            <div style="font-weight: 600; margin-bottom: var(--space-xs);" data-user-name>User</div>
+            <div style="font-size: var(--text-sm); color: var(--text-tertiary);" data-user-email>user@example.com</div>
+        </div>
+
+        <nav>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="dashboard.html" class="sidebar-link">
+                        <span class="sidebar-link-icon">📊</span>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="upload-gene.html" class="sidebar-link">
+                        <span class="sidebar-link-icon">📤</span>
+                        Upload Gene Data
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="disease-selection.html" class="sidebar-link">
+                        <span class="sidebar-link-icon">🧪</span>
+                        Risk Assessment
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="risk-results.html" class="sidebar-link">
+                        <span class="sidebar-link-icon">📈</span>
+                        My Results
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="family-access.html" class="sidebar-link">
+                        <span class="sidebar-link-icon">👨‍👩‍👧</span>
+                        Family Access
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="profile.html" class="sidebar-link">
+                        <span class="sidebar-link-icon">👤</span>
+                        Profile
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div style="margin-top: auto;">
+            <button id="logout-btn" class="sidebar-link"
+                style="width: 100%; border: none; background: transparent; cursor: pointer;">
+                <span class="sidebar-link-icon">🚪</span>
+                Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-with-sidebar">
+        <div class="container-fluid">
+            <!-- Header -->
+            <div style="margin-bottom: var(--space-2xl);">
+                <h1 style="font-size: var(--text-4xl); font-weight: 700; margin-bottom: var(--space-sm);">
+                    Welcome Back, <span data-user-name>User</span>!
+                </h1>
+                <p class="text-secondary">Manage your genetic health data and assessments</p>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="grid grid-cols-2 gap-lg" style="margin-bottom: var(--space-2xl);">
+                <div class="card action-card" onclick="window.location.href='upload-gene.html'">
+                    <div class="action-card-icon">📤</div>
+                    <h3 class="card-title text-center">Upload Gene Data</h3>
+                    <p class="text-secondary text-center">Upload your genetic data securely</p>
+                </div>
+
+                <div class="card action-card" onclick="window.location.href='disease-selection.html'">
+                    <div class="action-card-icon">🧪</div>
+                    <h3 class="card-title text-center">New Assessment</h3>
+                    <p class="text-secondary text-center">Start a risk assessment</p>
+                </div>
+
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="grid grid-cols-2 gap-lg" style="margin-bottom: var(--space-2xl);">
+                <div class="card" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" 
+                    onclick="window.location.href='upload-gene.html'"
+                    onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow-lg)'"
+                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow-md)'">
+                    <div class="text-tertiary text-sm" style="margin-bottom: var(--space-xs);">Uploaded Gene File</div>
+                    <div style="font-size: var(--text-2xl); font-weight: 700; color: var(--primary-color); word-break: break-word;" id="uploadFileName">
+                        No File Uploaded
+                    </div>
+
+                    <div class="text-tertiary text-xs" style="margin-top: var(--space-xs);">
+                        Click to upload/change file
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="text-tertiary text-sm" style="margin-bottom: var(--space-xs);">Assessments Done</div>
+                    <div style="font-size: var(--text-3xl); font-weight: 700; color: var(--secondary-color);"
+                        id="assessmentCount">0</div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="grid grid-cols-1 gap-xl">
+                <!-- Recent Results -->
+                <div class="card">
+                    <div class="card-header" id="recentRiskAssessments">
+                        <h3 class="card-title">Recent Risk Assessments</h3>
+                    </div>
+                    <div id="recentResults">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/storage.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/api-backend.js"></script>
+    <script src="../../js/gene-utils.js"></script>
+    <!--
+    <script src="../../js/api-mock.js"></script>
+    -->
+    <script src="../../js/navigation.js"></script>
+
+    <script>
+        // Require authentication
+        Auth.requireRole('patient');
+
+        const user = Auth.getCurrentUser();
+
+        // Global variable
+        let diseaseCategories = [];
+
+        // Display user info
+        Navigation.displayUserInfo(user);
+        Navigation.setActiveNav();
+
+        // Logout handler
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            Auth.logout();
+        });
+
+        // Load disease categories from backend database
+        async function loadDiseaseCategories() {
+            try {
+                // This now fetches from the real database via /api/disease-categories
+                diseaseCategories = await API.getDiseaseCategories();
+                console.log('📚 Disease categories loaded from database:', diseaseCategories);
+            } catch (error) {
+                console.error('Failed to load disease categories:', error);
+                diseaseCategories = [];
+            }
+        }
+
+        // Get uploaded gene file name from localStorage
+        function getUploadedGeneFileName() {
+            try {
+                const uploads = GeneUtils.getUploadHistory();
+                
+                if (uploads && uploads.length > 0) {
+                    const latestUpload = uploads[uploads.length - 1];
+                    return latestUpload.fileName;
+                }
+                
+                return null;
+            } catch (error) {
+                console.error('Error reading gene file:', error);
+                return null;
+            }
+        }
+
+        // Load dashboard data
+        async function loadDashboard() {
+            console.log('🔍 Loading dashboard for user:', user);
+            
+            try {
+                // Load disease categories first (from backend database)
+                await loadDiseaseCategories();
+                
+                // Get gene file name
+                const geneFileName = getUploadedGeneFileName();
+                const fileNameElement = document.getElementById('uploadFileName');
+                
+                if (geneFileName) {
+                    fileNameElement.textContent = geneFileName;
+                    fileNameElement.style.color = 'var(--success-color)';
+                } else {
+                    fileNameElement.textContent = 'No File Uploaded';
+                    fileNameElement.style.color = 'var(--text-tertiary)';
+                }
+                
+                // Fetch risk assessments
+                console.log('🧬 Fetching risk assessments for user:', user.id);
+                const assessments = await API.getRiskAssessments(user.id);
+                console.log('✅ Risk assessments received:', assessments);
+                console.log('📊 Number of assessments:', assessments ? assessments.length : 0);
+                
+                // Update stats
+                document.getElementById('assessmentCount').textContent = assessments.length;
+
+                // Show overall risk from most recent assessment
+                if (assessments && assessments.length > 0) {
+                    console.log('📈 Processing latest assessment...');
+                    
+                    const sortedByDate = [...assessments].sort((a, b) => {
+                        const dateA = new Date(a.created_at || a.createdAt);
+                        const dateB = new Date(b.created_at || b.createdAt);
+                        return dateB - dateA;
+                    });
+                    
+                    const latest = sortedByDate[0];
+                    console.log('Latest assessment:', latest);
+                    
+                    const risk = latest.overallRisk || 
+                                latest.overall_risk || 
+                                latest.riskPercentage || 
+                                latest.risk_percentage || 
+                                0;
+                    
+                    console.log('Risk value:', risk);
+                } else {
+                    console.log('⚠️ No assessments found');
+                }
+
+                // Display recent results (sorted by date, newest first)
+                const sortedAssessments = assessments.sort((a, b) => {
+                    const dateA = new Date(a.created_at || a.createdAt);
+                    const dateB = new Date(b.created_at || b.createdAt);
+                    return dateB - dateA;
+                });
+                displayRecentResults(sortedAssessments.slice(0, 3));
+
+            } catch (error) {
+                console.error('❌ Error loading dashboard:', error);
+                console.error('Error stack:', error.stack);
+                UI.showAlert('Failed to load dashboard data: ' + error.message, 'error');
+            }
+        }
+
+        // Display recent results - uses disease categories loaded from database
+        function displayRecentResults(assessments) {
+            const container = document.getElementById('recentResults');
+
+            if (!assessments || assessments.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="padding: var(--space-xl);">
+                        <div class="empty-state-icon">📊</div>
+                        <div class="empty-state-description">No assessments yet</div>
+                        <a href="disease-selection.html" class="btn btn-primary btn-sm">Start Assessment</a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = assessments.map(assessment => {
+                const risk = assessment.overallRisk || 
+                            assessment.overall_risk || 
+                            assessment.riskPercentage || 
+                            assessment.risk_percentage || 
+                            0;
+                
+                const date = assessment.computedAt || 
+                            assessment.computed_at || 
+                            assessment.createdAt || 
+                            assessment.created_at || 
+                            new Date();
+                
+                const diseaseId = assessment.diseaseId || 
+                                assessment.disease_id || 
+                                assessment.disease || 
+                                'Unknown';
+                
+                // Find disease name from loaded categories (now from database)
+                const disease = diseaseCategories.find(d => d.id === diseaseId);
+                const diseaseName = disease ? disease.name : diseaseId;
+                
+                const riskLevel = risk < 30 ? 'low' : risk < 70 ? 'medium' : 'high';
+                
+                return `
+                    <div style="padding: var(--space-md); border-bottom: 1px solid var(--border-light); cursor: pointer;"
+                        onclick="window.location.href='risk-results.html?id=${assessment.id}'">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-weight: 500;">${diseaseName}</div>
+                                <div class="text-secondary text-sm">${UI.formatDate(date)}</div>
+                            </div>
+                            <div class="risk-indicator risk-${riskLevel}">
+                                ${Math.round(risk)}% Risk
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Load dashboard on page load
+        loadDashboard();
+    </script>
+</body>
+
+</html>
